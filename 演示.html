@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tronix科技解决方案 - 提供高效安全的企业级软件服务">
+    <title>Tronix | 科技解决方案</title>
+    
+    <!-- 样式优化 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* 修改body背景部分 */
+        body {
+            position: relative;
+            min-height: 100vh;
+            color: #fff; /* 根据背景亮度调整 */
+            line-height: 1.6;
+        }
+
+        /* 新增背景层 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url(images/computer-bg.png) center/cover no-repeat;
+            filter: brightness(0.4) contrast(1.2); /* 关键调节参数 */
+            transition: filter 0.5s; /* 平滑过渡效果 */
+        }
+
+        /* 调整导航栏透明度 */
+        nav {
+            background: rgba(0, 0, 0, 0.5); /* 降低透明度 */
+            backdrop-filter: blur(5px); /* 添加毛玻璃效果 */
+        }
+
+        /* 增强内容对比度 */
+        .hero-content h1 {
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 产品卡片增强背景 */
+        .product-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 聊天窗口样式调整 */
+        .chat-box {
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+        }
+
+        /* 导航栏 */
+        nav {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: bold;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="logo">Tronix</div>
+        <div class="nav-links">
+            <a href="首页.html">首页</a>
+            <a href="产品.html">产品</a>
+            <a href="演示.html">演示</a>
+            <a href="下载.html">下载</a>
+            <a href="联系我们.html">联系我们</a>
+        </div>
+    </nav>
+</body>
+</html>
