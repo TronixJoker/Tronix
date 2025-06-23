@@ -403,6 +403,114 @@
             font-size: 0.7rem;
         }
         
+        /* 点赞和评论按钮 */
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #d0d0ff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .like-btn.liked {
+            color: #ff4081;
+        }
+        
+        .comment-btn.active {
+            color: #00b0ff;
+        }
+        
+        /* 评论区域 */
+        .comments-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+        
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-item {
+            background: rgba(40, 35, 65, 0.3);
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #04eff7;
+        }
+        
+        .comment-time {
+            color: #a0a0d0;
+            font-size: 0.8rem;
+        }
+        
+        .comment-content {
+            color: #e0e0ff;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .add-comment {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .comment-input {
+            background: rgba(30, 25, 55, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.8rem;
+            color: #fff;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .comment-submit {
+            align-self: flex-end;
+            background: linear-gradient(45deg, #00b3ff, #0062ff);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 99, 255, 0.4);
+        }
+        
         /* 侧边栏样式 */
         .sidebar {
             background: rgba(20, 15, 45, 0.6);
@@ -724,6 +832,20 @@
             100% { transform: translateY(0); }
         }
         
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes heart {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(0.8); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
         .floating {
             animation: floating 3s ease-in-out infinite;
         }
@@ -750,10 +872,8 @@
             animation: pulse 2s infinite;
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        .heart-animation {
+            animation: heart 0.8s ease;
         }
         
         /* 新增样式 */
@@ -787,11 +907,11 @@
     <nav>
         <div class="logo">Tronix</div>
         <div class="nav-links">
-            <a href="index.html">首页</a>
-            <a href="forum.html">论坛</a>
-            <a href="tools.html">工具</a>
-            <a href="download.html">下载</a>
-            <a href="login.html">登录</a>
+            <a href="#" class="active">首页</a>
+            <a href="#" class="active">论坛</a>
+            <a href="#">工具</a>
+            <a href="#">下载</a>
+            <a href="#">联系我们</a>
         </div>
     </nav>
 
@@ -1030,8 +1150,23 @@
                 authorName: "机器学习爱好者",
                 views: 324,
                 comments: 28,
+                likes: 45,
                 timestamp: "2小时前",
-                new: true
+                new: true,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "AI专家",
+                        content: "建议尝试模型量化技术，可以有效减少模型大小并提升推理速度。",
+                        timestamp: "1小时前"
+                    },
+                    {
+                        id: 2,
+                        author: "开发者小王",
+                        content: "我们团队使用了TensorRT优化，速度提升了3倍以上。",
+                        timestamp: "45分钟前"
+                    }
+                ]
             },
             {
                 id: 2,
@@ -1042,8 +1177,23 @@
                 authorName: "前端开发者",
                 views: 587,
                 comments: 42,
+                likes: 68,
                 timestamp: "5小时前",
-                new: true
+                new: true,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "全栈工程师",
+                        content: "React更适合大型复杂项目，生态更成熟，但学习曲线更陡峭。",
+                        timestamp: "3小时前"
+                    },
+                    {
+                        id: 2,
+                        author: "UI设计师",
+                        content: "Vue的模板语法对设计师更友好，上手更快。",
+                        timestamp: "2小时前"
+                    }
+                ]
             },
             {
                 id: 3,
@@ -1054,8 +1204,17 @@
                 authorName: "安全研究员",
                 views: 198,
                 comments: 16,
+                likes: 32,
                 timestamp: "昨天",
-                new: false
+                new: false,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "网络安全专家",
+                        content: "建议采用多因素认证和最小权限原则，这是零信任的核心。",
+                        timestamp: "昨天"
+                    }
+                ]
             },
             {
                 id: 4,
@@ -1066,8 +1225,23 @@
                 authorName: "DevOps工程师",
                 views: 421,
                 comments: 31,
+                likes: 56,
                 timestamp: "1天前",
-                new: false
+                new: false,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "云架构师",
+                        content: "我们使用了Horizontal Pod Autoscaler，根据CPU使用率自动调整Pod数量，效果显著。",
+                        timestamp: "22小时前"
+                    },
+                    {
+                        id: 2,
+                        author: "运维工程师",
+                        content: "网络优化方面，建议使用Calico网络插件配合网络策略。",
+                        timestamp: "20小时前"
+                    }
+                ]
             },
             {
                 id: 5,
@@ -1078,8 +1252,17 @@
                 authorName: "量子探索者",
                 views: 256,
                 comments: 18,
+                likes: 42,
                 timestamp: "3小时前",
-                new: true
+                new: true,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "物理学家",
+                        content: "量子计算在药物研发和材料科学领域有巨大潜力。",
+                        timestamp: "2小时前"
+                    }
+                ]
             },
             {
                 id: 6,
@@ -1090,8 +1273,17 @@
                 authorName: "Web3研究员",
                 views: 312,
                 comments: 24,
+                likes: 37,
                 timestamp: "6小时前",
-                new: true
+                new: true,
+                commentsList: [
+                    {
+                        id: 1,
+                        author: "区块链开发者",
+                        content: "去中心化身份认证是Web3.0的核心创新之一。",
+                        timestamp: "4小时前"
+                    }
+                ]
             }
         ];
         
@@ -1205,9 +1397,156 @@
                             <span>${post.timestamp}</span>
                         </div>
                     </div>
+                    <div class="post-actions">
+                        <button class="action-btn like-btn" data-post-id="${post.id}">
+                            <i class="far fa-heart"></i>
+                            <span class="like-count">${post.likes}</span>
+                        </button>
+                        <button class="action-btn comment-btn" data-post-id="${post.id}">
+                            <i class="far fa-comment"></i>
+                            <span>评论</span>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}">
+                        <div class="comment-list" id="comment-list-${post.id}">
+                            ${renderComments(post.commentsList)}
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" id="comment-input-${post.id}" placeholder="写下你的评论..."></textarea>
+                            <button class="comment-submit" data-post-id="${post.id}">发布评论</button>
+                        </div>
+                    </div>
                 `;
                 postList.appendChild(postElement);
             });
+            
+            // 添加点赞事件监听器
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    likePost(postId, this);
+                });
+            });
+            
+            // 添加评论事件监听器
+            document.querySelectorAll('.comment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    toggleComments(postId, this);
+                });
+            });
+            
+            // 添加评论提交事件监听器
+            document.querySelectorAll('.comment-submit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    addComment(postId);
+                });
+            });
+        }
+        
+        // 渲染评论
+        function renderComments(comments) {
+            if (!comments || comments.length === 0) {
+                return '<div class="no-comments">暂无评论</div>';
+            }
+            
+            return comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.author}</span>
+                        <span class="comment-time">${comment.timestamp}</span>
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 点赞帖子
+        function likePost(postId, element) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const heartIcon = element.querySelector('i');
+            const likeCount = element.querySelector('.like-count');
+            
+            // 切换点赞状态
+            if (element.classList.contains('liked')) {
+                post.likes--;
+                element.classList.remove('liked');
+                heartIcon.classList.remove('fas', 'heart-animation');
+                heartIcon.classList.add('far');
+            } else {
+                post.likes++;
+                element.classList.add('liked');
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas', 'heart-animation');
+                
+                // 移除动画类以便下次可以再次触发
+                setTimeout(() => {
+                    heartIcon.classList.remove('heart-animation');
+                }, 800);
+            }
+            
+            likeCount.textContent = post.likes;
+        }
+        
+        // 切换评论显示
+        function toggleComments(postId, element) {
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            if (commentsSection.style.display === 'block') {
+                commentsSection.style.display = 'none';
+                element.classList.remove('active');
+            } else {
+                commentsSection.style.display = 'block';
+                element.classList.add('active');
+                // 滚动到评论区域
+                commentsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        
+        // 添加评论
+        function addComment(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const commentInput = document.getElementById(`comment-input-${postId}`);
+            const content = commentInput.value.trim();
+            
+            if (!content) {
+                showNotification('评论内容不能为空', 'error');
+                return;
+            }
+            
+            // 添加新评论
+            const newComment = {
+                id: post.commentsList.length + 1,
+                author: "访客",
+                content: content,
+                timestamp: "刚刚"
+            };
+            
+            post.commentsList.push(newComment);
+            post.comments++;
+            commentCount++;
+            
+            // 更新评论列表
+            const commentList = document.getElementById(`comment-list-${postId}`);
+            commentList.innerHTML = renderComments(post.commentsList);
+            
+            // 清空输入框
+            commentInput.value = '';
+            
+            // 更新帖子评论数
+            const commentBtn = document.querySelector(`.comment-btn[data-post-id="${postId}"]`);
+            if (commentBtn) {
+                commentBtn.innerHTML = `<i class="far fa-comment"></i> 评论 (${post.comments})`;
+            }
+            
+            // 更新统计
+            updateStats();
+            
+            showNotification('评论发布成功');
         }
         
         // 显示发布表单
@@ -1250,8 +1589,10 @@
                 authorName: authorName,
                 views: 0,
                 comments: 0,
+                likes: 0,
                 timestamp: "刚刚",
-                new: true
+                new: true,
+                commentsList: []
             };
             
             // 添加到帖子列表开头
@@ -1259,7 +1600,6 @@
             
             // 更新统计数据
             postCount++;
-            commentCount += Math.floor(Math.random() * 5);
             updateStats();
             
             // 重新渲染帖子
@@ -1318,8 +1658,49 @@
                             <span>${post.timestamp}</span>
                         </div>
                     </div>
+                    <div class="post-actions">
+                        <button class="action-btn like-btn" data-post-id="${post.id}">
+                            <i class="far fa-heart"></i>
+                            <span class="like-count">${post.likes}</span>
+                        </button>
+                        <button class="action-btn comment-btn" data-post-id="${post.id}">
+                            <i class="far fa-comment"></i>
+                            <span>评论</span>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}">
+                        <div class="comment-list" id="comment-list-${post.id}">
+                            ${renderComments(post.commentsList)}
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" id="comment-input-${post.id}" placeholder="写下你的评论..."></textarea>
+                            <button class="comment-submit" data-post-id="${post.id}">发布评论</button>
+                        </div>
+                    </div>
                 `;
                 postList.appendChild(postElement);
+            });
+            
+            // 重新绑定事件
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    likePost(postId, this);
+                });
+            });
+            
+            document.querySelectorAll('.comment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    toggleComments(postId, this);
+                });
+            });
+            
+            document.querySelectorAll('.comment-submit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = parseInt(this.dataset.postId);
+                    addComment(postId);
+                });
             });
         }
         
@@ -1388,9 +1769,11 @@
                 author: randomUser.author,
                 authorName: randomUser.name,
                 views: Math.floor(Math.random() * 300) + 50,
-                comments: Math.floor(Math.random() * 20) + 5,
+                comments: Math.floor(Math.random() * 5),
+                likes: Math.floor(Math.random() * 20) + 5,
                 timestamp: "刚刚",
-                new: true
+                new: true,
+                commentsList: []
             };
             
             // 添加到帖子列表开头
