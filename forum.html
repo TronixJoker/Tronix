@@ -538,6 +538,7 @@
             padding: 2rem;
             margin: 2rem auto;
             max-width: 800px;
+            display: none;
         }
         
         .form-title {
@@ -754,6 +755,31 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
+        
+        /* 新增样式 */
+        .notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 200, 83, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .post-form-container.visible {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -762,10 +788,10 @@
         <div class="logo">Tronix</div>
         <div class="nav-links">
             <a href="index.html">首页</a>
-            <a href="forum.html" class="active">论坛</a>
+            <a href="forum.html">论坛</a>
             <a href="tools.html">工具</a>
             <a href="download.html">下载</a>
-            <a href="contact.html">联系我们</a>
+            <a href="login.html">登录</a>
         </div>
     </nav>
 
@@ -927,7 +953,7 @@
             </div>
             
             <!-- 发布新话题表单 -->
-            <div class="post-form-container" id="postForm" style="display: none;">
+            <div class="post-form-container" id="postForm">
                 <h2 class="form-title">发布新话题</h2>
                 <form id="newTopicForm">
                     <div class="form-group">
@@ -1042,6 +1068,30 @@
                 comments: 31,
                 timestamp: "1天前",
                 new: false
+            },
+            {
+                id: 5,
+                title: "量子计算的最新突破与应用前景",
+                content: "量子计算领域最近取得了令人瞩目的进展，特别是在量子比特稳定性和纠错方面。这些突破对未来的计算能力意味着什么？量子计算将在哪些领域率先实现商业化应用？",
+                category: "ai",
+                author: "QC",
+                authorName: "量子探索者",
+                views: 256,
+                comments: 18,
+                timestamp: "3小时前",
+                new: true
+            },
+            {
+                id: 6,
+                title: "Web3.0技术发展趋势分析",
+                content: "Web3.0正在改变我们与互联网互动的方式。去中心化应用、区块链技术和智能合约的发展趋势如何？它们将如何影响未来的互联网架构和用户体验？",
+                category: "dev",
+                author: "WB",
+                authorName: "Web3研究员",
+                views: 312,
+                comments: 24,
+                timestamp: "6小时前",
+                new: true
             }
         ];
         
@@ -1139,7 +1189,7 @@
                 postElement.innerHTML = `
                     <div class="post-header">
                         <a href="#" class="post-title">${post.title}</a>
-                        <span class="post-category">${categoryNames[post.category]}</span>
+                        <span class="post-category">${categoryNames[post.category] || '其他'}</span>
                     </div>
                     <div class="post-content">
                         ${post.content}
@@ -1164,6 +1214,7 @@
         function showPostForm() {
             const postForm = document.getElementById('postForm');
             postForm.style.display = 'block';
+            postForm.classList.add('visible');
             postForm.scrollIntoView({ behavior: 'smooth' });
             
             // 重置表单
@@ -1181,7 +1232,7 @@
             const authorName = document.getElementById('authorName').value || '访客';
             
             if (!title || !category || !content) {
-                alert('请填写标题、分类和内容');
+                showNotification('请填写标题、分类和内容', 'error');
                 return;
             }
             
@@ -1216,29 +1267,10 @@
             
             // 隐藏表单
             document.getElementById('postForm').style.display = 'none';
+            document.getElementById('postForm').classList.remove('visible');
             
-            // 提示用户
-            const successMsg = document.createElement('div');
-            successMsg.textContent = '话题发布成功!';
-            successMsg.style.cssText = `
-                position: fixed;
-                top: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0, 200, 83, 0.9);
-                color: white;
-                padding: 15px 30px;
-                border-radius: 30px;
-                font-weight: bold;
-                z-index: 2000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
-            `;
-            document.body.appendChild(successMsg);
-            
-            setTimeout(() => {
-                document.body.removeChild(successMsg);
-            }, 3000);
+            // 显示成功通知
+            showNotification('话题发布成功!');
             
             // 滚动到顶部查看新帖子
             window.scrollTo({ top: 200, behavior: 'smooth' });
@@ -1255,7 +1287,7 @@
             };
             
             // 更新标题
-            document.querySelector('.forum-title').textContent = categoryNames[category];
+            document.querySelector('.forum-title').textContent = categoryNames[category] || '其他';
             
             // 过滤帖子
             const filteredPosts = posts.filter(post => post.category === category);
@@ -1270,7 +1302,7 @@
                 postElement.innerHTML = `
                     <div class="post-header">
                         <a href="#" class="post-title">${post.title}</a>
-                        <span class="post-category">${categoryNames[post.category]}</span>
+                        <span class="post-category">${categoryNames[post.category] || '其他'}</span>
                     </div>
                     <div class="post-content">
                         ${post.content}
@@ -1291,9 +1323,23 @@
             });
         }
         
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            notification.style.background = type === 'error' ? 'rgba(255, 87, 87, 0.9)' : 'rgba(0, 200, 83, 0.9)';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+        
         // 模拟新帖子添加
         function addNewPost() {
-            if (posts.length > 12) return;
+            if (posts.length > 20) return;
             
             const users = [
                 { author: "TR", name: "技术研究员" },
@@ -1341,8 +1387,8 @@
                 category: randomCategory,
                 author: randomUser.author,
                 authorName: randomUser.name,
-                views: 0,
-                comments: 0,
+                views: Math.floor(Math.random() * 300) + 50,
+                comments: Math.floor(Math.random() * 20) + 5,
                 timestamp: "刚刚",
                 new: true
             };
