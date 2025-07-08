@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tronix | 科技论坛</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        /* 背景优化 - 已统一为computer-bg.png */
+        body {
+            position: relative;
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(59, 0, 70, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 70, 112, 0.4) 0%, transparent 40%),
+                url(computer-bg.png) center/cover no-repeat;
+            filter: brightness(0.3) contrast(1.3);
+            transition: filter 0.5s;
+        }
+        
+        /* 导航栏优化 - 保持统一 */
+        nav {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            text-decoration: none;
+            position: relative;
+            padding: 0.3rem 0;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 主要内容区域优化 */
+        .hero {
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+            margin-top: 60px;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            padding: 2.5rem;
+            border-radius: 20px;
+            background: rgba(10, 10, 25, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-content h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #c0e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            color: #e0e0ff;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #9b037a, #d400a8);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(155, 3, 122, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(155, 3, 122, 0.6);
+        }
+        
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .download-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* 论坛内容样式 */
+        .forum-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+        
+        .forum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .forum-title {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .create-btn {
+            background: linear-gradient(45deg, #00b3ff, #0062ff);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .create-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 99, 255, 0.4);
+        }
+        
+        .forum-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .category-card {
+            background: rgba(20, 15, 45, 0.6);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .category-description {
+            color: #d0d0ff;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #a0a0d0;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+        
+        /* 帖子列表样式 */
+        .posts-container {
+            background: rgba(20, 15, 45, 0.6);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .posts-header {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .post-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding-left: 0.5rem;
+        }
+        
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .post-content {
+            flex-grow: 1;
+        }
+        
+        .post-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .post-title:hover {
+            color: #04eff7;
+        }
+        
+        .post-meta {
+            display: flex;
+            color: #a0a0d0;
+            font-size: 0.85rem;
+            gap: 1.5rem;
+        }
+        
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-left: auto;
+        }
+        
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .sidebar-widget {
+            background: rgba(20, 15, 45, 0.6);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+        }
+        
+        .widget-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .widget-title i {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .profile-role {
+            color: #a0a0d0;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #a0a0d0;
+        }
+        
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .tag:hover {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            transform: translateY(-2px);
+        }
+        
+        .tag i {
+            font-size: 0.7rem;
+        }
+        
+        /* 页脚优化 */
+        footer {
+            position: relative;
+            padding: 1rem 5%;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            margin-top: 5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-content div {
+            margin: 0.5rem 1rem;
+        }
+        
+        .copyright {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+        
+        .rights {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+        
+        /* 响应式设计优化 */
+        @media (max-width: 1024px) {
+            .forum-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+            
+            .forum-title {
+                font-size: 1.8rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-content div {
+                margin: 0.8rem 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                height: 30vh;
+            }
+            
+            .hero-content {
+                padding: 1.5rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .download-btn {
+                padding: 0.8rem 1.8rem;
+                font-size: 1rem;
+            }
+            
+            .forum-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .create-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 - 保持统一 -->
+    <nav>
+        <div class="logo">Tronix</div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="forum.html">论坛</a>
+            <a href="tools.html">工具</a>
+            <a href="download.html">下载</a>
+            <a href="login.html">登录</a>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区域 -->
+    <div class="hero">
+        <div class="hero-content fade-in">
+            <h1>Tronix 科技论坛</h1>
+            <p>加入我们的技术社区，分享经验、解决问题、探索前沿科技</p>
+        </div>
+    </div>
+    
+    <div class="forum-container">
+        <main>
+            <div class="forum-header fade-in delay-1">
+                <h2 class="forum-title">技术讨论区</h2>
+                <button class="create-btn"><i class="fas fa-plus"></i> 发布新帖</button>
+            </div>
+            
+            <div class="forum-categories fade-in delay-2">
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-code category-icon"></i>
+                        <div>
+                            <h3 class="category-title">开发技术</h3>
+                            <p class="category-description">讨论编程、框架、算法等开发相关话题</p>
+                        </div>
+                    </div>
+                    <div class="category-stats">
+                        <span>主题: 1,284</span>
+                        <span>今日新帖: 24</span>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-bug category-icon"></i>
+                        <div>
+                            <h3 class="category-title">问题反馈</h3>
+                            <p class="category-description">报告软件问题、提出改进建议</p>
+                        </div>
+                    </div>
+                    <div class="category-stats">
+                        <span>主题: 532</span>
+                        <span>已解决: 487</span>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-lightbulb category-icon"></i>
+                        <div>
+                            <h3 class="category-title">创意分享</h3>
+                            <p class="category-description">分享你的创意想法和使用技巧</p>
+                        </div>
+                    </div>
+                    <div class="category-stats">
+                        <span>主题: 876</span>
+                        <span>今日新帖: 15</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="posts-container fade-in delay-3">
+                <div class="posts-header">
+                    <h3>最新讨论</h3>
+                    <select class="forum-select">
+                        <option>最新发布</option>
+                        <option>最多回复</option>
+                        <option>热门讨论</option>
+                    </select>
+                </div>
+                
+                <div class="post-item">
+                    <div class="post-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="post-content">
+                        <h4 class="post-title">Tronix v3.3.0测试版新功能体验分享</h4>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <i class="fas fa-user-circle"></i>
+                                <span>技术探索者</span>
+                            </div>
+                            <div class="post-date">
+                                <i class="far fa-clock"></i>
+                                <span>2小时前</span>
+                            </div>
+                            <div class="post-stats">
+                                <div class="post-stat">
+                                    <i class="far fa-eye"></i>
+                                    <span>245</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-comment"></i>
+                                    <span>32</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-heart"></i>
+                                    <span>48</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-item">
+                    <div class="post-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="post-content">
+                        <h4 class="post-title">如何解决Windows 11下的兼容性问题？</h4>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Win用户</span>
+                            </div>
+                            <div class="post-date">
+                                <i class="far fa-clock"></i>
+                                <span>5小时前</span>
+                            </div>
+                            <div class="post-stats">
+                                <div class="post-stat">
+                                    <i class="far fa-eye"></i>
+                                    <span>187</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-comment"></i>
+                                    <span>15</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-heart"></i>
+                                    <span>23</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-item">
+                    <div class="post-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="post-content">
+                        <h4 class="post-title">分享一个我开发的Tronix插件</h4>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <i class="fas fa-user-circle"></i>
+                                <span>插件开发者</span>
+                            </div>
+                            <div class="post-date">
+                                <i class="far fa-clock"></i>
+                                <span>昨天</span>
+                            </div>
+                            <div class="post-stats">
+                                <div class="post-stat">
+                                    <i class="far fa-eye"></i>
+                                    <span>562</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-comment"></i>
+                                    <span>87</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-heart"></i>
+                                    <span>124</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <aside class="sidebar">
+            <div class="sidebar-widget fade-in delay-2">
+                <h3 class="widget-title"><i class="fas fa-user-circle"></i> 登录账户</h3>
+                <div class="user-profile">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4 class="profile-name">游客</h4>
+                    <p class="profile-role">请登录以参与讨论</p>
+                    <button class="download-btn" style="width: 100%;">登录 / 注册</button>
+                </div>
+            </div>
+            
+            <div class="sidebar-widget fade-in delay-3">
+                <h3 class="widget-title"><i class="fas fa-hashtag"></i> 热门标签</h3>
+                <div class="trending-tags">
+                    <div class="tag"><i class="fas fa-fire"></i> Tronix</div>
+                    <div class="tag">开发技巧</div>
+                    <div class="tag">插件开发</div>
+                    <div class="tag">API</div>
+                    <div class="tag">Windows</div>
+                    <div class="tag">MacOS</div>
+                    <div class="tag">Linux</div>
+                    <div class="tag">更新日志</div>
+                    <div class="tag">功能建议</div>
+                    <div class="tag">界面设计</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-widget fade-in delay-3">
+                <h3 class="widget-title"><i class="fas fa-info-circle"></i> 论坛公告</h3>
+                <div class="announcement-content">
+                    <p style="margin-bottom: 1rem; color: #04eff7;">Tronix v3.3.0测试版现已发布，欢迎下载体验并反馈问题！</p>
+                    <p style="font-size: 0.9rem; color: #d0d0ff;">发布日期: 2025-06-15</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="copyright">版权所有 &copy; Tronix</div>
+            <div class="rights">最终解释权归：Tronix</div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 50) {
+                    nav.style.padding = '0.8rem 5%';
+                    nav.style.background = 'rgba(0, 0, 0, 0.85)';
+                } else {
+                    nav.style.padding = '1.2rem 5%';
+                    nav.style.background = 'rgba(0, 0, 0, 0.65)';
+                }
+            });
+            
+            // 为元素添加渐入动画类
+            const fadeElements = document.querySelectorAll('.category-card, .post-item, .sidebar-widget');
+            fadeElements.forEach((el, index) => {
+                el.classList.add('fade-in');
+                el.style.animationDelay = `${0.1 + (index % 5) * 0.1}s`;
+            });
+            
+            // 帖子悬停效果
+            const postItems = document.querySelectorAll('.post-item');
+            postItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.transform = 'translateX(5px)';
+                    item.style.transition = 'transform 0.3s ease';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'translateX(0)';
+                });
+            });
+        });
+    </script>
+    
+    <!-- 引入Quill编辑器 -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+</body>
+</html>

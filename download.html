@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tronix | 下载中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        /* 背景优化 - 统一自index.html */
+        body {
+            position: relative;
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow-x: hidden;
+            padding-top: 80px; /* 为固定导航栏预留空间 */
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(59, 0, 70, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 70, 112, 0.4) 0%, transparent 40%),
+                url(computer-bg.png) center/cover no-repeat;
+            filter: brightness(0.3) contrast(1.3);
+            transition: filter 0.5s;
+        }
+        
+        /* 导航栏 - 统一自index.html */
+        nav {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            text-decoration: none;
+            position: relative;
+            padding: 0.3rem 0;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 下载页面特有样式 */
+        .download-section {
+            padding: 3rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #c0e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: #e0e0ff;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* 下载卡片样式 - 适配深色主题 */
+        .download-item {
+            background: rgba(20, 15, 45, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .download-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+        
+        .download-item .recommended {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            color: white;
+            font-weight: bold;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .download-item h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .download-item .version {
+            color: #04eff7;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #9b037a, #d400a8);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(155, 3, 122, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(155, 3, 122, 0.6);
+        }
+        
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .download-btn:hover::after {
+            left: 100%;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            color: #d0d0ff;
+            font-size: 0.9rem;
+        }
+        
+        .file-info i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #fc00ef;
+        }
+        
+        /* 版本选择区域 */
+        .version-selector {
+            background: rgba(20, 15, 45, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .version-selector h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .version-selector h3 i {
+            margin-right: 0.8rem;
+        }
+        
+        .version-selector select {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .version-selector select option {
+            background: #24243e;
+            color: white;
+        }
+        
+        .version-selector .info-box {
+            background: rgba(0, 70, 112, 0.3);
+            border: 1px solid rgba(4, 239, 247, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            color: #d0d0ff;
+            font-size: 0.9rem;
+        }
+        
+        .version-selector .info-box i {
+            color: #04eff7;
+            margin-right: 0.5rem;
+        }
+        
+        .version-selector .select-wrapper {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .version-selector .select-wrapper select {
+            flex: 2;
+        }
+        
+        .version-selector .select-wrapper button {
+            flex: 1;
+        }
+
+/* 页脚优化 */
+        footer {
+            position: relative;
+            padding: 0.5rem 5%;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            margin-top: 5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-content div {
+            margin: 0.5rem 1rem;
+        }
+        
+        .copyright {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+        
+        .rights {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 - 统一自index.html -->
+    <nav>
+        <div class="logo">Tronix</div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="forum.html">论坛</a>
+            <a href="tools.html">工具</a>
+            <a href="download.html">下载</a>
+            <a href="login.html">登录</a>
+        </div>
+    </nav>
+
+    <!-- 下载中心内容 -->
+    <section class="download-section">
+        <div class="section-title">
+            <h2>下载中心</h2>
+            <p>选择适合您设备的Tronix客户端，享受流畅的操作体验与最新功能</p>
+        </div>
+
+        <!-- 主要下载卡片 -->
+        <div class="download-item">
+            <span class="recommended">推荐版本</span>
+            <h3>Windows 客户端</h3>
+            <span class="version">v3.2.1 稳定版</span>
+            
+            <a href="/downloads/Tronix_Setup_3.2.1.exe" class="download-btn">
+                <i class="fas fa-download mr-3"></i> 立即下载 (64位)
+            </a>
+            
+            <div class="file-info">
+                <i class="fas fa-file-exe"></i>
+                <div>
+                    <p>文件大小: <span style="color: #04eff7;">82.3 MB</span></p>
+                    <p>SHA256: <span style="color: #04eff7;">9a8f7...d3b</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 版本选择区域 -->
+        <div class="version-selector">
+            <h3><i class="fas fa-box-open"></i> 选择其他版本</h3>
+            
+            <div class="select-wrapper">
+                <select id="versionSelect">
+                    <option value="3.2.1">v3.2.1 稳定版 (推荐)</option>
+                    <option value="3.3.0-beta">v3.3.0 测试版 (最新功能)</option>
+                    <option value="3.1.5">v3.1.5 兼容版 (旧系统)</option>
+                </select>
+                
+                <button onclick="startDownload()" class="download-btn">
+                    <i class="fas fa-download mr-2"></i> 下载
+                </button>
+            </div>
+            
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> 测试版包含未完全验证的新功能，可能存在兼容性问题，建议开发人员使用</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="copyright">版权所有 &copy; Tronix</div>
+            <div class="rights">最终解释权归：Tronix</div>
+        </div>
+    </footer>
+
+    <script>
+    // 下载功能脚本
+    function startDownload() {
+        const versionSelect = document.getElementById('versionSelect');
+        const version = versionSelect.value;
+        const filename = `Tronix_${version}.exe`;
+        const btn = event.currentTarget;
+        
+        // 按钮加载状态动画
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 准备中...';
+        
+        // 模拟下载进度
+        setTimeout(() => {
+            window.location.href = `/downloads/${filename}`;
+            // 恢复按钮状态（实际环境中可能不需要，因为页面会跳转）
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-download mr-2"></i> 下载';
+            }, 1000);
+        }, 1500);
+    }
+
+    // 页面滚动动画
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('.download-item, .version-selector');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    });
+    </script>
+</body>
+</html>

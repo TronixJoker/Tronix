@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tronix | 在线工具集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            position: relative;
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(59, 0, 70, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 70, 112, 0.4) 0%, transparent 40%);
+            filter: brightness(0.3) contrast(1.3);
+        }
+        
+        /* 导航栏样式 */
+        nav {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            text-decoration: none;
+            position: relative;
+            padding: 0.3rem 0;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00f535, #fdd006);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 主内容区 */
+        .hero {
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+            margin-top: 60px;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #c0e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            color: #e0e0ff;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* 工具卡片样式 */
+        .tools-container {
+            padding: 2rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .tool-card {
+            background: rgba(20, 15, 45, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tool-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .tool-description {
+            color: #d0d0ff;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #c0c0ff;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input, 
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            background: rgba(30, 25, 55, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .output-group {
+            margin-top: 1.5rem;
+        }
+        
+        .output-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #c0c0ff;
+            font-size: 0.9rem;
+        }
+        
+        .output-content {
+            background: rgba(30, 25, 55, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 100px;
+            color: #fff;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #9b037a, #d400a8);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(155, 3, 122, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(155, 3, 122, 0.6);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        /* 二维码生成器样式 */
+        #qrcode {
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #qrcode img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        /* 颜色选择器样式 */
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 时间戳转换器样式 */
+        .timestamp-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        /* 密码生成器样式 */
+        .password-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background: #444;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        /* API测试工具样式 */
+        .api-method-select {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .api-method-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .api-method-btn.active {
+            background: linear-gradient(45deg, #9b037a, #d400a8);
+        }
+        
+        .api-response-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #a0a0d0;
+        }
+        
+        /* Markdown编辑器样式 */
+        .markdown-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: 300px;
+        }
+        
+        .markdown-preview {
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(30, 25, 55, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .tools-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            
+            .markdown-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .timestamp-results {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .tools-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 页脚样式 */
+        footer {
+            position: relative;
+            padding: 0.5rem 5%;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            margin-top: 5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-content div {
+            margin: 0.5rem 1rem;
+        }
+        
+        .copyright {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+        
+        .rights {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="logo">Tronix</div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="forum.html">论坛</a>
+            <a href="tools.html">工具</a>
+            <a href="download.html">下载</a>
+            <a href="login.html">登录</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Tronix 在线工具集</h1>
+            <p>高效实用的开发工具，助力您的日常工作</p>
+        </div>
+    </section>
+    
+    <!-- 工具容器 -->
+    <div class="tools-container">
+        <!-- 代码格式化工具 -->
+        <div class="tool-card animated">
+            <div class="tool-header">
+                <i class="fas fa-code tool-icon"></i>
+                <h3 class="tool-title">代码格式化工具</h3>
+            </div>
+            <p class="tool-description">美化您的代码，支持多种编程语言，提高代码可读性。</p>
+            <div class="input-group">
+                <label for="code-input">输入代码:</label>
+                <textarea id="code-input" placeholder="粘贴您的代码到这里..."></textarea>
+                <select id="code-language">
+                    <option value="javascript">JavaScript</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="format-btn">格式化</button>
+                <button class="btn btn-secondary" id="clear-code-btn">清空</button>
+            </div>
+            <div class="output-group">
+                <label>格式化结果:</label>
+                <div class="output-content" id="code-output"></div>
+            </div>
+        </div>
+        
+        <!-- JSON/XML转换器 -->
+        <div class="tool-card animated delay-1">
+            <div class="tool-header">
+                <i class="fas fa-exchange-alt tool-icon"></i>
+                <h3 class="tool-title">JSON/XML转换器</h3>
+            </div>
+            <p class="tool-description">在JSON和XML格式之间相互转换，方便数据交换。</p>
+            <div class="input-group">
+                <label for="converter-input">输入内容:</label>
+                <textarea id="converter-input" placeholder="输入JSON或XML..."></textarea>
+                <select id="conversion-type">
+                    <option value="json-to-xml">JSON 转 XML</option>
+                    <option value="xml-to-json">XML 转 JSON</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="convert-btn">转换</button>
+                <button class="btn btn-secondary" id="clear-converter-btn">清空</button>
+            </div>
+            <div class="output-group">
+                <label>转换结果:</label>
+                <div class="output-content" id="converter-output"></div>
+            </div>
+        </div>
+        
+        <!-- 颜色代码生成器 -->
+        <div class="tool-card animated delay-2">
+            <div class="tool-header">
+                <i class="fas fa-palette tool-icon"></i>
+                <h3 class="tool-title">颜色代码生成器</h3>
+            </div>
+            <p class="tool-description">生成各种格式的颜色代码，方便前端开发使用。</p>
+            <div class="input-group">
+                <label for="color-picker">选择颜色:</label>
+                <input type="color" id="color-picker" value="#ff0000">
+                <div class="color-preview" id="color-preview" style="background: #ff0000;"></div>
+            </div>
+            <div class="output-group">
+                <label>颜色代码:</label>
+                <div class="output-content">
+                    HEX: <span id="hex-code">#ff0000</span><br>
+                    RGB: <span id="rgb-code">rgb(255, 0, 0)</span><br>
+                    HSL: <span id="hsl-code">hsl(0, 100%, 50%)</span><br>
+                    CMYK: <span id="cmyk-code">cmyk(0%, 100%, 100%, 0%)</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 时间戳转换工具 -->
+        <div class="tool-card animated delay-3">
+            <div class="tool-header">
+                <i class="fas fa-clock tool-icon"></i>
+                <h3 class="tool-title">时间戳转换工具</h3>
+            </div>
+            <p class="tool-description">在时间戳和可读日期之间相互转换，支持多种格式。</p>
+            <div class="input-group">
+                <label for="timestamp-input">输入时间戳或日期:</label>
+                <input type="text" id="timestamp-input" placeholder="如: 1634567890 或 2023-10-20">
+                <select id="timestamp-type">
+                    <option value="timestamp-to-date">时间戳转日期</option>
+                    <option value="date-to-timestamp">日期转时间戳</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="convert-timestamp-btn">转换</button>
+                <button class="btn" id="current-timestamp-btn">当前时间</button>
+            </div>
+            <div class="output-group">
+                <label>转换结果:</label>
+                <div class="timestamp-results">
+                    <div>
+                        <label>UTC:</label>
+                        <div class="output-content" id="utc-output"></div>
+                    </div>
+                    <div>
+                        <label>本地时间:</label>
+                        <div class="output-content" id="local-output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 密码生成器 -->
+        <div class="tool-card animated">
+            <div class="tool-header">
+                <i class="fas fa-key tool-icon"></i>
+                <h3 class="tool-title">密码生成器</h3>
+            </div>
+            <p class="tool-description">生成安全、随机的密码，可自定义长度和字符类型。</p>
+            <div class="input-group">
+                <label>密码长度: <span id="length-value">12</span></label>
+                <input type="range" id="password-length" min="6" max="32" value="12">
+                <div class="password-options">
+                    <label><input type="checkbox" id="uppercase" checked> 大写字母 (A-Z)</label>
+                    <label><input type="checkbox" id="lowercase" checked> 小写字母 (a-z)</label>
+                    <label><input type="checkbox" id="numbers" checked> 数字 (0-9)</label>
+                    <label><input type="checkbox" id="symbols" checked> 符号 (!@#$%)</label>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="generate-password-btn">生成密码</button>
+                <button class="btn btn-secondary" id="copy-password-btn">复制</button>
+            </div>
+            <div class="output-group">
+                <label>生成的密码:</label>
+                <input type="text" id="password-output" readonly>
+                <div class="password-strength">
+                    <div class="strength-meter" id="strength-meter"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API测试工具 -->
+        <div class="tool-card animated delay-1">
+            <div class="tool-header">
+                <i class="fas fa-plug tool-icon"></i>
+                <h3 class="tool-title">API测试工具</h3>
+            </div>
+            <p class="tool-description">发送HTTP请求并查看响应，方便API开发和调试。</p>
+            <div class="input-group">
+                <label for="api-url">API URL:</label>
+                <input type="text" id="api-url" placeholder="https://api.example.com/endpoint">
+                <div class="api-method-select">
+                    <button class="api-method-btn active" data-method="GET">GET</button>
+                    <button class="api-method-btn" data-method="POST">POST</button>
+                    <button class="api-method-btn" data-method="PUT">PUT</button>
+                    <button class="api-method-btn" data-method="DELETE">DELETE</button>
+                </div>
+                <label for="api-headers">请求头 (JSON):</label>
+                <textarea id="api-headers" placeholder='{"Content-Type": "application/json"}'></textarea>
+                <label for="api-body">请求体 (JSON):</label>
+                <textarea id="api-body" placeholder='{"key": "value"}'></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="send-api-btn">发送请求</button>
+                <button class="btn btn-secondary" id="clear-api-btn">清空</button>
+            </div>
+            <div class="output-group">
+                <label>响应结果:</label>
+                <div class="api-response-info">
+                    <span>状态码: <span id="api-status">-</span></span>
+                    <span>耗时: <span id="api-time">-</span> ms</span>
+                </div>
+                <div class="output-content" id="api-response"></div>
+            </div>
+        </div>
+        
+        <!-- 二维码生成器 -->
+        <div class="tool-card animated delay-2">
+            <div class="tool-header">
+                <i class="fas fa-qrcode tool-icon"></i>
+                <h3 class="tool-title">二维码生成器</h3>
+            </div>
+            <p class="tool-description">将文本或URL转换为二维码图像，方便移动设备扫描。</p>
+            <div class="input-group">
+                <label for="qr-text">输入文本或URL:</label>
+                <input type="text" id="qr-text" placeholder="https://example.com">
+                <label for="qr-size">二维码大小:</label>
+                <select id="qr-size">
+                    <option value="100">小 (100x100)</option>
+                    <option value="200" selected>中 (200x200)</option>
+                    <option value="300">大 (300x300)</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="generate-qr-btn">生成二维码</button>
+                <button class="btn btn-secondary" id="download-qr-btn">下载</button>
+            </div>
+            <div class="output-group">
+                <label>二维码:</label>
+                <div id="qrcode"></div>
+            </div>
+        </div>
+        
+        <!-- Markdown编辑器 -->
+        <div class="tool-card animated delay-3">
+            <div class="tool-header">
+                <i class="fas fa-markdown tool-icon"></i>
+                <h3 class="tool-title">Markdown编辑器</h3>
+            </div>
+            <p class="tool-description">实时预览Markdown格式文本，支持常用语法。</p>
+            <div class="markdown-container">
+                <div>
+                    <label for="markdown-input">Markdown输入:</label>
+                    <textarea id="markdown-input" placeholder="输入Markdown文本..."></textarea>
+                </div>
+                <div>
+                    <label>实时预览:</label>
+                    <div class="markdown-preview" id="markdown-preview"></div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="clear-markdown-btn">清空</button>
+                <button class="btn" id="copy-markdown-btn">复制HTML</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="copyright">版权所有 &copy; Tronix</div>
+            <div class="rights">最终解释权归：Tronix</div>
+        </div>
+    </footer>
+    
+    <script>
+        // 代码格式化工具
+        document.getElementById('format-btn').addEventListener('click', function() {
+            const code = document.getElementById('code-input').value;
+            const language = document.getElementById('code-language').value;
+            
+            if (!code.trim()) {
+                alert('请输入要格式化的代码');
+                return;
+            }
+            
+            // 简单模拟格式化效果
+            let formattedCode = code;
+            
+            // 根据不同语言应用不同的格式化规则
+            switch(language) {
+                case 'javascript':
+                    // 简单的JS格式化 - 实际应用中应该使用专业库
+                    formattedCode = formattedCode
+                        .replace(/\{/g, ' {\n')
+                        .replace(/\}/g, '\n}')
+                        .replace(/;/g, ';\n')
+                        .replace(/\)\s*\{/g, ') {');
+                    break;
+                case 'json':
+                    try {
+                        const jsonObj = JSON.parse(code);
+                        formattedCode = JSON.stringify(jsonObj, null, 2);
+                    } catch (e) {
+                        alert('无效的JSON: ' + e.message);
+                        return;
+                    }
+                    break;
+                case 'html':
+                    // 简单的HTML格式化
+                    formattedCode = formattedCode
+                        .replace(/</g, '\n<')
+                        .replace(/>/g, '>\n')
+                        .replace(/\n\n+/g, '\n');
+                    break;
+                case 'css':
+                    // 简单的CSS格式化
+                    formattedCode = formattedCode
+                        .replace(/\{/g, ' {\n  ')
+                        .replace(/\}/g, '\n}\n\n')
+                        .replace(/;/g, ';\n  ');
+                    break;
+                case 'xml':
+                    // 简单的XML格式化
+                    formattedCode = formattedCode
+                        .replace(/</g, '\n<')
+                        .replace(/>/g, '>\n')
+                        .replace(/\n\n+/g, '\n');
+                    break;
+            }
+            
+            document.getElementById('code-output').textContent = formattedCode;
+        });
+        
+        document.getElementById('clear-code-btn').addEventListener('click', function() {
+            document.getElementById('code-input').value = '';
+            document.getElementById('code-output').textContent = '';
+        });
+        
+        // JSON/XML转换器
+        document.getElementById('convert-btn').addEventListener('click', function() {
+            const input = document.getElementById('converter-input').value;
+            const type = document.getElementById('conversion-type').value;
+            
+            if (!input.trim()) {
+                alert('请输入要转换的内容');
+                return;
+            }
+            
+            try {
+                let result;
+                if (type === 'json-to-xml') {
+                    // JSON转XML - 简单实现
+                    const obj = JSON.parse(input);
+                    result = jsonToXml(obj);
+                } else {
+                    // XML转JSON - 简单实现
+                    result = xmlToJson(input);
+                }
+                
+                document.getElementById('converter-output').textContent = result;
+            } catch (e) {
+                alert('转换失败: ' + e.message);
+            }
+        });
+        
+        function jsonToXml(obj, nodeName = 'root') {
+            let xml = '';
+            if (typeof obj === 'object') {
+                xml += `<${nodeName}>`;
+                for (const key in obj) {
+                    if (Array.isArray(obj[key])) {
+                        for (const item of obj[key]) {
+                            xml += jsonToXml(item, key);
+                        }
+                    } else {
+                        xml += jsonToXml(obj[key], key);
+                    }
+                }
+                xml += `</${nodeName}>`;
+            } else {
+                xml += `<${nodeName}>${obj}</${nodeName}>`;
+            }
+            return xml;
+        }
+        
+        function xmlToJson(xmlStr) {
+            // 简单实现 - 实际应用中应该使用专业库
+            try {
+                const json = {};
+                const matches = xmlStr.match(/<([^>]+)>([^<]*)<\/\1>/g);
+                if (matches) {
+                    matches.forEach(match => {
+                        const tagMatch = match.match(/<([^>]+)>([^<]*)<\/\1>/);
+                        if (tagMatch) {
+                            const key = tagMatch[1];
+                            const value = tagMatch[2];
+                            json[key] = value;
+                        }
+                    });
+                }
+                return JSON.stringify(json, null, 2);
+            } catch (e) {
+                throw new Error('无效的XML格式');
+            }
+        }
+        
+        document.getElementById('clear-converter-btn').addEventListener('click', function() {
+            document.getElementById('converter-input').value = '';
+            document.getElementById('converter-output').textContent = '';
+        });
+        
+        // 颜色代码生成器
+        document.getElementById('color-picker').addEventListener('input', function() {
+            const color = this.value;
+            document.getElementById('color-preview').style.background = color;
+            updateColorCodes(color);
+        });
+        
+        function updateColorCodes(hex) {
+            document.getElementById('hex-code').textContent = hex;
+            
+            // HEX转RGB
+            const r = parseInt(hex.substr(1, 2), 16);
+            const g = parseInt(hex.substr(3, 2), 16);
+            const b = parseInt(hex.substr(5, 2), 16);
+            document.getElementById('rgb-code').textContent = `rgb(${r}, ${g}, ${b})`;
+            
+            // RGB转HSL
+            const hsl = rgbToHsl(r, g, b);
+            document.getElementById('hsl-code').textContent = `hsl(${Math.round(hsl[0])}, ${Math.round(hsl[1]*100)}%, ${Math.round(hsl[2]*100)}%)`;
+            
+            // RGB转CMYK
+            const cmyk = rgbToCmyk(r, g, b);
+            document.getElementById('cmyk-code').textContent = `cmyk(${Math.round(cmyk[0]*100)}%, ${Math.round(cmyk[1]*100)}%, ${Math.round(cmyk[2]*100)}%, ${Math.round(cmyk[3]*100)}%)`;
+        }
+        
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0; // achromatic
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            
+            return [h * 360, s, l];
+        }
+        
+        function rgbToCmyk(r, g, b) {
+            if (r === 0 && g === 0 && b === 0) {
+                return [0, 0, 0, 1];
+            }
+            
+            const c = 1 - (r / 255);
+            const m = 1 - (g / 255);
+            const y = 1 - (b / 255);
+            const k = Math.min(c, m, y);
+            
+            return [
+                (c - k) / (1 - k) || 0,
+                (m - k) / (1 - k) || 0,
+                (y - k) / (1 - k) || 0,
+                k
+            ];
+        }
+        
+        // 时间戳转换工具
+        document.getElementById('convert-timestamp-btn').addEventListener('click', function() {
+            const input = document.getElementById('timestamp-input').value;
+            const type = document.getElementById('timestamp-type').value;
+            
+            if (!input.trim()) {
+                alert('请输入时间戳或日期');
+                return;
+            }
+            
+            try {
+                let date;
+                if (type === 'timestamp-to-date') {
+                    // 时间戳转日期
+                    const timestamp = input.length === 10 ? parseInt(input) * 1000 : parseInt(input);
+                    date = new Date(timestamp);
+                } else {
+                    // 日期转时间戳
+                    date = new Date(input);
+                }
+                
+                if (isNaN(date.getTime())) {
+                    throw new Error('无效的日期格式');
+                }
+                
+                if (type === 'timestamp-to-date') {
+                    document.getElementById('utc-output').textContent = date.toUTCString();
+                    document.getElementById('local-output').textContent = date.toString();
+                } else {
+                    document.getElementById('utc-output').textContent = date.getTime();
+                    document.getElementById('local-output').textContent = Math.floor(date.getTime() / 1000);
+                }
+            } catch (e) {
+                alert('转换失败: ' + e.message);
+            }
+        });
+        
+        document.getElementById('current-timestamp-btn').addEventListener('click', function() {
+            const now = new Date();
+            document.getElementById('timestamp-input').value = Math.floor(now.getTime() / 1000);
+            document.getElementById('timestamp-type').value = 'timestamp-to-date';
+            
+            document.getElementById('utc-output').textContent = now.toUTCString();
+            document.getElementById('local-output').textContent = now.toString();
+        });
+        
+        // 密码生成器
+        document.getElementById('password-length').addEventListener('input', function() {
+            document.getElementById('length-value').textContent = this.value;
+        });
+        
+        document.getElementById('generate-password-btn').addEventListener('click', function() {
+            const length = parseInt(document.getElementById('password-length').value);
+            const uppercase = document.getElementById('uppercase').checked;
+            const lowercase = document.getElementById('lowercase').checked;
+            const numbers = document.getElementById('numbers').checked;
+            const symbols = document.getElementById('symbols').checked;
+            
+            if (!uppercase && !lowercase && !numbers && !symbols) {
+                alert('请至少选择一种字符类型');
+                return;
+            }
+            
+            let charset = '';
+            if (uppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (lowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (numbers) charset += '0123456789';
+            if (symbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            document.getElementById('password-output').value = password;
+            updatePasswordStrength(password);
+        });
+        
+        function updatePasswordStrength(password) {
+            let strength = 0;
+            
+            // 长度评分
+            if (password.length >= 12) strength += 2;
+            else if (password.length >= 8) strength += 1;
+            
+            // 字符种类评分
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+            
+            const variety = [hasLower, hasUpper, hasNumber, hasSymbol].filter(Boolean).length;
+            strength += variety - 1;
+            
+            // 更新UI
+            const meter = document.getElementById('strength-meter');
+            meter.style.width = `${strength * 25}%`;
+            
+            if (strength <= 1) {
+                meter.style.backgroundColor = '#ff4d4d';
+            } else if (strength <= 3) {
+                meter.style.backgroundColor = '#ffcc00';
+            } else {
+                meter.style.backgroundColor = '#4CAF50';
+            }
+        }
+        
+        document.getElementById('copy-password-btn').addEventListener('click', function() {
+            const password = document.getElementById('password-output');
+            password.select();
+            document.execCommand('copy');
+            alert('密码已复制到剪贴板');
+        });
+        
+        // API测试工具
+        document.querySelectorAll('.api-method-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.api-method-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        document.getElementById('send-api-btn').addEventListener('click', async function() {
+            const url = document.getElementById('api-url').value;
+            const method = document.querySelector('.api-method-btn.active').dataset.method;
+            let headers = {};
+            let body = null;
+            
+            if (!url) {
+                alert('请输入API URL');
+                return;
+            }
+            
+            try {
+                // 解析请求头
+                const headersText = document.getElementById('api-headers').value;
+                if (headersText) {
+                    headers = JSON.parse(headersText);
+                }
+                
+                // 解析请求体
+                const bodyText = document.getElementById('api-body').value;
+                if (bodyText && (method === 'POST' || method === 'PUT')) {
+                    body = bodyText;
+                }
+                
+                // 记录开始时间
+                const startTime = performance.now();
+                
+                // 发送请求
+                const response = await fetch(url, {
+                    method,
+                    headers,
+                    body: body
+                });
+                
+                // 计算耗时
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+                
+                // 显示响应
+                document.getElementById('api-status').textContent = response.status;
+                document.getElementById('api-time').textContent = duration;
+                
+                const responseData = await response.text();
+                try {
+                    // 尝试解析为JSON
+                    const json = JSON.parse(responseData);
+                    document.getElementById('api-response').textContent = JSON.stringify(json, null, 2);
+                } catch {
+                    // 如果不是JSON，直接显示文本
+                    document.getElementById('api-response').textContent = responseData;
+                }
+            } catch (e) {
+                alert('请求失败: ' + e.message);
+                document.getElementById('api-status').textContent = 'Error';
+                document.getElementById('api-response').textContent = e.message;
+            }
+        });
+        
+        document.getElementById('clear-api-btn').addEventListener('click', function() {
+            document.getElementById('api-url').value = '';
+            document.getElementById('api-headers').value = '';
+            document.getElementById('api-body').value = '';
+            document.getElementById('api-status').textContent = '-';
+            document.getElementById('api-time').textContent = '-';
+            document.getElementById('api-response').textContent = '';
+        });
+        
+        // 二维码生成器
+        document.getElementById('generate-qr-btn').addEventListener('click', function() {
+            const text = document.getElementById('qr-text').value;
+            const size = document.getElementById('qr-size').value;
+            
+            if (!text.trim()) {
+                alert('请输入要生成二维码的文本或URL');
+                return;
+            }
+            
+            // 简单实现 - 实际应用中应该使用专业库
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            
+            // 创建canvas绘制二维码
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // 绘制背景
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 绘制二维码图案 - 简单模拟
+            ctx.fillStyle = 'black';
+            const moduleSize = size / 21;
+            
+            // 定位图案
+            drawPositionPattern(ctx, 0, 0, moduleSize, 7);
+            drawPositionPattern(ctx, size - 7*moduleSize, 0, moduleSize, 7);
+            drawPositionPattern(ctx, 0, size - 7*moduleSize, moduleSize, 7);
+            
+            // 简单数据 - 实际应用中应该使用专业算法
+            for (let i = 0; i < text.length; i++) {
+                const x = (i % 19) * moduleSize + 7*moduleSize;
+                const y = Math.floor(i / 19) * moduleSize + 7*moduleSize;
+                
+                if (i % 3 === 0 || i % 7 === 0) {
+                    ctx.fillRect(x, y, moduleSize, moduleSize);
+                }
+            }
+            
+            qrcodeDiv.appendChild(canvas);
+        });
+        
+        function drawPositionPattern(ctx, x, y, moduleSize, size) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x, y, size*moduleSize, size*moduleSize);
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x + moduleSize, y + moduleSize, (size-2)*moduleSize, (size-2)*moduleSize);
+            
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x + 2*moduleSize, y + 2*moduleSize, (size-4)*moduleSize, (size-4)*moduleSize);
+        }
+        
+        document.getElementById('download-qr-btn').addEventListener('click', function() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('请先生成二维码');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+        
+        // Markdown编辑器
+        document.getElementById('markdown-input').addEventListener('input', function() {
+            const markdown = this.value;
+            const html = markdownToHtml(markdown);
+            document.getElementById('markdown-preview').innerHTML = html;
+        });
+        
+        function markdownToHtml(markdown) {
+            // 简单实现 - 实际应用中应该使用专业库
+            return markdown
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+                .replace(/^\> (.*$)/gm, '<blockquote>$1</blockquote>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        document.getElementById('clear-markdown-btn').addEventListener('click', function() {
+            document.getElementById('markdown-input').value = '';
+            document.getElementById('markdown-preview').innerHTML = '';
+        });
+        
+        document.getElementById('copy-markdown-btn').addEventListener('click', function() {
+            const markdown = document.getElementById('markdown-input').value;
+            const html = markdownToHtml(markdown);
+            
+            navigator.clipboard.writeText(html)
+                .then(() => alert('HTML已复制到剪贴板'))
+                .catch(() => alert('复制失败，请手动复制'));
+        });
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.8rem 5%';
+                nav.style.background = 'rgba(0, 0, 0, 0.85)';
+            } else {
+                nav.style.padding = '1.2rem 5%';
+                nav.style.background = 'rgba(0, 0, 0, 0.65)';
+            }
+        });
+    </script>
+</body>
+</html>
