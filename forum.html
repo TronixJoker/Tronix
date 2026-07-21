@@ -760,6 +760,777 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: rgba(20, 15, 45, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff4d4d;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e0e0ff;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #04eff7;
+            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select option {
+            background: #1a1535;
+            color: #fff;
+        }
+
+        /* 图片上传 */
+        .image-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .image-upload-area:hover {
+            border-color: #04eff7;
+            background: rgba(4, 239, 247, 0.05);
+        }
+
+        .image-upload-area i {
+            font-size: 2.5rem;
+            color: #a0a0d0;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-area p {
+            color: #a0a0d0;
+            font-size: 0.9rem;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .image-preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 77, 77, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-cancel {
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-submit {
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(252, 0, 239, 0.4);
+        }
+
+        /* 评论区 */
+        .comments-section {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #e0e0ff;
+        }
+
+        .comment-item {
+            display: flex;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 0.8rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comment-body {
+            flex-grow: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #04eff7;
+            font-size: 0.9rem;
+        }
+
+        .comment-time {
+            color: #a0a0d0;
+            font-size: 0.8rem;
+        }
+
+        .comment-text {
+            color: #d0d0ff;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .comment-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .comment-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .comment-image:hover {
+            transform: scale(1.05);
+        }
+
+        .comment-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comment-input-area {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .comment-input {
+            flex-grow: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #04eff7;
+        }
+
+        .comment-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .comment-image-upload-btn {
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .comment-image-upload-btn:hover {
+            color: #04eff7;
+        }
+
+        .comment-submit-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 帖子图片 */
+        .post-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .post-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.05);
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 聊天室 */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1500;
+        }
+
+        .chat-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(252, 0, 239, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(252, 0, 239, 0.6);
+        }
+
+        .chat-unread-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4d4d;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: rgba(20, 15, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-window.active {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-title i {
+            color: #04eff7;
+        }
+
+        .chat-online-count {
+            font-size: 0.8rem;
+            color: #00f535;
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .chat-close-btn:hover {
+            color: #ff4d4d;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 0.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-message.own {
+            flex-direction: row-reverse;
+        }
+
+        .chat-message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .chat-message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-message-content {
+            max-width: 70%;
+        }
+
+        .chat-message-username {
+            font-size: 0.75rem;
+            color: #a0a0d0;
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-message.own .chat-message-username {
+            text-align: right;
+        }
+
+        .chat-message-bubble {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 0.9rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: #e0e0ff;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .chat-message.own .chat-message-bubble {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            color: white;
+        }
+
+        .chat-message-image {
+            max-width: 180px;
+            max-height: 180px;
+            border-radius: 10px;
+            margin-top: 0.3rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-message-image:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-message-time {
+            font-size: 0.7rem;
+            color: #a0a0d0;
+            margin-top: 0.2rem;
+        }
+
+        .chat-message.own .chat-message-time {
+            text-align: right;
+        }
+
+        .chat-input-area {
+            padding: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .chat-image-upload-btn {
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .chat-image-upload-btn:hover {
+            color: #04eff7;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 0.9rem;
+            resize: none;
+            max-height: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #04eff7;
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-typing {
+            font-size: 0.8rem;
+            color: #a0a0d0;
+            padding: 0.3rem 1rem;
+            font-style: italic;
+        }
+
+        /* 图片查看器 */
+        .image-viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-viewer-overlay.active {
+            display: flex;
+        }
+
+        .image-viewer {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* 在线用户列表 */
+        .online-users {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 60px;
+            overflow-y: auto;
+        }
+
+        .online-user {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .online-user-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00f535;
+        }
+
+        /* 滚动条样式 */
+        .chat-messages::-webkit-scrollbar,
+        .modal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track,
+        .modal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb,
+        .modal::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover,
+        .modal::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .chat-widget {
+                bottom: 20px;
+                right: 20px;
+            }
+            .chat-window {
+                width: calc(100vw - 40px);
+                height: 70vh;
+                right: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -850,156 +1621,21 @@
             <div class="posts-container fade-in delay-3">
                 <div class="posts-header">
                     <h3>最新讨论</h3>
-                    <select class="forum-select">
-                        <option>最新发布</option>
-                        <option>最多回复</option>
-                        <option>热门讨论</option>
+                    <select class="forum-select" id="sortSelect">
+                        <option value="newest">最新发布</option>
+                        <option value="comments">最多回复</option>
+                        <option value="likes">热门讨论</option>
                     </select>
                 </div>
-                
-                <div class="post-item" data-category="开发">
-                    <button class="post-expand-btn" onclick="togglePost(this)">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="post-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="post-content">
-                        <h4 class="post-title">Tronix v3.3.0测试版新功能体验分享</h4>
-                        <div class="post-meta">
-                            <div class="post-author">
-                                <i class="fas fa-user-circle"></i>
-                                <span>技术探索者</span>
-                            </div>
-                            <div class="post-date">
-                                <i class="far fa-clock"></i>
-                                <span>2小时前</span>
-                            </div>
-                            <div class="post-stats">
-                                <div class="post-stat">
-                                    <i class="far fa-eye"></i>
-                                    <span>245</span>
-                                </div>
-                                <div class="post-stat">
-                                    <i class="far fa-comment"></i>
-                                    <span>32</span>
-                                </div>
-                                <div class="post-stat like-btn" onclick="toggleLike(this)">
-                                    <i class="far fa-heart"></i>
-                                    <span>48</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="post-details">
-                            <p style="color: #d0d0ff;">最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。</p>
-                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#Tronix</span>
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#新版本</span>
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#体验分享</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="post-item" data-category="反馈">
-                    <button class="post-expand-btn" onclick="togglePost(this)">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="post-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="post-content">
-                        <h4 class="post-title">如何解决Windows 11下的兼容性问题？</h4>
-                        <div class="post-meta">
-                            <div class="post-author">
-                                <i class="fas fa-user-circle"></i>
-                                <span>Win用户</span>
-                            </div>
-                            <div class="post-date">
-                                <i class="far fa-clock"></i>
-                                <span>5小时前</span>
-                            </div>
-                            <div class="post-stats">
-                                <div class="post-stat">
-                                    <i class="far fa-eye"></i>
-                                    <span>187</span>
-                                </div>
-                                <div class="post-stat">
-                                    <i class="far fa-comment"></i>
-                                    <span>15</span>
-                                </div>
-                                <div class="post-stat like-btn" onclick="toggleLike(this)">
-                                    <i class="far fa-heart"></i>
-                                    <span>23</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="post-details">
-                            <p style="color: #d0d0ff;">最近升级到Windows 11后，发现Tronix在某些场景下会出现卡顿现象。特别是在打开大型文档时，响应速度明显变慢。有没有其他用户遇到类似问题？求解决方案！</p>
-                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#Windows11</span>
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#兼容性</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="post-item" data-category="创意">
-                    <button class="post-expand-btn" onclick="togglePost(this)">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="post-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="post-content">
-                        <h4 class="post-title">分享一个我开发的Tronix插件</h4>
-                        <div class="post-meta">
-                            <div class="post-author">
-                                <i class="fas fa-user-circle"></i>
-                                <span>插件开发者</span>
-                            </div>
-                            <div class="post-date">
-                                <i class="far fa-clock"></i>
-                                <span>昨天</span>
-                            </div>
-                            <div class="post-stats">
-                                <div class="post-stat">
-                                    <i class="far fa-eye"></i>
-                                    <span>562</span>
-                                </div>
-                                <div class="post-stat">
-                                    <i class="far fa-comment"></i>
-                                    <span>87</span>
-                                </div>
-                                <div class="post-stat like-btn" onclick="toggleLike(this)">
-                                    <i class="far fa-heart"></i>
-                                    <span>124</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="post-details">
-                            <p style="color: #d0d0ff;">花了两周时间开发了一个Tronix插件，可以实现自动化报表生成功能。支持多种数据源接入，自动生成可视化图表。已经在GitHub上开源，欢迎大家试用和反馈！</p>
-                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#插件开发</span>
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#开源</span>
-                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#自动化</span>
-                            </div>
-                        </div>
-                    </div>
+                <div id="postsList">
                 </div>
             </div>
         </main>
         
         <aside class="sidebar">
             <div class="sidebar-widget fade-in delay-2">
-                <h3 class="widget-title"><i class="fas fa-user-circle"></i> 登录账户</h3>
-                <div class="user-profile">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h4 class="profile-name">游客</h4>
-                    <p class="profile-role">请登录以参与讨论</p>
-                    <button class="download-btn" style="width: 100%;">登录 / 注册</button>
+                <h3 class="widget-title"><i class="fas fa-user-circle"></i> 我的账户</h3>
+                <div class="user-profile" id="sidebarProfile">
                 </div>
             </div>
             
@@ -1029,6 +1665,87 @@
         </aside>
     </div>
     
+    <!-- 发布帖子模态框 -->
+    <div class="modal-overlay" id="createPostModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">发布新帖</h3>
+                <button class="modal-close" onclick="closeModal('createPostModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="postTitle" placeholder="请输入帖子标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="postCategory">
+                        <option value="开发">开发技术</option>
+                        <option value="反馈">问题反馈</option>
+                        <option value="创意">创意分享</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-textarea" id="postContent" placeholder="请输入帖子内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">添加图片（可选）</label>
+                    <div class="image-upload-area" onclick="document.getElementById('postImageInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>点击上传图片，最多4张</p>
+                    </div>
+                    <input type="file" id="postImageInput" accept="image/*" multiple style="display: none;" onchange="handlePostImageUpload(event)">
+                    <div class="image-preview" id="postImagePreview"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('createPostModal')">取消</button>
+                <button class="btn-submit" onclick="createPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天室 -->
+    <div class="chat-widget">
+        <button class="chat-toggle-btn" onclick="toggleChat()" id="chatToggleBtn">
+            <i class="fas fa-comments"></i>
+            <span class="chat-unread-badge" id="chatUnreadBadge" style="display: none;">0</span>
+        </button>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-comments"></i>
+                    <span>公共聊天室</span>
+                    <span class="chat-online-count" id="chatOnlineCount">3人在线</span>
+                </div>
+                <button class="chat-close-btn" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="online-users" id="onlineUsersList">
+            </div>
+            <div class="chat-messages" id="chatMessages">
+            </div>
+            <div class="chat-input-area">
+                <button class="chat-image-upload-btn" onclick="document.getElementById('chatImageInput').click()" title="发送图片">
+                    <i class="far fa-image"></i>
+                </button>
+                <input type="file" id="chatImageInput" accept="image/*" style="display: none;" onchange="handleChatImageUpload(event)">
+                <textarea class="chat-input" id="chatInput" placeholder="输入消息..." onkeydown="handleChatKeydown(event)"></textarea>
+                <button class="chat-send-btn" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片查看器 -->
+    <div class="image-viewer-overlay" id="imageViewer" onclick="closeImageViewer()">
+        <div class="image-viewer" onclick="event.stopPropagation()">
+            <button class="image-viewer-close" onclick="closeImageViewer()"><i class="fas fa-times"></i></button>
+            <img id="viewerImage" src="" alt="预览图片">
+        </div>
+    </div>
+    
     <!-- 页脚 -->
     <footer id="footer">
         <div class="footer-content">
@@ -1038,8 +1755,737 @@
     </footer>
     
     <script>
+        const FORUM_STORAGE_KEY = 'tronix_forum_posts';
+        const CHAT_STORAGE_KEY = 'tronix_chat_messages';
+        const ONLINE_USERS_KEY = 'tronix_online_users';
+        let postImages = [];
+        let chatImageToSend = null;
+
+        function initForumData() {
+            if (!localStorage.getItem(FORUM_STORAGE_KEY)) {
+                const defaultPosts = [
+                    {
+                        id: Date.now() - 7200000,
+                        title: 'Tronix v3.3.0测试版新功能体验分享',
+                        author: '技术探索者',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=技术探索者&background=6366f1&color=fff',
+                        category: '开发',
+                        content: '最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。',
+                        images: [],
+                        likes: 48,
+                        likedBy: [],
+                        views: 245,
+                        createdAt: Date.now() - 7200000,
+                        tags: ['Tronix', '新版本', '体验分享'],
+                        comments: [
+                            {
+                                id: 1,
+                                author: '小白用户',
+                                authorAvatar: 'https://ui-avatars.com/api/?name=小白用户&background=10b981&color=fff',
+                                content: '请问测试版在哪里下载？我也想试试！',
+                                images: [],
+                                createdAt: Date.now() - 3600000
+                            }
+                        ]
+                    },
+                    {
+                        id: Date.now() - 18000000,
+                        title: '如何解决Windows 11下的兼容性问题？',
+                        author: 'Win用户',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=Win用户&background=f59e0b&color=fff',
+                        category: '反馈',
+                        content: '最近升级到Windows 11后，发现Tronix在某些场景下会出现卡顿现象。特别是在打开大型文档时，响应速度明显变慢。有没有其他用户遇到类似问题？求解决方案！',
+                        images: [],
+                        likes: 23,
+                        likedBy: [],
+                        views: 187,
+                        createdAt: Date.now() - 18000000,
+                        tags: ['Windows11', '兼容性'],
+                        comments: []
+                    },
+                    {
+                        id: Date.now() - 86400000,
+                        title: '分享一个我开发的Tronix插件',
+                        author: '插件开发者',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=插件开发者&background=8b5cf6&color=fff',
+                        category: '创意',
+                        content: '花了两周时间开发了一个Tronix插件，可以实现自动化报表生成功能。支持多种数据源接入，自动生成可视化图表。已经在GitHub上开源，欢迎大家试用和反馈！',
+                        images: [],
+                        likes: 124,
+                        likedBy: [],
+                        views: 562,
+                        createdAt: Date.now() - 86400000,
+                        tags: ['插件开发', '开源', '自动化'],
+                        comments: []
+                    }
+                ];
+                localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(defaultPosts));
+            }
+            if (!localStorage.getItem(CHAT_STORAGE_KEY)) {
+                const defaultMessages = [
+                    {
+                        id: 1,
+                        author: '系统公告',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=系统&background=ef4444&color=fff',
+                        content: '欢迎来到Tronix公共聊天室！请文明交流。',
+                        images: [],
+                        createdAt: Date.now() - 600000,
+                        isSystem: true
+                    },
+                    {
+                        id: 2,
+                        author: '技术达人',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff',
+                        content: '大家好，有人用过Tronix的API吗？',
+                        images: [],
+                        createdAt: Date.now() - 300000
+                    },
+                    {
+                        id: 3,
+                        author: '新手上路',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff',
+                        content: '刚下载Tronix，正在学习中~',
+                        images: [],
+                        createdAt: Date.now() - 120000
+                    }
+                ];
+                localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(defaultMessages));
+            }
+            if (!localStorage.getItem(ONLINE_USERS_KEY)) {
+                const defaultUsers = [
+                    { name: '技术达人', avatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff', lastSeen: Date.now() },
+                    { name: '新手上路', avatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff', lastSeen: Date.now() },
+                    { name: '老玩家', avatar: 'https://ui-avatars.com/api/?name=老玩家&background=f59e0b&color=fff', lastSeen: Date.now() }
+                ];
+                localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(defaultUsers));
+            }
+        }
+
+        function getPosts() {
+            try {
+                return JSON.parse(localStorage.getItem(FORUM_STORAGE_KEY)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function savePosts(posts) {
+            localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(posts));
+        }
+
+        function formatTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            if (diff < 2592000000) return Math.floor(diff / 86400000) + '天前';
+            return new Date(timestamp).toLocaleDateString('zh-CN');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getCurrentUser() {
+            return TronixAuth ? TronixAuth.getCurrentUser() : null;
+        }
+
+        function getUserAvatar() {
+            const user = getCurrentUser();
+            if (user && user.avatar) return user.avatar;
+            if (user) return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff';
+            return 'https://ui-avatars.com/api/?name=游客&background=6b7280&color=fff';
+        }
+
+        function getUsername() {
+            const user = getCurrentUser();
+            return user ? user.username : '游客' + Math.floor(Math.random() * 1000);
+        }
+
+        function requireLogin(callback) {
+            const user = getCurrentUser();
+            if (!user) {
+                if (TronixAuth) {
+                    TronixAuth.showFeedback('请先登录后再操作', 'error');
+                }
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+                return false;
+            }
+            return true;
+        }
+
+        function renderPosts() {
+            const postsList = document.getElementById('postsList');
+            const sortValue = document.getElementById('sortSelect').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const activeCategory = document.querySelector('.filter-btn.active').dataset.category;
+
+            let posts = getPosts();
+
+            if (activeCategory !== 'all') {
+                posts = posts.filter(p => p.category === activeCategory);
+            }
+            if (searchQuery) {
+                posts = posts.filter(p =>
+                    p.title.toLowerCase().includes(searchQuery) ||
+                    p.author.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (sortValue === 'newest') {
+                posts.sort((a, b) => b.createdAt - a.createdAt);
+            } else if (sortValue === 'comments') {
+                posts.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
+            } else if (sortValue === 'likes') {
+                posts.sort((a, b) => b.likes - a.likes);
+            }
+
+            postsList.innerHTML = posts.map(post => renderPostItem(post)).join('');
+        }
+
+        function renderPostItem(post) {
+            const user = getCurrentUser();
+            const username = user ? user.username : '';
+            const isLiked = post.likedBy && post.likedBy.includes(username);
+            const commentCount = post.comments ? post.comments.length : 0;
+
+            const imagesHtml = post.images && post.images.length > 0
+                ? `<div class="post-images">
+                    ${post.images.slice(0, 3).map(img => `
+                        <div class="post-image" onclick="openImageViewer('${img}')">
+                            <img src="${img}" alt="帖子图片">
+                        </div>
+                    `).join('')}
+                  </div>`
+                : '';
+
+            const tagsHtml = post.tags && post.tags.length > 0
+                ? `<div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    ${post.tags.map(tag => `
+                        <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#${escapeHtml(tag)}</span>
+                    `).join('')}
+                  </div>`
+                : '';
+
+            const commentsHtml = post.comments && post.comments.length > 0
+                ? post.comments.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <img src="${comment.authorAvatar}" alt="${escapeHtml(comment.author)}">
+                        </div>
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="comment-author">${escapeHtml(comment.author)}</span>
+                                <span class="comment-time">${formatTime(comment.createdAt)}</span>
+                            </div>
+                            <div class="comment-text">${escapeHtml(comment.content)}</div>
+                            ${comment.images && comment.images.length > 0 ? `
+                                <div class="comment-images">
+                                    ${comment.images.map(img => `
+                                        <div class="comment-image" onclick="openImageViewer('${img}')">
+                                            <img src="${img}" alt="评论图片">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('')
+                : '<p style="color: #a0a0d0; font-size: 0.9rem; padding: 0.5rem 0;">暂无评论，来抢沙发吧~</p>';
+
+            return `
+                <div class="post-item" data-category="${post.category}" data-id="${post.id}">
+                    <button class="post-expand-btn" onclick="togglePost(this)">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="post-avatar">
+                        <img src="${post.authorAvatar}" alt="${escapeHtml(post.author)}" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <div class="post-content">
+                        <h4 class="post-title">${escapeHtml(post.title)}</h4>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <i class="fas fa-user-circle"></i>
+                                <span>${escapeHtml(post.author)}</span>
+                            </div>
+                            <div class="post-date">
+                                <i class="far fa-clock"></i>
+                                <span>${formatTime(post.createdAt)}</span>
+                            </div>
+                            <div class="post-stats">
+                                <div class="post-stat">
+                                    <i class="far fa-eye"></i>
+                                    <span>${post.views}</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="far fa-comment"></i>
+                                    <span>${commentCount}</span>
+                                </div>
+                                <div class="post-stat like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(this, ${post.id})">
+                                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                                    <span>${post.likes}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-details">
+                            <p style="color: #d0d0ff;">${escapeHtml(post.content)}</p>
+                            ${imagesHtml}
+                            ${tagsHtml}
+                            <div class="comments-section">
+                                <div class="comments-header">
+                                    <span>评论 (${commentCount})</span>
+                                </div>
+                                <div class="comments-list">
+                                    ${commentsHtml}
+                                </div>
+                                <div class="comment-input-area">
+                                    <div class="comment-avatar">
+                                        <img src="${getUserAvatar()}" alt="当前用户">
+                                    </div>
+                                    <div style="flex-grow: 1;">
+                                        <input type="text" class="comment-input" placeholder="写下你的评论..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
+                                        <div class="comment-actions">
+                                            <button class="comment-image-upload-btn" onclick="document.getElementById('commentImage_${post.id}').click()" title="添加图片">
+                                                <i class="far fa-image"></i>
+                                            </button>
+                                            <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
+                                            <span id="commentImgPreview_${post.id}" style="color:#04eff7;font-size:0.8rem;"></span>
+                                            <button class="comment-submit-btn" onclick="addComment(${post.id}, this)">发送</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function togglePost(btn) {
+            const postItem = btn.closest('.post-item');
+            postItem.classList.toggle('expanded');
+            if (postItem.classList.contains('expanded')) {
+                const postId = parseInt(postItem.dataset.id);
+                let posts = getPosts();
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    post.views++;
+                    savePosts(posts);
+                    const viewsSpan = postItem.querySelector('.post-stat span');
+                    if (viewsSpan) viewsSpan.textContent = post.views;
+                }
+            }
+        }
+
+        function toggleLike(btn, postId) {
+            event.stopPropagation();
+            const user = getCurrentUser();
+            if (!user) {
+                requireLogin();
+                return;
+            }
+            const username = user.username;
+            let posts = getPosts();
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            if (!post.likedBy) post.likedBy = [];
+
+            const index = post.likedBy.indexOf(username);
+            if (index > -1) {
+                post.likedBy.splice(index, 1);
+                post.likes--;
+                btn.classList.remove('liked');
+                btn.querySelector('i').className = 'far fa-heart';
+            } else {
+                post.likedBy.push(username);
+                post.likes++;
+                btn.classList.add('liked');
+                btn.querySelector('i').className = 'fas fa-heart';
+            }
+            btn.querySelector('span').textContent = post.likes;
+            savePosts(posts);
+        }
+
+        function handleCommentKeydown(event, postId, input) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                addComment(postId, input);
+            }
+        }
+
+        function addComment(postId, el) {
+            if (!requireLogin()) return;
+            const postItem = el.closest('.post-item');
+            const input = postItem.querySelector('.comment-input');
+            const content = input.value.trim();
+            const imgPreviewSpan = document.getElementById('commentImgPreview_' + postId);
+            const imageData = imgPreviewSpan ? imgPreviewSpan.dataset.image : null;
+
+            if (!content && !imageData) return;
+
+            let posts = getPosts();
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const comment = {
+                id: Date.now(),
+                author: getUsername(),
+                authorAvatar: getUserAvatar(),
+                content: content,
+                images: imageData ? [imageData] : [],
+                createdAt: Date.now()
+            };
+
+            if (!post.comments) post.comments = [];
+            post.comments.push(comment);
+            savePosts(posts);
+
+            input.value = '';
+            if (imgPreviewSpan) {
+                imgPreviewSpan.textContent = '';
+                imgPreviewSpan.removeAttribute('data-image');
+            }
+
+            renderPosts();
+            if (TronixAuth) TronixAuth.showFeedback('评论发布成功！', 'success');
+        }
+
+        function handleCommentImageUpload(event, postId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                const previewSpan = document.getElementById('commentImgPreview_' + postId);
+                if (previewSpan) {
+                    previewSpan.textContent = '已选择1张图片';
+                    previewSpan.dataset.image = imgData;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add('active');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('active');
+        }
+
+        function handlePostImageUpload(event) {
+            const files = Array.from(event.target.files);
+            const remaining = 4 - postImages.length;
+            const toAdd = files.slice(0, remaining);
+
+            toAdd.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    postImages.push(e.target.result);
+                    renderPostImagePreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderPostImagePreview() {
+            const preview = document.getElementById('postImagePreview');
+            preview.innerHTML = postImages.map((img, index) => `
+                <div class="image-preview-item">
+                    <img src="${img}" alt="预览">
+                    <button class="image-preview-remove" onclick="removePostImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removePostImage(index) {
+            postImages.splice(index, 1);
+            renderPostImagePreview();
+        }
+
+        function createPost() {
+            if (!requireLogin()) return;
+
+            const title = document.getElementById('postTitle').value.trim();
+            const category = document.getElementById('postCategory').value;
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title) {
+                if (TronixAuth) TronixAuth.showFeedback('请输入标题', 'error');
+                return;
+            }
+            if (!content) {
+                if (TronixAuth) TronixAuth.showFeedback('请输入内容', 'error');
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                author: getUsername(),
+                authorAvatar: getUserAvatar(),
+                category: category,
+                content: content,
+                images: [...postImages],
+                likes: 0,
+                likedBy: [],
+                views: 0,
+                createdAt: Date.now(),
+                tags: [],
+                comments: []
+            };
+
+            let posts = getPosts();
+            posts.unshift(newPost);
+            savePosts(posts);
+
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            postImages = [];
+            renderPostImagePreview();
+            closeModal('createPostModal');
+            renderPosts();
+
+            if (TronixAuth) TronixAuth.showFeedback('帖子发布成功！', 'success');
+        }
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('active');
+            if (chatWindow.classList.contains('active')) {
+                scrollChatToBottom();
+                clearUnreadBadge();
+                updateOnlineUsers();
+            }
+        }
+
+        function getChatMessages() {
+            try {
+                return JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveChatMessages(messages) {
+            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            const messages = getChatMessages();
+            const currentUser = getUsername();
+
+            container.innerHTML = messages.map(msg => {
+                const isOwn = msg.author === currentUser && !msg.isSystem;
+                const imagesHtml = msg.images && msg.images.length > 0
+                    ? msg.images.map(img => `<img src="${img}" class="chat-message-image" onclick="openImageViewer('${img}')">`).join('')
+                    : '';
+                return `
+                    <div class="chat-message ${isOwn ? 'own' : ''}">
+                        <div class="chat-message-avatar">
+                            <img src="${msg.authorAvatar}" alt="${escapeHtml(msg.author)}">
+                        </div>
+                        <div class="chat-message-content">
+                            ${!isOwn ? `<div class="chat-message-username">${escapeHtml(msg.author)}</div>` : ''}
+                            <div class="chat-message-bubble">
+                                ${escapeHtml(msg.content)}
+                                ${imagesHtml}
+                            </div>
+                            <div class="chat-message-time">${formatTime(msg.createdAt)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            scrollChatToBottom();
+        }
+
+        function scrollChatToBottom() {
+            const container = document.getElementById('chatMessages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearUnreadBadge() {
+            const badge = document.getElementById('chatUnreadBadge');
+            badge.style.display = 'none';
+            badge.textContent = '0';
+            localStorage.setItem('tronix_chat_last_read', Date.now().toString());
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function handleChatImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                chatImageToSend = e.target.result;
+                const input = document.getElementById('chatInput');
+                input.placeholder = '已选择图片，输入文字（可选）后发送...';
+                input.focus();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const content = input.value.trim();
+
+            if (!content && !chatImageToSend) return;
+
+            const user = getCurrentUser();
+            if (!user) {
+                requireLogin();
+                return;
+            }
+
+            const message = {
+                id: Date.now(),
+                author: getUsername(),
+                authorAvatar: getUserAvatar(),
+                content: content,
+                images: chatImageToSend ? [chatImageToSend] : [],
+                createdAt: Date.now(),
+                isSystem: false
+            };
+
+            let messages = getChatMessages();
+            messages.push(message);
+            if (messages.length > 100) messages = messages.slice(-100);
+            saveChatMessages(messages);
+
+            input.value = '';
+            chatImageToSend = null;
+            input.placeholder = '输入消息...';
+
+            renderChatMessages();
+            updateUserOnline();
+        }
+
+        function getOnlineUsers() {
+            try {
+                return JSON.parse(localStorage.getItem(ONLINE_USERS_KEY)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveOnlineUsers(users) {
+            localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(users));
+        }
+
+        function updateUserOnline() {
+            const username = getUsername();
+            const avatar = getUserAvatar();
+            let users = getOnlineUsers();
+            const existingIndex = users.findIndex(u => u.name === username);
+            if (existingIndex > -1) {
+                users[existingIndex].lastSeen = Date.now();
+                users[existingIndex].avatar = avatar;
+            } else {
+                users.push({ name: username, avatar: avatar, lastSeen: Date.now() });
+            }
+            users = users.filter(u => Date.now() - u.lastSeen < 300000);
+            saveOnlineUsers(users);
+            renderOnlineUsers();
+        }
+
+        function renderOnlineUsers() {
+            const container = document.getElementById('onlineUsersList');
+            const countEl = document.getElementById('chatOnlineCount');
+            let users = getOnlineUsers();
+            users = users.filter(u => Date.now() - u.lastSeen < 300000);
+            countEl.textContent = users.length + '人在线';
+            container.innerHTML = users.map(u => `
+                <div class="online-user">
+                    <span class="online-user-dot"></span>
+                    <span>${escapeHtml(u.name)}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateOnlineUsers() {
+            updateUserOnline();
+        }
+
+        function openImageViewer(src) {
+            const viewer = document.getElementById('imageViewer');
+            const img = document.getElementById('viewerImage');
+            img.src = src;
+            viewer.classList.add('active');
+        }
+
+        function closeImageViewer() {
+            const viewer = document.getElementById('imageViewer');
+            viewer.classList.remove('active');
+        }
+
+        function updateSidebarProfile() {
+            const container = document.getElementById('sidebarProfile');
+            const user = getCurrentUser();
+
+            if (user) {
+                container.innerHTML = `
+                    <div class="profile-avatar">
+                        <img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff'}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    </div>
+                    <h4 class="profile-name">${escapeHtml(user.username)}</h4>
+                    <p class="profile-role">欢迎回来！</p>
+                    <button class="download-btn" style="width: 100%;" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4 class="profile-name">游客</h4>
+                    <p class="profile-role">请登录以参与讨论</p>
+                    <button class="download-btn" style="width: 100%;" onclick="window.location.href='login.html'">登录 / 注册</button>
+                `;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // 导航栏滚动效果
+            initForumData();
+            renderPosts();
+            updateSidebarProfile();
+            renderChatMessages();
+            renderOnlineUsers();
+            updateUserOnline();
+
+            document.querySelector('.create-btn').addEventListener('click', function() {
+                if (!requireLogin()) return;
+                openModal('createPostModal');
+            });
+
+            document.getElementById('sortSelect').addEventListener('change', renderPosts);
+
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', renderPosts);
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderPosts();
+                });
+            });
+
             window.addEventListener('scroll', function() {
                 const nav = document.querySelector('nav');
                 if (window.scrollY > 50) {
@@ -1050,83 +2496,64 @@
                     nav.style.background = 'rgba(0, 0, 0, 0.65)';
                 }
             });
-            
-            // 为元素添加渐入动画类
-            const fadeElements = document.querySelectorAll('.category-card, .post-item, .sidebar-widget');
+
+            const fadeElements = document.querySelectorAll('.category-card, .sidebar-widget');
             fadeElements.forEach((el, index) => {
                 el.classList.add('fade-in');
                 el.style.animationDelay = `${0.1 + (index % 5) * 0.1}s`;
             });
-            
-            // 帖子悬停效果
+
             const postItems = document.querySelectorAll('.post-item');
             postItems.forEach(item => {
                 item.addEventListener('mouseenter', () => {
                     item.style.transform = 'translateX(5px)';
                     item.style.transition = 'transform 0.3s ease';
                 });
-                
                 item.addEventListener('mouseleave', () => {
                     item.style.transform = 'translateX(0)';
                 });
             });
 
-            // 搜索功能
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                document.querySelectorAll('.post-item').forEach(item => {
-                    const title = item.querySelector('.post-title').textContent.toLowerCase();
-                    const author = item.querySelector('.post-author span').textContent.toLowerCase();
-                    
-                    if (title.includes(query) || author.includes(query)) {
-                        item.classList.remove('hidden');
-                    } else {
-                        item.classList.add('hidden');
-                    }
-                });
+            document.getElementById('createPostModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal('createPostModal');
             });
 
-            // 分类筛选
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const category = this.dataset.category;
-                    document.querySelectorAll('.post-item').forEach(item => {
-                        if (category === 'all' || item.dataset.category === category) {
-                            item.classList.remove('hidden');
-                        } else {
-                            item.classList.add('hidden');
-                        }
-                    });
-                });
+            setInterval(() => {
+                const wasActive = document.getElementById('chatWindow').classList.contains('active');
+                renderChatMessages();
+                renderOnlineUsers();
+                if (wasActive) scrollChatToBottom();
+            }, 3000);
+
+            setInterval(updateUserOnline, 30000);
+
+            window.addEventListener('storage', function(e) {
+                if (e.key === CHAT_STORAGE_KEY) {
+                    renderChatMessages();
+                    const chatActive = document.getElementById('chatWindow').classList.contains('active');
+                    if (!chatActive) {
+                        const badge = document.getElementById('chatUnreadBadge');
+                        let count = parseInt(badge.textContent) || 0;
+                        count++;
+                        badge.textContent = count;
+                        badge.style.display = 'block';
+                    }
+                }
+                if (e.key === FORUM_STORAGE_KEY) {
+                    renderPosts();
+                }
+                if (e.key === ONLINE_USERS_KEY) {
+                    renderOnlineUsers();
+                }
             });
         });
 
-        // 帖子展开/折叠
-        function togglePost(btn) {
-            const postItem = btn.closest('.post-item');
-            postItem.classList.toggle('expanded');
-        }
-
-        // 点赞功能
-        function toggleLike(btn) {
-            btn.classList.toggle('liked');
-            const icon = btn.querySelector('i');
-            const countSpan = btn.querySelector('span');
-            let count = parseInt(countSpan.textContent);
-            
-            if (btn.classList.contains('liked')) {
-                count++;
-                icon.className = 'fas fa-heart';
-            } else {
-                count--;
-                icon.className = 'far fa-heart';
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal('createPostModal');
+                closeImageViewer();
             }
-            countSpan.textContent = count;
-        }
+        });
     </script>
     
     <!-- 引入Quill编辑器 -->
