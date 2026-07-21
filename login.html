@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tronix | 用户登录</title>
+    <title>Tronix | 登录注册 · 用户中心</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #fc00ef, #04eff7); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff4df0, #3df7ff); }
+
         * {
             margin: 0;
             padding: 0;
@@ -20,6 +26,8 @@
             line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
         
         body::before {
@@ -152,6 +160,16 @@
             box-shadow: 0 6px 20px rgba(252, 0, 239, 0.5);
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
         .login-container {
             display: flex;
             justify-content: center;
@@ -246,8 +264,8 @@
 
         .input-field input:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+            border-color: #04eff7;
+            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
         }
 
         .input-field i {
@@ -255,7 +273,7 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%); 
-            color: #6366f1;
+            color: #fc00ef;
             font-size: 1.2rem;
         }
 
@@ -292,22 +310,22 @@
 
         .login-btn {
             width: 100%;
-            padding: 1rem;
-            border-radius: 10px;
-            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
             color: white;
             font-weight: 600;
             font-size: 1rem;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(252, 0, 239, 0.35);
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(252, 0, 239, 0.5);
         }
 
         .login-footer {
@@ -363,13 +381,11 @@
 
         footer {
             position: relative;
-            padding: 0.5rem 5%;
+            padding: 3rem 5% 2rem;
             text-align: center;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            margin-top: -60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 8, 25, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(252, 0, 239, 0.15);
         }
         
         .footer-content {
@@ -379,20 +395,22 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .footer-content div {
-            margin: 0.5rem 1rem;
+            margin: 0.5rem 0;
         }
         
         .copyright {
-            font-size: 1.1rem;
-            color: #d0d0ff;
+            font-size: 0.95rem;
+            color: #a0a0d0;
+            font-weight: 500;
         }
         
         .rights {
-            font-size: 1.1rem;
-            color: #d0d0ff;
+            font-size: 0.9rem;
+            color: #8080b0;
         }
 
         /* 头像相关样式 */
@@ -988,8 +1006,36 @@
         }
 
         @media (max-width: 768px) {
+            nav {
+                width: 100%;
+                top: 0;
+                border-radius: 0;
+                max-width: 100%;
+                padding: 0.8rem 5%;
+            }
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 8, 25, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 1rem;
+                border-radius: 0 0 16px 16px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-top: none;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links a {
+                width: 100%;
+                padding: 0.8rem 1rem;
+            }
+            .mobile-menu-btn {
+                display: block;
             }
             
             .login-form {
@@ -1029,15 +1075,14 @@
             <a href="index.html">首页</a>
             <a href="forum.html">论坛</a>
             <a href="tools.html">工具</a>
-            <a href="download.html">下载</a>
         </div>
         <div class="nav-actions">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="user-info" id="userInfo">
                 <span class="user-welcome">欢迎，<span id="currentUsername">用户</span></span>
             </div>
-            <a href="login.html" class="nav-btn nav-btn-primary" id="loginLink">
-                <i class="fas fa-user"></i> 登录
-            </a>
             <div class="avatar-container" id="avatarContainer" style="display: none;">
                 <img src="https://ui-avatars.com/api/?name=用户&background=6366f1&color=fff" alt="用户头像" class="avatar" id="navAvatar">
                 <div class="avatar-dropdown" id="avatarDropdown">
@@ -1979,8 +2024,23 @@
             }, 1000);
         });
 
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
         // ==================== 初始化 ====================
         document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '1';
+
             // 检查登录状态
             updateNavigationState();
             

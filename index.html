@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tronix | 科技生活</title>
+    <title>Tronix | 科技生活 · 下一代效率工具平台</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -32,6 +33,21 @@
             scroll-behavior: smooth;
         }
 
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #fc00ef, #04eff7);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff4df0, #3df7ff);
+        }
+
         body {
             position: relative;
             min-height: 100vh;
@@ -39,6 +55,8 @@
             line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
         
         body::before {
@@ -276,7 +294,7 @@
 
         .btn {
             padding: 0.9rem 2rem;
-            border-radius: 14px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
@@ -812,11 +830,11 @@
         
         footer {
             position: relative;
-            padding: 2rem 5%;
+            padding: 3rem 5% 2rem;
             text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 8, 25, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(252, 0, 239, 0.15);
         }
         
         .footer-content {
@@ -826,20 +844,22 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .footer-content div {
-            margin: 0.5rem 1rem;
+            margin: 0.5rem 0;
         }
         
         .copyright {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #a0a0d0;
+            font-weight: 500;
         }
         
         .rights {
-            font-size: 1rem;
-            color: #a0a0d0;
+            font-size: 0.9rem;
+            color: #8080b0;
         }
 
         .back-to-top {
@@ -1116,15 +1136,11 @@
             <a href="#home">首页</a>
             <a href="forum.html">论坛</a>
             <a href="tools.html">工具</a>
-            <a href="download.html">下载</a>
         </div>
         <div class="nav-actions">
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
             </button>
-            <a href="download.html" class="nav-btn nav-btn-primary">
-                <i class="fas fa-download"></i> 立即下载
-            </a>
         </div>
     </nav>
     
@@ -1565,7 +1581,8 @@
 
         function createParticles() {
             particles = [];
-            const count = Math.floor((canvas.width * canvas.height) / 15000);
+            const divisor = window.innerWidth < 768 ? 30000 : 15000;
+            const count = Math.floor((canvas.width * canvas.height) / divisor);
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
@@ -1677,6 +1694,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '1';
             resizeCanvas();
             createParticles();
             animateParticles();
