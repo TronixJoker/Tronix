@@ -6,6 +6,21 @@
     <title>Tronix | 科技生活</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #fc00ef;
+            --secondary: #04eff7;
+            --accent: #00f535;
+            --warning: #fdd006;
+            --bg-dark: #0f0c29;
+            --bg-mid: #302b63;
+            --bg-light: #24243e;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0ff;
+            --text-muted: #a0a0d0;
+            --glass-bg: rgba(20, 15, 45, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +28,10 @@
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
         
-        /* 背景优化 */
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             position: relative;
             min-height: 100vh;
@@ -30,7 +48,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2;
             background: 
                 radial-gradient(circle at 10% 20%, rgba(59, 0, 70, 0.4) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(0, 70, 112, 0.4) 0%, transparent 40%),
@@ -38,25 +56,56 @@
             filter: brightness(0.3) contrast(1.3);
             transition: filter 0.5s;
         }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(252, 0, 239, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(4, 239, 247, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
         
-        /* 导航栏优化 */
         nav {
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(8px);
-            padding: 1.2rem 5%;
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95vw;
+            max-width: 1400px;
+            background: rgba(10, 8, 25, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0.9rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
             z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.scrolled {
+            top: 0;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0;
+            padding: 0.7rem 5%;
+            background: rgba(10, 8, 25, 0.85);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
         
         .logo {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             background: linear-gradient(45deg, #fc00ef, #04eff7);
             -webkit-background-clip: text;
@@ -64,252 +113,709 @@
             -webkit-text-fill-color: transparent;
             display: inline-block;
             letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
         
         .nav-links {
             display: flex;
-            gap: 2.2rem;
+            gap: 0.5rem;
+            align-items: center;
         }
         
         .nav-links a {
-            font-weight: 600;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 500;
+            color: #d0d0ff;
             display: inline-block;
             text-decoration: none;
             position: relative;
-            padding: 0.3rem 0;
-            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
+            border-radius: 10px;
         }
         
         .nav-links a:hover {
-            background: linear-gradient(45deg, #00f535, #fdd006);
-            -webkit-background-clip: text;
-            background-clip: text;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
         }
         
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 0;
             height: 2px;
-            background: linear-gradient(45deg, #00f535, #fdd006);
+            background: linear-gradient(90deg, #fc00ef, #04eff7);
             transition: width 0.3s ease;
+            border-radius: 2px;
         }
         
         .nav-links a:hover::after {
-            width: 100%;
+            width: 30px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1.3rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
+            color: white;
+            box-shadow: 0 4px 15px rgba(252, 0, 239, 0.3);
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 0, 239, 0.5);
+        }
+
+        .nav-btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e0e0ff;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.5rem;
         }
         
-        /* 主要内容区域优化 */
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 0 5%;
-            margin-top: 60px;
+            padding: 120px 5% 60px;
         }
         
-        .hero-content {
-            max-width: 900px;
-            padding: 2rem;
-            border-radius: 20px;
-            background: rgba(10, 10, 25, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        .hero-container {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
-        
-        .hero-content h1 {
-            font-size: 3.8rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffffff, #c0e0ff);
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #c0e0ff 50%, #04eff7 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             letter-spacing: 1px;
-            line-height: 1.2;
+            line-height: 1.15;
+            font-weight: 800;
+        }
+
+        .hero-text .typewriter {
+            font-size: 1.3rem;
+            color: #04eff7;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            min-height: 2rem;
+        }
+
+        .hero-text .typewriter::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            color: #fc00ef;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
         }
         
-        .hero-content p {
-            font-size: 1.4rem;
+        .hero-text p {
+            font-size: 1.15rem;
             margin-bottom: 2rem;
-            color: #e0e0ff;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            color: #d0d0ff;
+            line-height: 1.8;
         }
-        
-        .download-btn {
-            background: linear-gradient(45deg, #9b037a, #d400a8);
-            color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 30px;
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
             text-decoration: none;
-            display: inline-block;
-            margin-top: 1.5rem;
-            transition: all 0.3s ease;
             font-weight: 600;
-            font-size: 1.1rem;
-            border: none;
+            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(155, 3, 122, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            border: none;
             position: relative;
             overflow: hidden;
         }
-        
-        .download-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(155, 3, 122, 0.6);
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
+            color: white;
+            box-shadow: 0 6px 20px rgba(252, 0, 239, 0.35);
         }
-        
-        .download-btn::after {
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(252, 0, 239, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(4, 239, 247, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .hero-stat {
+            text-align: left;
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: #a0a0d0;
+            margin-top: 0.2rem;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-mockup {
+            width: 100%;
+            max-width: 550px;
+            aspect-ratio: 16/10;
+            background: rgba(20, 15, 45, 0.7);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(252, 0, 239, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            height: 35px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .mockup-dot.red { background: #ff5f57; }
+        .mockup-dot.yellow { background: #febc2e; }
+        .mockup-dot.green { background: #28c840; }
+
+        .mockup-body {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .mockup-card {
+            background: linear-gradient(135deg, rgba(252, 0, 239, 0.15), rgba(4, 239, 247, 0.1));
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .mockup-card-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .mockup-card-line {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .mockup-card-line.short {
+            width: 60%;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(20, 15, 45, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-element.top-left {
+            top: 10%;
+            left: -5%;
+            animation-delay: 0s;
+        }
+
+        .floating-element.bottom-right {
+            bottom: 10%;
+            right: -5%;
+            animation-delay: 1.5s;
+        }
+
+        .floating-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .floating-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .floating-icon.purple {
+            background: linear-gradient(45deg, #fc00ef, #8b5cf6);
+        }
+
+        .floating-icon.cyan {
+            background: linear-gradient(45deg, #04eff7, #0ea5e9);
+        }
+
+        .floating-text h4 {
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .floating-text p {
+            font-size: 0.7rem;
+            color: #a0a0d0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(252, 0, 239, 0.15);
+            color: #fc00ef;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(252, 0, 239, 0.2);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #c0e0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #a0a0d0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(20, 15, 45, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fc00ef, #04eff7);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
         }
-        
-        .download-btn:hover::after {
-            left: 100%;
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(252, 0, 239, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
-        
-        /* 产品展示优化 */
-        .products {
-            padding: 5rem 5%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            max-width: 1400px;
-            margin: 0 auto;
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
-        
-        .product-card {
-            background: rgba(20, 15, 45, 0.6);
-            padding: 2.5rem 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            text-align: center;
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(252, 0, 239, 0.2), rgba(4, 239, 247, 0.15));
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.3rem;
+            border: 1px solid rgba(252, 0, 239, 0.2);
+            transition: all 0.3s ease;
         }
-        
-        .product-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(124, 58, 237, 0.3);
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(252, 0, 239, 0.3);
         }
-        
-        .product-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.2rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
         }
-        
-        .product-card p {
-            color: #d0d0ff;
-            font-size: 1.1rem;
+
+        .feature-card p {
+            color: #a0a0d0;
+            font-size: 0.95rem;
             line-height: 1.7;
         }
-        
-        .product-card i {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* 表格优化 */
-        .comparison-section {
+
+        .stats-section {
             padding: 4rem 5%;
+            background: rgba(20, 15, 45, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #a0a0d0;
+        }
+
+        .steps-section {
+            padding: 5rem 5%;
             max-width: 1400px;
             margin: 0 auto;
         }
-        
-        .comparison-section h2 {
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-item {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            background: linear-gradient(45deg, #ffffff, #c0e0ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding: 2rem 1.5rem;
         }
-        
-        .comparison-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            background: rgba(20, 15, 45, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(252, 0, 239, 0.3);
         }
-        
-        .comparison-table td {
-            padding: 1.8rem;
-            vertical-align: top;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e0e0ff;
+
+        .step-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .step-item p {
+            color: #a0a0d0;
+            font-size: 0.95rem;
             line-height: 1.7;
         }
-        
-        .comparison-table td:last-child {
-            border-right: none;
+
+        .step-arrow {
+            display: none;
         }
-        
-        .comparison-table tr:last-child td {
-            border-bottom: none;
+
+        @media (min-width: 1024px) {
+            .steps-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .step-item:not(:last-child)::after {
+                content: '→';
+                position: absolute;
+                right: -1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 1.5rem;
+                color: rgba(252, 0, 239, 0.5);
+            }
         }
-        
-        .comparison-table h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
+
+        .faq-section {
+            padding: 5rem 5%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(20, 15, 45, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(252, 0, 239, 0.2);
+        }
+
+        .faq-question {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #e0e0ff;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #fff;
+        }
+
+        .faq-question i {
+            color: #fc00ef;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 1.5rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 1.5rem 1.3rem;
+        }
+
+        .faq-answer p {
+            color: #a0a0d0;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .cta-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(252, 0, 239, 0.15), rgba(4, 239, 247, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(252, 0, 239, 0.2);
+            border-radius: 24px;
+            padding: 3.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(252, 0, 239, 0.1) 0%, transparent 50%);
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .cta-box h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            background: linear-gradient(135deg, #ffffff, #c0e0ff);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-box p {
+            font-size: 1.1rem;
+            color: #d0d0ff;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
         }
         
-        .comparison-table h4 {
-            font-size: 1.3rem;
-            margin: 1.2rem 0 0.8rem;
-            color: #ff4da6;
-        }
-        
-        /* 页脚优化 */
         footer {
             position: relative;
-            padding: 0.5rem 5%;
+            padding: 2rem 5%;
             text-align: center;
-            font-weight: bold;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(8px);
-            margin-top: 5rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -327,107 +833,49 @@
         }
         
         .copyright {
-            font-size: 1.1rem;
-            color: #d0d0ff;
+            font-size: 1rem;
+            color: #a0a0d0;
         }
         
         .rights {
-            font-size: 1.1rem;
-            color: #d0d0ff;
+            font-size: 1rem;
+            color: #a0a0d0;
         }
 
-        /* 响应式设计优化 */
-        @media (max-width: 1024px) {
-            .hero-content h1 {
-                font-size: 3.2rem;
-            }
-            
-            .comparison-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-content p {
-                font-size: 1.2rem;
-            }
-            
-            .products {
-                grid-template-columns: 1fr;
-            }
-            
-            .comparison-table {
-                display: block;
-            }
-            
-            .comparison-table td {
-                display: block;
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .comparison-table tr:last-child td:last-child {
-                border-bottom: none;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .footer-content div {
-                margin: 0.8rem 0;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-content p {
-                font-size: 1rem;
-            }
-            
-            .download-btn {
-                padding: 0.8rem 1.8rem;
-                font-size: 1rem;
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animated {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        
-        .delay-1 {
-            animation-delay: 0.2s;
-        }
-        
-        .delay-2 {
-            animation-delay: 0.4s;
-        }
-        
-        .delay-3 {
-            animation-delay: 0.6s;
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fc00ef, #04eff7);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 20px rgba(252, 0, 239, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
         }
 
-        /* 粒子效果容器 */
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(252, 0, 239, 0.6);
+        }
+
         #particles {
             position: fixed;
             top: 0;
@@ -438,7 +886,6 @@
             pointer-events: none;
         }
 
-        /* 按钮波纹效果 */
         .ripple {
             position: absolute;
             border-radius: 50%;
@@ -455,23 +902,73 @@
             }
         }
 
-        /* 产品卡片展开效果 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
         .product-card {
+            background: rgba(20, 15, 45, 0.6);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-        }
-
-        .product-card.expanded {
-            transform: translateY(-15px) scale(1.02);
-        }
-
-        .product-card .card-content {
-            max-height: 100px;
+            position: relative;
             overflow: hidden;
-            transition: max-height 0.4s ease;
         }
-
-        .product-card.expanded .card-content {
-            max-height: 500px;
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+        
+        .product-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .product-card p {
+            color: #d0d0ff;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        .product-card i {
+            font-size: 2.8rem;
+            margin-bottom: 1.3rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .card-expand-btn {
@@ -479,7 +976,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 0.9rem;
             cursor: pointer;
             margin-top: 1rem;
@@ -491,6 +988,7 @@
         }
 
         .card-expand-btn i {
+            font-size: 0.8rem;
             transition: transform 0.3s ease;
         }
 
@@ -498,340 +996,714 @@
             transform: rotate(180deg);
         }
 
-        /* 悬浮提示 */
-        .tooltip {
-            position: relative;
+        .product-card .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
         }
 
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+        .product-card.expanded .card-content {
+            max-height: 300px;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .tooltip:hover::after {
-            opacity: 1;
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .hero-text {
+                text-align: center;
+            }
+            .hero-buttons,
+            .hero-stats {
+                justify-content: center;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                width: 100%;
+                top: 0;
+                border-radius: 0;
+                max-width: 100%;
+                padding: 0.8rem 5%;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 8, 25, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 1rem;
+                border-radius: 0 0 16px 16px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-top: none;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links a {
+                width: 100%;
+                padding: 0.8rem 1rem;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .nav-btn-ghost {
+                display: none;
+            }
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .hero-text p {
+                font-size: 1rem;
+            }
+            .hero-text .typewriter {
+                font-size: 1.1rem;
+            }
+            .section {
+                padding: 3.5rem 5%;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .stats-section {
+                padding: 3rem 5%;
+            }
+            .stat-number {
+                font-size: 2.2rem;
+            }
+            .cta-box h2 {
+                font-size: 1.6rem;
+            }
+            .hero-stats {
+                gap: 1.5rem;
+            }
+            .floating-element {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 粒子效果容器 -->
     <canvas id="particles"></canvas>
-    
-    <!-- 导航栏 -->
-    <nav>
+
+    <nav id="navbar">
         <div class="logo">Tronix</div>
-        <div class="nav-links">
-            <a href="index.html">首页</a>
+        <div class="nav-links" id="navLinks">
+            <a href="#home">首页</a>
+            <a href="#features">特性</a>
             <a href="forum.html">论坛</a>
             <a href="tools.html">工具</a>
             <a href="download.html">下载</a>
-            <a href="login.html">登录</a>
+        </div>
+        <div class="nav-actions">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="download.html" class="nav-btn nav-btn-primary">
+                <i class="fas fa-download"></i> 立即下载
+            </a>
         </div>
     </nav>
-    <!-- 主内容区 -->
-    <section class="hero">
-        <div class="hero-content animated" id="home">
-            <h1>探索未来科技，开启无限可能</h1>
-            <p>高效、安全、创新的软件解决方案，为企业数字化转型提供强大动力</p>
-            <a href="下载.html" class="download-btn">立即下载体验版</a>
-        </div>
-    </section>
     
-    <!-- 产品展示 -->
-    <section class="products" id="products">
-        <div class="product-card animated delay-1">
-            <i class="fas fa-laptop-code"></i>
-            <h3>智能办公套件</h3>
-            <div class="card-content">
-                <p>集成文档处理、团队协作和云存储的全套解决方案，提升工作效率300%</p>
-                <div class="card-details" style="display: none;">
-                    <h4>核心功能:</h4>
-                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
-                        <li>多格式文档支持（Word、Excel、PPT、PDF）</li>
-                        <li>实时团队协作编辑</li>
-                        <li>企业级云存储（50GB起步）</li>
-                        <li>智能模板推荐</li>
-                    </ul>
-                    <h4>适用场景:</h4>
-                    <p style="text-align: left; margin-top: 0.5rem;">企业办公、远程协作、教育学习</p>
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>下一代科技<br>效率工具平台</h1>
+                <div class="typewriter" id="typewriter"></div>
+                <p>Tronix 是一款强大的综合效率工具，集成了开发辅助、数据分析、安全检测等多种功能，让你的工作效率提升 300%。</p>
+                <div class="hero-buttons">
+                    <a href="download.html" class="btn btn-primary">
+                        <i class="fas fa-download"></i> 免费下载
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        <i class="fas fa-play-circle"></i> 了解更多
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-target="50000">0</div>
+                        <div class="hero-stat-label">活跃用户</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-target="98">0</div>
+                        <div class="hero-stat-label">好评率%</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-target="24">0</div>
+                        <div class="hero-stat-label">小时支持</div>
+                    </div>
                 </div>
             </div>
-            <button class="card-expand-btn" onclick="toggleCard(this)">
-                <span>了解更多</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </div>
-        <div class="product-card animated delay-2">
-            <i class="fas fa-shield-alt"></i>
-            <h3>安全通信</h3>
-            <div class="card-content">
-                <p>端到端加密的即时通讯工具，军用级别加密技术保护您的隐私</p>
-                <div class="card-details" style="display: none;">
-                    <h4>安全特性:</h4>
-                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
-                        <li>量子加密通信协议</li>
-                        <li>零信任安全架构</li>
-                        <li>消息自动销毁</li>
-                        <li>截图检测防护</li>
-                    </ul>
-                    <h4>安全认证:</h4>
-                    <p style="text-align: left; margin-top: 0.5rem;">ISO 27001、SOC 2 Type II认证</p>
+            <div class="hero-visual">
+                <div class="floating-element top-left">
+                    <div class="floating-content">
+                        <div class="floating-icon purple">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="floating-text">
+                            <h4>极速响应</h4>
+                            <p>毫秒级运行速度</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-element bottom-right">
+                    <div class="floating-content">
+                        <div class="floating-icon cyan">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="floating-text">
+                            <h4>安全可靠</h4>
+                            <p>企业级加密</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dot red"></div>
+                        <div class="mockup-dot yellow"></div>
+                        <div class="mockup-dot green"></div>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-code" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-chart-bar" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-lock" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-rocket" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-palette" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon">
+                                <i class="fas fa-cog" style="color:white;font-size:0.7rem;"></i>
+                            </div>
+                            <div class="mockup-card-line"></div>
+                            <div class="mockup-card-line short"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button class="card-expand-btn" onclick="toggleCard(this)">
-                <span>了解更多</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
         </div>
-        <div class="product-card animated delay-3">
-            <i class="fas fa-chart-line"></i>
-            <h3>数据分析工具</h3>
-            <div class="card-content">
-                <p>强大的数据可视化与智能分析平台，让数据驱动您的决策</p>
-                <div class="card-details" style="display: none;">
-                    <h4>核心能力:</h4>
-                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
-                        <li>实时数据引擎（秒级刷新）</li>
-                        <li>AI辅助分析</li>
-                        <li>自定义预警规则</li>
-                        <li>多行业分析模板</li>
-                    </ul>
-                    <h4>技术亮点:</h4>
-                    <p style="text-align: left; margin-top: 0.5rem;">支持PB级数据处理，已服务500+企业客户</p>
+    </section>
+
+    <section class="section" id="features">
+        <div class="section-header reveal">
+            <span class="section-tag">核心功能</span>
+            <h2 class="section-title">强大功能，为你而生</h2>
+            <p class="section-subtitle">集成多种实用工具，满足开发、设计、分析等多场景需求</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt" style="background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>极速性能</h3>
+                <p>采用优化算法和底层加速技术，让每项操作都在毫秒级完成，告别卡顿等待。</p>
+            </div>
+            <div class="feature-card reveal reveal-delay-2">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt" style="background: linear-gradient(45deg, #04eff7, #0ea5e9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>安全可靠</h3>
+                <p>端到端加密保护，本地数据安全存储，企业级安全标准，让你使用无后顾之忧。</p>
+            </div>
+            <div class="feature-card reveal reveal-delay-3">
+                <div class="feature-icon">
+                    <i class="fas fa-puzzle-piece" style="background: linear-gradient(45deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>插件扩展</h3>
+                <p>丰富的插件生态系统，支持自定义功能，轻松打造属于你的专属工作流。</p>
+            </div>
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon">
+                    <i class="fas fa-magic" style="background: linear-gradient(45deg, #f472b6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>AI 智能</h3>
+                <p>内置 AI 辅助功能，智能推荐、自动补全、一键优化，让工作事半功倍。</p>
+            </div>
+            <div class="feature-card reveal reveal-delay-2">
+                <div class="feature-icon">
+                    <i class="fas fa-palette" style="background: linear-gradient(45deg, #06b6d4, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>精美界面</h3>
+                <p>精心设计的界面和动效，支持主题定制，带来愉悦的视觉体验和操作感受。</p>
+            </div>
+            <div class="feature-card reveal reveal-delay-3">
+                <div class="feature-icon">
+                    <i class="fas fa-headset" style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3>24/7 支持</h3>
+                <p>专业的技术支持团队，全天候在线响应，遇到问题随时获得帮助。</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item reveal">
+                <div class="stat-number" data-target="50000">0</div>
+                <div class="stat-label">全球用户</div>
+            </div>
+            <div class="stat-item reveal reveal-delay-1">
+                <div class="stat-number" data-target="100">0</div>
+                <div class="stat-label">国家地区</div>
+            </div>
+            <div class="stat-item reveal reveal-delay-2">
+                <div class="stat-number" data-target="98">0</div>
+                <div class="stat-label">用户好评率 %</div>
+            </div>
+            <div class="stat-item reveal reveal-delay-3">
+                <div class="stat-number" data-target="50">0</div>
+                <div class="stat-label">内置工具</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="products">
+        <div class="section-header reveal">
+            <span class="section-tag">产品展示</span>
+            <h2 class="section-title">全面的产品线</h2>
+            <p class="section-subtitle">从开发到运维，从设计到分析，全方位覆盖你的需求</p>
+        </div>
+        <div class="products">
+            <div class="product-card reveal reveal-delay-1" onclick="toggleCard(this)">
+                <i class="fas fa-code"></i>
+                <h3>开发辅助</h3>
+                <p>代码生成、调试工具、框架模板</p>
+                <div class="card-content">
+                    <p style="color: #a0a0d0; margin-bottom: 1rem;">支持多种编程语言的智能提示、代码片段管理、项目模板快速生成，让编码效率翻倍。</p>
+                    <button class="card-expand-btn">了解更多 <i class="fas fa-chevron-down"></i></button>
                 </div>
             </div>
-            <button class="card-expand-btn" onclick="toggleCard(this)">
-                <span>了解更多</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
+            <div class="product-card reveal reveal-delay-2" onclick="toggleCard(this)">
+                <i class="fas fa-chart-line"></i>
+                <h3>数据分析</h3>
+                <p>可视化图表、数据处理、报表生成</p>
+                <div class="card-content">
+                    <p style="color: #a0a0d0; margin-bottom: 1rem;">强大的数据处理引擎，支持多种数据源接入，一键生成美观的可视化报表。</p>
+                    <button class="card-expand-btn">了解更多 <i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
+            <div class="product-card reveal reveal-delay-3" onclick="toggleCard(this)">
+                <i class="fas fa-shield-alt"></i>
+                <h3>安全检测</h3>
+                <p>漏洞扫描、代码审计、安全加固</p>
+                <div class="card-content">
+                    <p style="color: #a0a0d0; margin-bottom: 1rem;">集成多种安全检测引擎，自动识别潜在风险，提供专业的安全建议和修复方案。</p>
+                    <button class="card-expand-btn">了解更多 <i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
         </div>
     </section>
-    
-    <!-- 产品对比表格 -->
-    <section class="comparison-section">
-        <h2 class="animated">产品核心技术优势</h2>
-        <table class="comparison-table">
-            <tr>
-                <td>
-                    <h3>智能办公套件</h3>
-                    <h4>文档处理能力</h4>
-                    <p>支持Word、Excel、PPT的查看与编辑，提供多种预设模板（如信纸尺寸文档、深色演示模板等），兼容Office 97-2024格式及PDF、图片查看。</p>
-                    <p>支持高级编辑操作：多级字体调整、智能配色方案、AI公式计算、动态图表更新等，专为移动端优化的操作界面。</p>
-                    
-                    <h4>协作与共享</h4>
-                    <p>通过Tronix Cloud实现文件实时协作共享，支持多平台文件传输，专为团队协作设计的版本控制系统。</p>
-                    
-                    <h4>云存储系统</h4>
-                    <p>企业级安全云存储架构，AES-256加密技术，多重身份验证，满足企业级安全需求。</p>
-                </td>
-                <td>
-                    <h3>安全通信</h3>
-                    <h4>隐私保护技术</h4>
-                    <p>量子加密技术保障通信安全，自研加密协议无后门设计，符合国际最高安全标准。</p>
-                    
-                    <h4>安全架构优势</h4>
-                    <p>零信任安全模型，通信数据仅在终端解密，服务器不存储任何可解密数据，从源头杜绝泄露风险。</p>
-                    
-                    <h4>用户安全保护</h4>
-                    <p>生物识别登录支持，自动消息销毁功能，截图检测与防护，全方位保护通信安全。</p>
-                </td>
-                <td>
-                    <h3>数据分析工具</h3>
-                    <h4>核心能力</h4>
-                    <p>覆盖数据采集、智能ETL、可视化分析、AI建模到数据应用全生命周期，支持实时数据引擎实现秒级数据追踪。</p>
-                    
-                    <h4>智能特性</h4>
-                    <p>AI辅助数据分析：通过自然语言生成分析结果，支持多轮上下文理解。智能预警：自定义规则触发异常数据推送。</p>
-                    
-                    <h4>行业适配</h4>
-                    <p>深度服务零售、金融、医疗等行业，提供行业定制分析模板，已落地多家世界500强企业。</p>
-                </td>
-            </tr>
-        </table>
+
+    <div class="steps-section" id="how-to-use">
+        <div class="section-header reveal">
+            <span class="section-tag">使用指南</span>
+            <h2 class="section-title">简单三步，立即上手</h2>
+            <p class="section-subtitle">无需复杂配置，下载即用，几分钟内开启高效之旅</p>
+        </div>
+        <div class="steps-container">
+            <div class="step-item reveal reveal-delay-1">
+                <div class="step-number">1</div>
+                <h3>下载安装</h3>
+                <p>从官网下载最新版本，按照向导完成安装，支持 Windows、Mac、Linux 全平台。</p>
+            </div>
+            <div class="step-item reveal reveal-delay-2">
+                <div class="step-number">2</div>
+                <h3>注册登录</h3>
+                <p>创建免费账户，登录后同步你的数据和配置，随时随地使用。</p>
+            </div>
+            <div class="step-item reveal reveal-delay-3">
+                <div class="step-number">3</div>
+                <h3>开始使用</h3>
+                <p>选择你需要的工具功能，按照指引操作，立即提升工作效率。</p>
+            </div>
+            <div class="step-item reveal reveal-delay-4">
+                <div class="step-number">4</div>
+                <h3>持续探索</h3>
+                <p>发现更多高级功能和插件，打造属于你的个性化工作空间。</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="faq-section" id="faq">
+        <div class="section-header reveal">
+            <span class="section-tag">常见问题</span>
+            <h2 class="section-title">你可能想知道的</h2>
+            <p class="section-subtitle">收集了用户最常问的问题，希望能帮到你</p>
+        </div>
+        <div class="faq-item reveal" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span>Tronix 是免费的吗？</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Tronix 提供免费版和专业版。免费版包含核心功能，足够日常使用；专业版提供更多高级功能和技术支持，适合专业用户和团队。</p>
+            </div>
+        </div>
+        <div class="faq-item reveal" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span>支持哪些操作系统？</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Tronix 支持 Windows 10/11、macOS 10.15+ 和主流 Linux 发行版（Ubuntu、Debian、CentOS 等），全平台体验一致。</p>
+            </div>
+        </div>
+        <div class="faq-item reveal" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span>数据安全吗？会上传到云端吗？</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>你的数据默认存储在本地，Tronix 不会主动上传任何个人数据。云同步功能是可选的，且采用端到端加密，只有你能解密。</p>
+            </div>
+        </div>
+        <div class="faq-item reveal" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span>如何获得技术支持？</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>你可以通过官方论坛、邮件、在线客服等多种渠道获取帮助。专业版用户享有优先响应的专属技术支持通道。</p>
+            </div>
+        </div>
+        <div class="faq-item reveal" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span>可以开发自己的插件吗？</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>当然可以！Tronix 提供完整的插件开发文档和 SDK，你可以使用 JavaScript 开发自定义功能，并发布到插件市场分享给其他用户。</p>
+            </div>
+        </div>
     </section>
+
+    <div class="cta-section">
+        <div class="cta-box reveal">
+            <h2>准备好提升你的效率了吗？</h2>
+            <p>立即下载 Tronix，体验下一代效率工具。完全免费，无广告，无捆绑。</p>
+            <div class="cta-buttons">
+                <a href="download.html" class="btn btn-primary">
+                    <i class="fas fa-download"></i> 立即免费下载
+                </a>
+                <a href="forum.html" class="btn btn-secondary">
+                    <i class="fas fa-users"></i> 加入社区
+                </a>
+            </div>
+        </div>
+    </div>
     
-    <!-- 页脚 -->
-    <footer id="footer">
+    <footer>
         <div class="footer-content">
             <div class="copyright">版权所有 &copy; Tronix</div>
             <div class="rights">最终解释权归：Tronix</div>
         </div>
     </footer>
-    
+
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script>
-        // 滚动动画效果
-        document.addEventListener('DOMContentLoaded', function() {
-            const animatedElements = document.querySelectorAll('.animated');
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('backToTop');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset;
             
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.visibility = 'visible';
-                        entry.target.style.opacity = 1;
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-            
-            animatedElements.forEach(el => {
-                el.style.visibility = 'hidden';
-                el.style.opacity = 0;
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-            
-            // 导航栏滚动效果
-            window.addEventListener('scroll', function() {
-                const nav = document.querySelector('nav');
-                if (window.scrollY > 50) {
-                    nav.style.padding = '0.8rem 5%';
-                    nav.style.background = 'rgba(0, 0, 0, 0.85)';
-                } else {
-                    nav.style.padding = '1.2rem 5%';
-                    nav.style.background = 'rgba(0, 0, 0, 0.65)';
-                }
-            });
+            if (currentScroll > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            if (currentScroll > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+
+            lastScroll = currentScroll;
         });
 
-        // 粒子效果
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        function toggleCard(card) {
+            card.classList.toggle('expanded');
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const rect = card.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            card.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function toggleFaq(item) {
+            const isActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        const typewriterTexts = [
+            '智能开发，效率翻倍',
+            '安全可靠，性能卓越',
+            '为极客打造的工具箱',
+            '你的下一个效率神器'
+        ];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterEl = document.getElementById('typewriter');
+
+        function typeWriter() {
+            if (!typewriterEl) return;
+            const currentText = typewriterTexts[textIndex];
+            
+            if (isDeleting) {
+                typewriterEl.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentText.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % typewriterTexts.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeWriter, typeSpeed);
+        }
+
         const canvas = document.getElementById('particles');
         const ctx = canvas.getContext('2d');
-        
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        
-        const particles = [];
-        const particleCount = 50;
-        
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                size: Math.random() * 2 + 1,
-                speedX: (Math.random() - 0.5) * 0.5,
-                speedY: (Math.random() - 0.5) * 0.5,
-                opacity: Math.random() * 0.5 + 0.2
-            });
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        
-        let mouseX = width / 2;
-        let mouseY = height / 2;
-        
-        window.addEventListener('mousemove', function(e) {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-        
+
+        function createParticles() {
+            particles = [];
+            const count = Math.floor((canvas.width * canvas.height) / 15000);
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
         function animateParticles() {
-            ctx.clearRect(0, 0, width, height);
-            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(particle => {
                 particle.x += particle.speedX;
                 particle.y += particle.speedY;
-                
+
+                if (particle.x < 0) particle.x = canvas.width;
+                if (particle.x > canvas.width) particle.x = 0;
+                if (particle.y < 0) particle.y = canvas.height;
+                if (particle.y > canvas.height) particle.y = 0;
+
                 const dx = mouseX - particle.x;
                 const dy = mouseY - particle.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                
                 if (distance < 150) {
                     particle.x -= dx * 0.01;
                     particle.y -= dy * 0.01;
                 }
-                
-                if (particle.x < 0 || particle.x > width) particle.speedX *= -1;
-                if (particle.y < 0 || particle.y > height) particle.speedY *= -1;
-                
+
                 ctx.beginPath();
                 ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(252, 0, 239, ${particle.opacity})`;
                 ctx.fill();
             });
-            
-            particles.forEach((p1, i) => {
-                particles.slice(i + 1).forEach(p2 => {
-                    const dx = p1.x - p2.x;
-                    const dy = p1.y - p2.y;
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 100) {
+                    if (distance < 120) {
                         ctx.beginPath();
-                        ctx.moveTo(p1.x, p1.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(252, 0, 239, ${0.1 * (1 - distance / 100)})`;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(4, 239, 247, ${0.15 * (1 - distance / 120)})`;
+                        ctx.lineWidth = 1;
                         ctx.stroke();
                     }
-                });
-            });
-            
+                }
+            }
+
             requestAnimationFrame(animateParticles);
         }
-        
-        animateParticles();
-        
-        window.addEventListener('resize', function() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
 
-        // 按钮波纹效果
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('.download-btn');
-            if (btn) {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                
-                btn.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            }
-        });
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
 
-        // 产品卡片展开/折叠
-        function toggleCard(btn) {
-            const card = btn.closest('.product-card');
-            const details = card.querySelector('.card-details');
-            const span = btn.querySelector('span');
-            
-            card.classList.toggle('expanded');
-            
-            if (card.classList.contains('expanded')) {
-                details.style.display = 'block';
-                span.textContent = '收起详情';
-            } else {
-                details.style.display = 'none';
-                span.textContent = '了解更多';
-            }
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const revealPoint = 150;
+
+                if (elementTop < windowHeight - revealPoint) {
+                    element.classList.add('active');
+                }
+            });
         }
+
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number[data-target], .hero-stat-number[data-target]');
+            numbers.forEach(num => {
+                const rect = num.getBoundingClientRect();
+                if (rect.top < window.innerHeight && !num.dataset.animated) {
+                    num.dataset.animated = 'true';
+                    const target = parseInt(num.dataset.target);
+                    const duration = 2000;
+                    const start = 0;
+                    const startTime = performance.now();
+
+                    function update(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easeOut = 1 - Math.pow(1 - progress, 3);
+                        const current = Math.floor(start + (target - start) * easeOut);
+                        num.textContent = current.toLocaleString();
+
+                        if (progress < 1) {
+                            requestAnimationFrame(update);
+                        } else {
+                            num.textContent = target.toLocaleString();
+                        }
+                    }
+
+                    requestAnimationFrame(update);
+                }
+            });
+        }
+
+        window.addEventListener('scroll', function() {
+            revealOnScroll();
+            animateNumbers();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            resizeCanvas();
+            createParticles();
+            animateParticles();
+            typeWriter();
+            revealOnScroll();
+            animateNumbers();
+
+            window.addEventListener('resize', function() {
+                resizeCanvas();
+                createParticles();
+            });
+
+            document.querySelectorAll('.btn, .nav-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
     </script>
     <script src="auth.js"></script>
 </body>
