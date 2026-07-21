@@ -487,6 +487,151 @@
         .delay-3 {
             animation-delay: 0.3s;
         }
+
+        /* 工具卡片展开动画 */
+        .tool-card {
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tool-card.expanded {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .tool-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            color: #a0a0d0;
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .tool-card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .tool-card.expanded .tool-card-body {
+            max-height: 1000px;
+        }
+
+        /* 复制成功提示 */
+        .copy-toast {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .copy-toast i {
+            font-size: 1.2rem;
+        }
+
+        /* 按钮点击效果 */
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 工具搜索过滤 */
+        .tools-search {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .tools-search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .tools-search-input:focus {
+            outline: none;
+            border-color: #04eff7;
+            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
+        }
+
+        .tools-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a0d0;
+            font-size: 1rem;
+        }
+
+        /* 工具筛选标签 */
+        .tools-filter {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tag.active {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border-color: transparent;
+        }
+
+        .filter-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 工具卡片隐藏动画 */
+        .tool-card.hidden {
+            opacity: 0;
+            max-height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -510,15 +655,33 @@
         </div>
     </section>
     
+    <!-- 搜索和筛选 -->
+    <div class="tools-search">
+        <i class="fas fa-search tools-search-icon"></i>
+        <input type="text" class="tools-search-input" id="toolsSearchInput" placeholder="搜索工具...">
+    </div>
+    
+    <div class="tools-filter">
+        <button class="filter-tag active" data-category="all">全部</button>
+        <button class="filter-tag" data-category="code">代码工具</button>
+        <button class="filter-tag" data-category="data">数据工具</button>
+        <button class="filter-tag" data-category="security">安全工具</button>
+        <button class="filter-tag" data-category="web">Web工具</button>
+    </div>
+    
     <!-- 工具容器 -->
     <div class="tools-container">
         <!-- 代码格式化工具 -->
-        <div class="tool-card animated">
-            <div class="tool-header">
-                <i class="fas fa-code tool-icon"></i>
-                <h3 class="tool-title">代码格式化工具</h3>
+        <div class="tool-card animated" data-category="code">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-code tool-icon"></i>
+                    <h3 class="tool-title">代码格式化工具</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">美化您的代码，支持多种编程语言，提高代码可读性。</p>
+            <div class="tool-card-body">
+                <p class="tool-description">美化您的代码，支持多种编程语言，提高代码可读性。</p>
             <div class="input-group">
                 <label for="code-input">输入代码:</label>
                 <textarea id="code-input" placeholder="粘贴您的代码到这里..."></textarea>
@@ -538,127 +701,152 @@
                 <label>格式化结果:</label>
                 <div class="output-content" id="code-output"></div>
             </div>
+            </div>
         </div>
         
         <!-- JSON/XML转换器 -->
-        <div class="tool-card animated delay-1">
-            <div class="tool-header">
-                <i class="fas fa-exchange-alt tool-icon"></i>
-                <h3 class="tool-title">JSON/XML转换器</h3>
+        <div class="tool-card animated delay-1" data-category="data">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-exchange-alt tool-icon"></i>
+                    <h3 class="tool-title">JSON/XML转换器</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">在JSON和XML格式之间相互转换，方便数据交换。</p>
-            <div class="input-group">
-                <label for="converter-input">输入内容:</label>
-                <textarea id="converter-input" placeholder="输入JSON或XML..."></textarea>
-                <select id="conversion-type">
-                    <option value="json-to-xml">JSON 转 XML</option>
-                    <option value="xml-to-json">XML 转 JSON</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <button class="btn" id="convert-btn">转换</button>
-                <button class="btn btn-secondary" id="clear-converter-btn">清空</button>
-            </div>
-            <div class="output-group">
-                <label>转换结果:</label>
-                <div class="output-content" id="converter-output"></div>
+            <div class="tool-card-body">
+                <p class="tool-description">在JSON和XML格式之间相互转换，方便数据交换。</p>
+                <div class="input-group">
+                    <label for="converter-input">输入内容:</label>
+                    <textarea id="converter-input" placeholder="输入JSON或XML..."></textarea>
+                    <select id="conversion-type">
+                        <option value="json-to-xml">JSON 转 XML</option>
+                        <option value="xml-to-json">XML 转 JSON</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="convert-btn">转换</button>
+                    <button class="btn btn-secondary" id="clear-converter-btn">清空</button>
+                </div>
+                <div class="output-group">
+                    <label>转换结果:</label>
+                    <div class="output-content" id="converter-output"></div>
+                </div>
             </div>
         </div>
         
         <!-- 颜色代码生成器 -->
-        <div class="tool-card animated delay-2">
-            <div class="tool-header">
-                <i class="fas fa-palette tool-icon"></i>
-                <h3 class="tool-title">颜色代码生成器</h3>
+        <div class="tool-card animated delay-2" data-category="web">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-palette tool-icon"></i>
+                    <h3 class="tool-title">颜色代码生成器</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">生成各种格式的颜色代码，方便前端开发使用。</p>
-            <div class="input-group">
-                <label for="color-picker">选择颜色:</label>
-                <input type="color" id="color-picker" value="#ff0000">
-                <div class="color-preview" id="color-preview" style="background: #ff0000;"></div>
-            </div>
-            <div class="output-group">
-                <label>颜色代码:</label>
-                <div class="output-content">
-                    HEX: <span id="hex-code">#ff0000</span><br>
-                    RGB: <span id="rgb-code">rgb(255, 0, 0)</span><br>
-                    HSL: <span id="hsl-code">hsl(0, 100%, 50%)</span><br>
-                    CMYK: <span id="cmyk-code">cmyk(0%, 100%, 100%, 0%)</span>
+            <div class="tool-card-body">
+                <p class="tool-description">生成各种格式的颜色代码，方便前端开发使用。</p>
+                <div class="input-group">
+                    <label for="color-picker">选择颜色:</label>
+                    <input type="color" id="color-picker" value="#ff0000">
+                    <div class="color-preview" id="color-preview" style="background: #ff0000;"></div>
+                </div>
+                <div class="output-group">
+                    <label>颜色代码:</label>
+                    <div class="output-content">
+                        HEX: <span id="hex-code">#ff0000</span><br>
+                        RGB: <span id="rgb-code">rgb(255, 0, 0)</span><br>
+                        HSL: <span id="hsl-code">hsl(0, 100%, 50%)</span><br>
+                        CMYK: <span id="cmyk-code">cmyk(0%, 100%, 100%, 0%)</span>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- 时间戳转换工具 -->
-        <div class="tool-card animated delay-3">
-            <div class="tool-header">
-                <i class="fas fa-clock tool-icon"></i>
-                <h3 class="tool-title">时间戳转换工具</h3>
+        <div class="tool-card animated delay-3" data-category="data">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-clock tool-icon"></i>
+                    <h3 class="tool-title">时间戳转换工具</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">在时间戳和可读日期之间相互转换，支持多种格式。</p>
-            <div class="input-group">
-                <label for="timestamp-input">输入时间戳或日期:</label>
-                <input type="text" id="timestamp-input" placeholder="如: 1634567890 或 2023-10-20">
-                <select id="timestamp-type">
-                    <option value="timestamp-to-date">时间戳转日期</option>
-                    <option value="date-to-timestamp">日期转时间戳</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <button class="btn" id="convert-timestamp-btn">转换</button>
-                <button class="btn" id="current-timestamp-btn">当前时间</button>
-            </div>
-            <div class="output-group">
-                <label>转换结果:</label>
-                <div class="timestamp-results">
-                    <div>
-                        <label>UTC:</label>
-                        <div class="output-content" id="utc-output"></div>
-                    </div>
-                    <div>
-                        <label>本地时间:</label>
-                        <div class="output-content" id="local-output"></div>
+            <div class="tool-card-body">
+                <p class="tool-description">在时间戳和可读日期之间相互转换，支持多种格式。</p>
+                <div class="input-group">
+                    <label for="timestamp-input">输入时间戳或日期:</label>
+                    <input type="text" id="timestamp-input" placeholder="如: 1634567890 或 2023-10-20">
+                    <select id="timestamp-type">
+                        <option value="timestamp-to-date">时间戳转日期</option>
+                        <option value="date-to-timestamp">日期转时间戳</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="convert-timestamp-btn">转换</button>
+                    <button class="btn" id="current-timestamp-btn">当前时间</button>
+                </div>
+                <div class="output-group">
+                    <label>转换结果:</label>
+                    <div class="timestamp-results">
+                        <div>
+                            <label>UTC:</label>
+                            <div class="output-content" id="utc-output"></div>
+                        </div>
+                        <div>
+                            <label>本地时间:</label>
+                            <div class="output-content" id="local-output"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- 密码生成器 -->
-        <div class="tool-card animated">
-            <div class="tool-header">
-                <i class="fas fa-key tool-icon"></i>
-                <h3 class="tool-title">密码生成器</h3>
-            </div>
-            <p class="tool-description">生成安全、随机的密码，可自定义长度和字符类型。</p>
-            <div class="input-group">
-                <label>密码长度: <span id="length-value">12</span></label>
-                <input type="range" id="password-length" min="6" max="32" value="12">
-                <div class="password-options">
-                    <label><input type="checkbox" id="uppercase" checked> 大写字母 (A-Z)</label>
-                    <label><input type="checkbox" id="lowercase" checked> 小写字母 (a-z)</label>
-                    <label><input type="checkbox" id="numbers" checked> 数字 (0-9)</label>
-                    <label><input type="checkbox" id="symbols" checked> 符号 (!@#$%)</label>
+        <div class="tool-card animated" data-category="security">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-key tool-icon"></i>
+                    <h3 class="tool-title">密码生成器</h3>
                 </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <div class="btn-group">
-                <button class="btn" id="generate-password-btn">生成密码</button>
-                <button class="btn btn-secondary" id="copy-password-btn">复制</button>
-            </div>
-            <div class="output-group">
-                <label>生成的密码:</label>
-                <input type="text" id="password-output" readonly>
-                <div class="password-strength">
-                    <div class="strength-meter" id="strength-meter"></div>
+            <div class="tool-card-body">
+                <p class="tool-description">生成安全、随机的密码，可自定义长度和字符类型。</p>
+                <div class="input-group">
+                    <label>密码长度: <span id="length-value">12</span></label>
+                    <input type="range" id="password-length" min="6" max="32" value="12">
+                    <div class="password-options">
+                        <label><input type="checkbox" id="uppercase" checked> 大写字母 (A-Z)</label>
+                        <label><input type="checkbox" id="lowercase" checked> 小写字母 (a-z)</label>
+                        <label><input type="checkbox" id="numbers" checked> 数字 (0-9)</label>
+                        <label><input type="checkbox" id="symbols" checked> 符号 (!@#$%)</label>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="generate-password-btn">生成密码</button>
+                    <button class="btn btn-secondary" id="copy-password-btn">复制</button>
+                </div>
+                <div class="output-group">
+                    <label>生成的密码:</label>
+                    <input type="text" id="password-output" readonly>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strength-meter"></div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- API测试工具 -->
-        <div class="tool-card animated delay-1">
-            <div class="tool-header">
-                <i class="fas fa-plug tool-icon"></i>
-                <h3 class="tool-title">API测试工具</h3>
+        <div class="tool-card animated delay-1" data-category="web">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-plug tool-icon"></i>
+                    <h3 class="tool-title">API测试工具</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">发送HTTP请求并查看响应，方便API开发和调试。</p>
+            <div class="tool-card-body">
+                <p class="tool-description">发送HTTP请求并查看响应，方便API开发和调试。</p>
             <div class="input-group">
                 <label for="api-url">API URL:</label>
                 <input type="text" id="api-url" placeholder="https://api.example.com/endpoint">
@@ -685,42 +873,52 @@
                 </div>
                 <div class="output-content" id="api-response"></div>
             </div>
+            </div>
         </div>
         
         <!-- 二维码生成器 -->
-        <div class="tool-card animated delay-2">
-            <div class="tool-header">
-                <i class="fas fa-qrcode tool-icon"></i>
-                <h3 class="tool-title">二维码生成器</h3>
+        <div class="tool-card animated delay-2" data-category="web">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-qrcode tool-icon"></i>
+                    <h3 class="tool-title">二维码生成器</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">将文本或URL转换为二维码图像，方便移动设备扫描。</p>
-            <div class="input-group">
-                <label for="qr-text">输入文本或URL:</label>
-                <input type="text" id="qr-text" placeholder="https://example.com">
-                <label for="qr-size">二维码大小:</label>
-                <select id="qr-size">
-                    <option value="100">小 (100x100)</option>
-                    <option value="200" selected>中 (200x200)</option>
-                    <option value="300">大 (300x300)</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <button class="btn" id="generate-qr-btn">生成二维码</button>
-                <button class="btn btn-secondary" id="download-qr-btn">下载</button>
-            </div>
-            <div class="output-group">
-                <label>二维码:</label>
-                <div id="qrcode"></div>
+            <div class="tool-card-body">
+                <p class="tool-description">将文本或URL转换为二维码图像，方便移动设备扫描。</p>
+                <div class="input-group">
+                    <label for="qr-text">输入文本或URL:</label>
+                    <input type="text" id="qr-text" placeholder="https://example.com">
+                    <label for="qr-size">二维码大小:</label>
+                    <select id="qr-size">
+                        <option value="100">小 (100x100)</option>
+                        <option value="200" selected>中 (200x200)</option>
+                        <option value="300">大 (300x300)</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="generate-qr-btn">生成二维码</button>
+                    <button class="btn btn-secondary" id="download-qr-btn">下载</button>
+                </div>
+                <div class="output-group">
+                    <label>二维码:</label>
+                    <div id="qrcode"></div>
+                </div>
             </div>
         </div>
         
         <!-- Markdown编辑器 -->
-        <div class="tool-card animated delay-3">
-            <div class="tool-header">
-                <i class="fas fa-markdown tool-icon"></i>
-                <h3 class="tool-title">Markdown编辑器</h3>
+        <div class="tool-card animated delay-3" data-category="code">
+            <div class="tool-card-header" onclick="toggleToolCard(this)">
+                <div class="tool-header">
+                    <i class="fas fa-markdown tool-icon"></i>
+                    <h3 class="tool-title">Markdown编辑器</h3>
+                </div>
+                <i class="fas fa-chevron-down expand-icon"></i>
             </div>
-            <p class="tool-description">实时预览Markdown格式文本，支持常用语法。</p>
+            <div class="tool-card-body">
+                <p class="tool-description">实时预览Markdown格式文本，支持常用语法。</p>
             <div class="markdown-container">
                 <div>
                     <label for="markdown-input">Markdown输入:</label>
@@ -734,6 +932,7 @@
             <div class="btn-group">
                 <button class="btn" id="clear-markdown-btn">清空</button>
                 <button class="btn" id="copy-markdown-btn">复制HTML</button>
+            </div>
             </div>
         </div>
     </div>
@@ -1058,7 +1257,7 @@
             const password = document.getElementById('password-output');
             password.select();
             document.execCommand('copy');
-            alert('密码已复制到剪贴板');
+            showCopyToast('密码已复制到剪贴板');
         });
         
         // API测试工具
@@ -1236,9 +1435,67 @@
             const html = markdownToHtml(markdown);
             
             navigator.clipboard.writeText(html)
-                .then(() => alert('HTML已复制到剪贴板'))
-                .catch(() => alert('复制失败，请手动复制'));
+                .then(() => showCopyToast('HTML已复制到剪贴板'))
+                .catch(() => showCopyToast('复制失败，请手动复制'));
         });
+        
+        // 工具卡片展开/折叠
+        function toggleToolCard(header) {
+            const card = header.closest('.tool-card');
+            card.classList.toggle('expanded');
+            card.classList.toggle('collapsed');
+        }
+        
+        // 搜索功能
+        const searchInput = document.getElementById('toolsSearchInput');
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const title = card.querySelector('.tool-title').textContent.toLowerCase();
+                const desc = card.querySelector('.tool-description').textContent.toLowerCase();
+                
+                if (title.includes(query) || desc.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        });
+        
+        // 分类筛选
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                document.querySelectorAll('.tool-card').forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        // 复制成功提示
+        function showCopyToast(message) {
+            let toast = document.getElementById('copyToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'copyToast';
+                toast.className = 'copy-toast';
+                document.body.appendChild(toast);
+            }
+            
+            toast.innerHTML = `<i class="fas fa-check"></i> ${message}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
         
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {

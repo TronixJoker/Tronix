@@ -426,9 +426,110 @@
         .delay-3 {
             animation-delay: 0.6s;
         }
+
+        /* 粒子效果容器 */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 按钮波纹效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 产品卡片展开效果 */
+        .product-card {
+            cursor: pointer;
+        }
+
+        .product-card.expanded {
+            transform: translateY(-15px) scale(1.02);
+        }
+
+        .product-card .card-content {
+            max-height: 100px;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .product-card.expanded .card-content {
+            max-height: 500px;
+        }
+
+        .card-expand-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-expand-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-expand-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .product-card.expanded .card-expand-btn i {
+            transform: rotate(180deg);
+        }
+
+        /* 悬浮提示 */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <!-- 粒子效果容器 -->
+    <canvas id="particles"></canvas>
+    
     <!-- 导航栏 -->
     <nav>
         <div class="logo">Tronix</div>
@@ -454,17 +555,68 @@
         <div class="product-card animated delay-1">
             <i class="fas fa-laptop-code"></i>
             <h3>智能办公套件</h3>
-            <p>集成文档处理、团队协作和云存储的全套解决方案，提升工作效率300%</p>
+            <div class="card-content">
+                <p>集成文档处理、团队协作和云存储的全套解决方案，提升工作效率300%</p>
+                <div class="card-details" style="display: none;">
+                    <h4>核心功能:</h4>
+                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
+                        <li>多格式文档支持（Word、Excel、PPT、PDF）</li>
+                        <li>实时团队协作编辑</li>
+                        <li>企业级云存储（50GB起步）</li>
+                        <li>智能模板推荐</li>
+                    </ul>
+                    <h4>适用场景:</h4>
+                    <p style="text-align: left; margin-top: 0.5rem;">企业办公、远程协作、教育学习</p>
+                </div>
+            </div>
+            <button class="card-expand-btn" onclick="toggleCard(this)">
+                <span>了解更多</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
         </div>
         <div class="product-card animated delay-2">
             <i class="fas fa-shield-alt"></i>
             <h3>安全通信</h3>
-            <p>端到端加密的即时通讯工具，军用级别加密技术保护您的隐私</p>
+            <div class="card-content">
+                <p>端到端加密的即时通讯工具，军用级别加密技术保护您的隐私</p>
+                <div class="card-details" style="display: none;">
+                    <h4>安全特性:</h4>
+                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
+                        <li>量子加密通信协议</li>
+                        <li>零信任安全架构</li>
+                        <li>消息自动销毁</li>
+                        <li>截图检测防护</li>
+                    </ul>
+                    <h4>安全认证:</h4>
+                    <p style="text-align: left; margin-top: 0.5rem;">ISO 27001、SOC 2 Type II认证</p>
+                </div>
+            </div>
+            <button class="card-expand-btn" onclick="toggleCard(this)">
+                <span>了解更多</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
         </div>
         <div class="product-card animated delay-3">
             <i class="fas fa-chart-line"></i>
             <h3>数据分析工具</h3>
-            <p>强大的数据可视化与智能分析平台，让数据驱动您的决策</p>
+            <div class="card-content">
+                <p>强大的数据可视化与智能分析平台，让数据驱动您的决策</p>
+                <div class="card-details" style="display: none;">
+                    <h4>核心能力:</h4>
+                    <ul style="text-align: left; margin: 1rem 0 0 1rem; color: #d0d0ff;">
+                        <li>实时数据引擎（秒级刷新）</li>
+                        <li>AI辅助分析</li>
+                        <li>自定义预警规则</li>
+                        <li>多行业分析模板</li>
+                    </ul>
+                    <h4>技术亮点:</h4>
+                    <p style="text-align: left; margin-top: 0.5rem;">支持PB级数据处理，已服务500+企业客户</p>
+                </div>
+            </div>
+            <button class="card-expand-btn" onclick="toggleCard(this)">
+                <span>了解更多</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
         </div>
     </section>
     
@@ -556,6 +708,130 @@
                 }
             });
         });
+
+        // 粒子效果
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        
+        const particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2 + 1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                opacity: Math.random() * 0.5 + 0.2
+            });
+        }
+        
+        let mouseX = width / 2;
+        let mouseY = height / 2;
+        
+        window.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(particle => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                const dx = mouseX - particle.x;
+                const dy = mouseY - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    particle.x -= dx * 0.01;
+                    particle.y -= dy * 0.01;
+                }
+                
+                if (particle.x < 0 || particle.x > width) particle.speedX *= -1;
+                if (particle.y < 0 || particle.y > height) particle.speedY *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(252, 0, 239, ${particle.opacity})`;
+                ctx.fill();
+            });
+            
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(252, 0, 239, ${0.1 * (1 - distance / 100)})`;
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+        
+        window.addEventListener('resize', function() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        // 按钮波纹效果
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.download-btn');
+            if (btn) {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                
+                btn.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+        });
+
+        // 产品卡片展开/折叠
+        function toggleCard(btn) {
+            const card = btn.closest('.product-card');
+            const details = card.querySelector('.card-details');
+            const span = btn.querySelector('span');
+            
+            card.classList.toggle('expanded');
+            
+            if (card.classList.contains('expanded')) {
+                details.style.display = 'block';
+                span.textContent = '收起详情';
+            } else {
+                details.style.display = 'none';
+                span.textContent = '了解更多';
+            }
+        }
     </script>
 </body>
 </html>

@@ -565,6 +565,112 @@
             transform: scale(1.05);
         }
 
+        /* 表单验证动画 */
+        .form-group.error .input-field input {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.3);
+        }
+
+        .form-group.success .input-field input {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 登录反馈效果 */
+        .login-feedback {
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+        }
+
+        .login-feedback.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .login-feedback.success {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        }
+
+        .login-feedback.error {
+            background: linear-gradient(45deg, #ff4d4d, #ff9800);
+        }
+
+        .login-feedback.info {
+            background: linear-gradient(45deg, #2196F3, #64B5F6);
+        }
+
+        /* 登录按钮加载状态 */
+        .login-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .login-btn.loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.6s linear infinite;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 输入框焦点动画 */
+        .input-field {
+            position: relative;
+        }
+
+        .input-field::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fc00ef, #04eff7);
+            transition: all 0.3s ease;
+        }
+
+        .input-field input:focus + ::before {
+            width: 100%;
+            left: 0;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -581,6 +687,12 @@
             .default-avatar {
                 width: 70px;
                 height: 70px;
+            }
+
+            .login-feedback {
+                right: 10px;
+                left: 10px;
+                top: 80px;
             }
         }
     </style>
@@ -621,6 +733,7 @@
                     <i class="fas fa-user"></i>
                     <input type="text" id="username" placeholder="请输入用户名或邮箱" required>
                 </div>
+                <div class="error-message" id="usernameError"></div>
             </div>
             
             <div class="form-group">
@@ -632,6 +745,7 @@
                         <i class="fas fa-eye"></i>
                     </span>
                 </div>
+                <div class="error-message" id="passwordError"></div>
             </div>
             
             <div class="remember-me">
@@ -845,16 +959,93 @@
                 navAvatar.src = savedAvatar;
             }
             
+            // 表单验证
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            
+            usernameInput.addEventListener('blur', function() {
+                validateUsername();
+            });
+            
+            passwordInput.addEventListener('blur', function() {
+                validatePassword();
+            });
+            
+            function validateUsername() {
+                const value = usernameInput.value.trim();
+                const formGroup = usernameInput.closest('.form-group');
+                
+                if (!value) {
+                    formGroup.classList.remove('success');
+                    formGroup.classList.add('error');
+                    usernameError.textContent = '请输入用户名或邮箱';
+                    usernameError.style.display = 'block';
+                    return false;
+                } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) && !/^[a-zA-Z0-9_]{3,20}$/.test(value)) {
+                    formGroup.classList.remove('success');
+                    formGroup.classList.add('error');
+                    usernameError.textContent = '请输入有效的邮箱或用户名';
+                    usernameError.style.display = 'block';
+                    return false;
+                } else {
+                    formGroup.classList.remove('error');
+                    formGroup.classList.add('success');
+                    usernameError.style.display = 'none';
+                    return true;
+                }
+            }
+            
+            function validatePassword() {
+                const value = passwordInput.value;
+                const formGroup = passwordInput.closest('.form-group');
+                
+                if (!value) {
+                    formGroup.classList.remove('success');
+                    formGroup.classList.add('error');
+                    passwordError.textContent = '请输入密码';
+                    passwordError.style.display = 'block';
+                    return false;
+                } else if (value.length < 6) {
+                    formGroup.classList.remove('success');
+                    formGroup.classList.add('error');
+                    passwordError.textContent = '密码至少需要6个字符';
+                    passwordError.style.display = 'block';
+                    return false;
+                } else {
+                    formGroup.classList.remove('error');
+                    formGroup.classList.add('success');
+                    passwordError.style.display = 'none';
+                    return true;
+                }
+            }
+            
             // 模拟登录状态
             const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.querySelector('.login-btn');
+            
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                const isValidUsername = validateUsername();
+                const isValidPassword = validatePassword();
+                
+                if (!isValidUsername || !isValidPassword) {
+                    showFeedback('请检查表单中的错误', 'error');
+                    return;
+                }
+                
+                // 显示加载状态
+                loginBtn.classList.add('loading');
+                loginBtn.textContent = '登录中';
                 
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 const remember = document.getElementById('remember').checked;
                 
-                if (username && password) {
+                // 模拟登录请求
+                setTimeout(() => {
                     // 保存用户信息
                     localStorage.setItem('tronixUser', JSON.stringify({
                         username,
@@ -862,9 +1053,7 @@
                     }));
                     
                     // 更新导航栏显示
-                    const navLinks = document.querySelector('.nav-links');
                     const loginLink = document.querySelector('.nav-links a[href="login.html"]');
-                    
                     if (loginLink) {
                         loginLink.style.display = 'none';
                     }
@@ -872,12 +1061,39 @@
                     // 显示头像
                     navAvatar.style.display = 'block';
                     
-                    alert('登录成功');
-                } else {
-                    alert('请输入用户名和密码');
-                }
+                    // 恢复按钮状态
+                    loginBtn.classList.remove('loading');
+                    loginBtn.textContent = '登录';
+                    
+                    // 显示成功反馈
+                    showFeedback('登录成功！欢迎回来', 'success');
+                    
+                    // 清空表单
+                    loginForm.reset();
+                    document.querySelectorAll('.form-group').forEach(group => {
+                        group.classList.remove('success', 'error');
+                    });
+                }, 1500);
             });
         });
+
+        // 显示反馈消息
+        function showFeedback(message, type) {
+            let feedback = document.getElementById('loginFeedback');
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.id = 'loginFeedback';
+                feedback.className = 'login-feedback';
+                document.body.appendChild(feedback);
+            }
+            
+            feedback.textContent = message;
+            feedback.className = `login-feedback ${type} show`;
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 3000);
+        }
 
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {

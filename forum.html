@@ -620,6 +620,146 @@
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
+
+        /* 帖子展开/折叠 */
+        .post-item {
+            position: relative;
+        }
+
+        .post-expand-btn {
+            position: absolute;
+            right: 0;
+            top: 1rem;
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .post-expand-btn:hover {
+            color: #04eff7;
+        }
+
+        .post-expand-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .post-item.expanded .post-expand-btn i {
+            transform: rotate(180deg);
+        }
+
+        .post-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 1rem;
+            margin-top: 0;
+            border-top: none;
+        }
+
+        .post-item.expanded .post-details {
+            max-height: 300px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 点赞动画 */
+        .like-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .like-btn.liked {
+            color: #ff4da6;
+        }
+
+        .like-btn.liked i {
+            animation: like-pop 0.3s ease;
+        }
+
+        @keyframes like-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #04eff7;
+            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a0d0;
+            font-size: 1rem;
+        }
+
+        /* 分类筛选 */
+        .category-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border-color: transparent;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 帖子隐藏动画 */
+        .post-item.hidden {
+            opacity: 0;
+            max-height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -648,6 +788,19 @@
             <div class="forum-header fade-in delay-1">
                 <h2 class="forum-title">技术讨论区</h2>
                 <button class="create-btn"><i class="fas fa-plus"></i> 发布新帖</button>
+            </div>
+            
+            <!-- 搜索和筛选 -->
+            <div class="search-container fade-in delay-1">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索帖子标题、作者...">
+            </div>
+            
+            <div class="category-filter fade-in delay-1">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="开发">开发技术</button>
+                <button class="filter-btn" data-category="反馈">问题反馈</button>
+                <button class="filter-btn" data-category="创意">创意分享</button>
             </div>
             
             <div class="forum-categories fade-in delay-2">
@@ -704,7 +857,10 @@
                     </select>
                 </div>
                 
-                <div class="post-item">
+                <div class="post-item" data-category="开发">
+                    <button class="post-expand-btn" onclick="togglePost(this)">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="post-avatar">
                         <i class="fas fa-user"></i>
                     </div>
@@ -728,16 +884,27 @@
                                     <i class="far fa-comment"></i>
                                     <span>32</span>
                                 </div>
-                                <div class="post-stat">
+                                <div class="post-stat like-btn" onclick="toggleLike(this)">
                                     <i class="far fa-heart"></i>
                                     <span>48</span>
                                 </div>
                             </div>
                         </div>
+                        <div class="post-details">
+                            <p style="color: #d0d0ff;">最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。</p>
+                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#Tronix</span>
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#新版本</span>
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#体验分享</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="post-item">
+                <div class="post-item" data-category="反馈">
+                    <button class="post-expand-btn" onclick="togglePost(this)">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="post-avatar">
                         <i class="fas fa-user"></i>
                     </div>
@@ -761,16 +928,26 @@
                                     <i class="far fa-comment"></i>
                                     <span>15</span>
                                 </div>
-                                <div class="post-stat">
+                                <div class="post-stat like-btn" onclick="toggleLike(this)">
                                     <i class="far fa-heart"></i>
                                     <span>23</span>
                                 </div>
                             </div>
                         </div>
+                        <div class="post-details">
+                            <p style="color: #d0d0ff;">最近升级到Windows 11后，发现Tronix在某些场景下会出现卡顿现象。特别是在打开大型文档时，响应速度明显变慢。有没有其他用户遇到类似问题？求解决方案！</p>
+                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#Windows11</span>
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#兼容性</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="post-item">
+                <div class="post-item" data-category="创意">
+                    <button class="post-expand-btn" onclick="togglePost(this)">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="post-avatar">
                         <i class="fas fa-user"></i>
                     </div>
@@ -794,10 +971,18 @@
                                     <i class="far fa-comment"></i>
                                     <span>87</span>
                                 </div>
-                                <div class="post-stat">
+                                <div class="post-stat like-btn" onclick="toggleLike(this)">
                                     <i class="far fa-heart"></i>
                                     <span>124</span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="post-details">
+                            <p style="color: #d0d0ff;">花了两周时间开发了一个Tronix插件，可以实现自动化报表生成功能。支持多种数据源接入，自动生成可视化图表。已经在GitHub上开源，欢迎大家试用和反馈！</p>
+                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#插件开发</span>
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#开源</span>
+                                <span style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">#自动化</span>
                             </div>
                         </div>
                     </div>
@@ -885,7 +1070,63 @@
                     item.style.transform = 'translateX(0)';
                 });
             });
+
+            // 搜索功能
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                document.querySelectorAll('.post-item').forEach(item => {
+                    const title = item.querySelector('.post-title').textContent.toLowerCase();
+                    const author = item.querySelector('.post-author span').textContent.toLowerCase();
+                    
+                    if (title.includes(query) || author.includes(query)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+
+            // 分类筛选
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.dataset.category;
+                    document.querySelectorAll('.post-item').forEach(item => {
+                        if (category === 'all' || item.dataset.category === category) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            });
         });
+
+        // 帖子展开/折叠
+        function togglePost(btn) {
+            const postItem = btn.closest('.post-item');
+            postItem.classList.toggle('expanded');
+        }
+
+        // 点赞功能
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            if (btn.classList.contains('liked')) {
+                count++;
+                icon.className = 'fas fa-heart';
+            } else {
+                count--;
+                icon.className = 'far fa-heart';
+            }
+            countSpan.textContent = count;
+        }
     </script>
     
     <!-- 引入Quill编辑器 -->
