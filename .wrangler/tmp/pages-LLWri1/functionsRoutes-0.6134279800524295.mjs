@@ -1,4 +1,6 @@
 import { onRequestDelete as __api_chat_messages__id__js_onRequestDelete } from "/workspace/functions/api/chat/messages/[id].js"
+import { onRequestPost as __api_comments__id__like_js_onRequestPost } from "/workspace/functions/api/comments/[id]/like.js"
+import { onRequestPost as __api_posts__id__like_js_onRequestPost } from "/workspace/functions/api/posts/[id]/like.js"
 import { onRequestPost as __api_admin_user_status_js_onRequestPost } from "/workspace/functions/api/admin/user-status.js"
 import { onRequestGet as __api_admin_users_js_onRequestGet } from "/workspace/functions/api/admin/users.js"
 import { onRequestPost as __api_auth_change_password_js_onRequestPost } from "/workspace/functions/api/auth/change-password.js"
@@ -35,6 +37,20 @@ export const routes = [
       method: "DELETE",
       middlewares: [],
       modules: [__api_chat_messages__id__js_onRequestDelete],
+    },
+  {
+      routePath: "/api/comments/:id/like",
+      mountPath: "/api/comments/:id",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_comments__id__like_js_onRequestPost],
+    },
+  {
+      routePath: "/api/posts/:id/like",
+      mountPath: "/api/posts/:id",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_posts__id__like_js_onRequestPost],
     },
   {
       routePath: "/api/admin/user-status",

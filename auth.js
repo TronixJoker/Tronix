@@ -98,7 +98,7 @@ const TronixAuth = {
 
                 const mobileMenuBtn = navActions ? navActions.querySelector('.mobile-menu-btn') : null;
                 if (mobileMenuBtn) {
-                    mobileMenuBtn.after(userArea);
+                    mobileMenuBtn.before(userArea);
                 } else if (navActions) {
                     navActions.appendChild(userArea);
                 } else if (navLinks) {

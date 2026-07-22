@@ -123,8 +123,58 @@ async function onRequestDelete({ request, env, params }) {
 }
 __name(onRequestDelete, "onRequestDelete");
 
+// api/comments/[id]/like.js
+async function onRequestPost({ request, env, params }) {
+  const user = await getUserFromRequest(env, request);
+  if (!user) return jsonResponse({ success: false, message: "\u8BF7\u5148\u767B\u5F55" }, 401);
+  const commentId = params.id;
+  const { postId } = await request.json().catch(() => ({}));
+  if (!postId) return jsonResponse({ success: false, message: "\u7F3A\u5C11postId" }, 400);
+  const comments = await getJSON(env, `comments:${postId}`, []);
+  const comment = comments.find((c) => (c.id || c._id) === commentId || (c._id || c.id) === commentId);
+  if (!comment) return jsonResponse({ success: false, message: "\u8BC4\u8BBA\u4E0D\u5B58\u5728" }, 404);
+  if (!comment.likedBy) comment.likedBy = [];
+  const idx = comment.likedBy.indexOf(user.username);
+  let isLiked;
+  if (idx > -1) {
+    comment.likedBy.splice(idx, 1);
+    isLiked = false;
+  } else {
+    comment.likedBy.push(user.username);
+    isLiked = true;
+  }
+  comment.likes = comment.likedBy.length;
+  await putJSON(env, `comments:${postId}`, comments);
+  return jsonResponse({ success: true, likes: comment.likes, isLiked });
+}
+__name(onRequestPost, "onRequestPost");
+
+// api/posts/[id]/like.js
+async function onRequestPost2({ request, env, params }) {
+  const user = await getUserFromRequest(env, request);
+  if (!user) return jsonResponse({ success: false, message: "\u8BF7\u5148\u767B\u5F55" }, 401);
+  const postId = params.id;
+  const posts = await getJSON(env, "posts", []);
+  const post = posts.find((p) => (p.id || p._id) === postId || (p._id || p.id) === postId);
+  if (!post) return jsonResponse({ success: false, message: "\u5E16\u5B50\u4E0D\u5B58\u5728" }, 404);
+  if (!post.likedBy) post.likedBy = [];
+  const idx = post.likedBy.indexOf(user.username);
+  let isLiked;
+  if (idx > -1) {
+    post.likedBy.splice(idx, 1);
+    isLiked = false;
+  } else {
+    post.likedBy.push(user.username);
+    isLiked = true;
+  }
+  post.likes = post.likedBy.length;
+  await putJSON(env, "posts", posts);
+  return jsonResponse({ success: true, likes: post.likes, isLiked });
+}
+__name(onRequestPost2, "onRequestPost");
+
 // api/admin/user-status.js
-async function onRequestPost({ request, env }) {
+async function onRequestPost3({ request, env }) {
   try {
     const { error, user: admin } = await requireAdmin(env, request);
     if (error) return error;
@@ -196,7 +246,7 @@ async function onRequestPost({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost, "onRequestPost");
+__name(onRequestPost3, "onRequestPost");
 
 // api/admin/users.js
 async function onRequestGet({ request, env }) {
@@ -217,7 +267,7 @@ async function onRequestGet({ request, env }) {
 __name(onRequestGet, "onRequestGet");
 
 // api/auth/change-password.js
-async function onRequestPost2({ request, env }) {
+async function onRequestPost4({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -244,10 +294,10 @@ async function onRequestPost2({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost2, "onRequestPost");
+__name(onRequestPost4, "onRequestPost");
 
 // api/auth/login.js
-async function onRequestPost3({ request, env }) {
+async function onRequestPost5({ request, env }) {
   try {
     const { username, password, remember } = await request.json();
     if (!username || !password) {
@@ -280,7 +330,7 @@ async function onRequestPost3({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost3, "onRequestPost");
+__name(onRequestPost5, "onRequestPost");
 
 // api/auth/me.js
 async function onRequestGet2({ request, env }) {
@@ -296,7 +346,7 @@ async function onRequestGet2({ request, env }) {
 __name(onRequestGet2, "onRequestGet");
 
 // api/auth/register.js
-async function onRequestPost4({ request, env }) {
+async function onRequestPost6({ request, env }) {
   try {
     const { username, password, inviteCode } = await request.json();
     if (!username || !password || !inviteCode) {
@@ -331,7 +381,7 @@ async function onRequestPost4({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost4, "onRequestPost");
+__name(onRequestPost6, "onRequestPost");
 
 // api/chat/messages.js
 async function onRequestGet3({ request, env }) {
@@ -344,7 +394,7 @@ async function onRequestGet3({ request, env }) {
   }
 }
 __name(onRequestGet3, "onRequestGet");
-async function onRequestPost5({ request, env }) {
+async function onRequestPost7({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -375,7 +425,7 @@ async function onRequestPost5({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost5, "onRequestPost");
+__name(onRequestPost7, "onRequestPost");
 async function onRequestDelete2({ request, env }) {
   try {
     const user = await getUserFromRequest(env, request);
@@ -417,7 +467,7 @@ async function onRequestDelete2({ request, env }) {
 __name(onRequestDelete2, "onRequestDelete");
 
 // api/chat/pin.js
-async function onRequestPost6({ request, env }) {
+async function onRequestPost8({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
     if (error) return error;
@@ -446,7 +496,7 @@ async function onRequestPost6({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost6, "onRequestPost");
+__name(onRequestPost8, "onRequestPost");
 async function onRequestGet4({ env }) {
   try {
     const pinned = await getJSON(env, "chat_pinned", null);
@@ -491,7 +541,7 @@ async function onRequestGet6({ request, env }) {
 __name(onRequestGet6, "onRequestGet");
 
 // api/posts/pin.js
-async function onRequestPost7({ request, env }) {
+async function onRequestPost9({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
     if (error) return error;
@@ -517,10 +567,10 @@ async function onRequestPost7({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost7, "onRequestPost");
+__name(onRequestPost9, "onRequestPost");
 
 // api/user/avatar.js
-async function onRequestPost8({ request, env }) {
+async function onRequestPost10({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -563,7 +613,7 @@ async function onRequestPost8({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost8, "onRequestPost");
+__name(onRequestPost10, "onRequestPost");
 
 // api/comments/[id].js
 async function onRequestDelete3({ request, env, params }) {
@@ -664,7 +714,7 @@ async function onRequestGet8({ env }) {
   }
 }
 __name(onRequestGet8, "onRequestGet");
-async function onRequestPost9({ request, env }) {
+async function onRequestPost11({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
     if (error) return error;
@@ -683,7 +733,7 @@ async function onRequestPost9({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost9, "onRequestPost");
+__name(onRequestPost11, "onRequestPost");
 async function onRequestDelete5({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
@@ -711,7 +761,7 @@ async function onRequestGet9({ request, env }) {
   }
 }
 __name(onRequestGet9, "onRequestGet");
-async function onRequestPost10({ request, env }) {
+async function onRequestPost12({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -740,7 +790,7 @@ async function onRequestPost10({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost10, "onRequestPost");
+__name(onRequestPost12, "onRequestPost");
 
 // api/init.js
 async function onRequestGet10({ env }) {
@@ -801,7 +851,7 @@ async function onRequestGet11({ request, env }) {
   }
 }
 __name(onRequestGet11, "onRequestGet");
-async function onRequestPost11({ request, env }) {
+async function onRequestPost13({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -850,7 +900,7 @@ async function onRequestPost11({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost11, "onRequestPost");
+__name(onRequestPost13, "onRequestPost");
 
 // api/posts/index.js
 async function onRequestGet12({ request, env }) {
@@ -863,7 +913,7 @@ async function onRequestGet12({ request, env }) {
   }
 }
 __name(onRequestGet12, "onRequestGet");
-async function onRequestPost12({ request, env }) {
+async function onRequestPost14({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -893,7 +943,7 @@ async function onRequestPost12({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost12, "onRequestPost");
+__name(onRequestPost14, "onRequestPost");
 
 // ../.wrangler/tmp/pages-LLWri1/functionsRoutes-0.6134279800524295.mjs
 var routes = [
@@ -905,11 +955,25 @@ var routes = [
     modules: [onRequestDelete]
   },
   {
+    routePath: "/api/comments/:id/like",
+    mountPath: "/api/comments/:id",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost]
+  },
+  {
+    routePath: "/api/posts/:id/like",
+    mountPath: "/api/posts/:id",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost2]
+  },
+  {
     routePath: "/api/admin/user-status",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost]
+    modules: [onRequestPost3]
   },
   {
     routePath: "/api/admin/users",
@@ -923,14 +987,14 @@ var routes = [
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost2]
+    modules: [onRequestPost4]
   },
   {
     routePath: "/api/auth/login",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost3]
+    modules: [onRequestPost5]
   },
   {
     routePath: "/api/auth/me",
@@ -944,7 +1008,7 @@ var routes = [
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost4]
+    modules: [onRequestPost6]
   },
   {
     routePath: "/api/chat/messages",
@@ -965,7 +1029,7 @@ var routes = [
     mountPath: "/api/chat",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost5]
+    modules: [onRequestPost7]
   },
   {
     routePath: "/api/chat/pin",
@@ -979,7 +1043,7 @@ var routes = [
     mountPath: "/api/chat",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost6]
+    modules: [onRequestPost8]
   },
   {
     routePath: "/api/invite/code",
@@ -1000,14 +1064,14 @@ var routes = [
     mountPath: "/api/posts",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost7]
+    modules: [onRequestPost9]
   },
   {
     routePath: "/api/user/avatar",
     mountPath: "/api/user",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost8]
+    modules: [onRequestPost10]
   },
   {
     routePath: "/api/comments/:id",
@@ -1049,7 +1113,7 @@ var routes = [
     mountPath: "/api",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost9]
+    modules: [onRequestPost11]
   },
   {
     routePath: "/api/comments",
@@ -1063,7 +1127,7 @@ var routes = [
     mountPath: "/api/comments",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost10]
+    modules: [onRequestPost12]
   },
   {
     routePath: "/api/init",
@@ -1084,7 +1148,7 @@ var routes = [
     mountPath: "/api/messages",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost11]
+    modules: [onRequestPost13]
   },
   {
     routePath: "/api/posts",
@@ -1098,7 +1162,7 @@ var routes = [
     mountPath: "/api/posts",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost12]
+    modules: [onRequestPost14]
   }
 ];
 
@@ -1595,7 +1659,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-0gP7xM/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-NDSLSq/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -1627,7 +1691,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-0gP7xM/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-NDSLSq/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

@@ -1069,9 +1069,28 @@
             if (!post) return;
             if (!post.likedBy) post.likedBy = [];
             const idx = post.likedBy.indexOf(username);
-            if (idx > -1) { post.likedBy.splice(idx, 1); post.likes = (post.likes || 1) - 1; btn.classList.remove('liked'); btn.querySelector('i').className = 'far fa-heart'; }
-            else { post.likedBy.push(username); post.likes = (post.likes || 0) + 1; btn.classList.add('liked'); btn.querySelector('i').className = 'fas fa-heart'; }
+            const wasLiked = idx > -1;
+            if (wasLiked) {
+                post.likedBy.splice(idx, 1);
+                post.likes = Math.max(0, (post.likes || 1) - 1);
+                btn.classList.remove('liked');
+                btn.querySelector('i').className = 'far fa-heart';
+            } else {
+                post.likedBy.push(username);
+                post.likes = (post.likes || 0) + 1;
+                btn.classList.add('liked');
+                btn.querySelector('i').className = 'fas fa-heart';
+            }
             btn.querySelector('span').textContent = post.likes;
+            apiPost('/posts/' + encodeURIComponent(pid) + '/like', {}).then(res => {
+                if (res && res.success) {
+                    post.likes = res.likes;
+                    post.likedBy = post.likedBy || [];
+                    if (res.isLiked && !post.likedBy.includes(username)) post.likedBy.push(username);
+                    if (!res.isLiked) post.likedBy = post.likedBy.filter(u => u !== username);
+                    btn.querySelector('span').textContent = post.likes;
+                }
+            });
         }
         function toggleCommentLike(btn, cid, pid) {
             event.stopPropagation();
@@ -1584,6 +1603,12 @@
 
             // 聊天每5秒轮询新消息
             setInterval(loadChatMessages, 5000);
+            // 帖子列表轮询（5秒一次，页面可见时）
+            setInterval(() => {
+                if (document.visibilityState === 'visible') {
+                    loadPosts();
+                }
+            }, 5000);
             // 私信轮询（面板打开时）
             setInterval(() => {
                 if (document.getElementById('pmPanel').classList.contains('open')) {
@@ -1591,6 +1616,17 @@
                     loadPmConversations(currentChatUser ? currentChatUser.userId : null);
                 }
             }, 5000);
+            // 页面从后台切换到前台时立即刷新
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    loadPosts();
+                    loadChatMessages();
+                    if (document.getElementById('pmPanel').classList.contains('open')) {
+                        if (currentChatUser) loadPmThread(currentChatUser.userId);
+                        loadPmConversations(currentChatUser ? currentChatUser.userId : null);
+                    }
+                }
+            });
         });
 
         document.addEventListener('keydown', function(e) {
