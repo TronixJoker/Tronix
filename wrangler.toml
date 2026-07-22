@@ -1,0 +1,7 @@
+name = "tronix-website"
+pages_build_output_dir = "."
+compatibility_date = "2026-07-22"
+
+[[kv_namespaces]]
+binding = "TRONIX_DB"
+id = "ca8ba306010e482b9b3f92274ac79de6"

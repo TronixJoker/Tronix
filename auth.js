@@ -1,5 +1,9 @@
 const TronixAuth = {
-    getCurrentUser: function() {
+    getToken: function() {
+        return localStorage.getItem('tronixToken') || sessionStorage.getItem('tronixToken');
+    },
+
+    getCachedUser: function() {
         let session = localStorage.getItem('tronixCurrentUser');
         if (!session) {
             session = sessionStorage.getItem('tronixCurrentUser');
@@ -12,14 +16,54 @@ const TronixAuth = {
         }
     },
 
+    getCurrentUser: async function() {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const res = await fetch('/api/auth/me', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) return null;
+            const data = await res.json();
+            if (data.success && data.user) {
+                const storage = localStorage.getItem('tronixToken') ? localStorage : sessionStorage;
+                storage.setItem('tronixCurrentUser', JSON.stringify(data.user));
+                return data.user;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    },
+
     logout: function() {
+        localStorage.removeItem('tronixToken');
         localStorage.removeItem('tronixCurrentUser');
+        localStorage.removeItem('tronixUser');
+        sessionStorage.removeItem('tronixToken');
         sessionStorage.removeItem('tronixCurrentUser');
+        sessionStorage.removeItem('tronixUser');
         localStorage.removeItem('tronixAvatar');
     },
 
-    updateNavigation: function() {
-        const user = this.getCurrentUser();
+    updateNavigation: async function() {
+        // 先用缓存同步渲染
+        this._renderNav(this.getCachedUser());
+
+        // 异步验证 token 有效性
+        if (this.getToken()) {
+            const validUser = await this.getCurrentUser();
+            if (!validUser) {
+                // token 无效，清除缓存并刷新为未登录状态
+                this.logout();
+                this._renderNav(null);
+            } else {
+                this._renderNav(validUser);
+            }
+        }
+    },
+
+    _renderNav: function(user) {
         const navLinks = document.querySelector('.nav-links');
         const navActions = document.querySelector('.nav-actions');
         if (!navLinks && !navActions) return;
@@ -30,6 +74,11 @@ const TronixAuth = {
         if (user) {
             if (loginLink) loginLink.style.display = 'none';
 
+            const adminLinkHtml = user.role === 'admin'
+                ? `<a href="admin.html" data-action="admin"><i class="fas fa-shield-alt"></i> 管理后台</a>`
+                : '';
+            const avatarSrc = user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=fc00ef&color=fff';
+
             if (!userArea) {
                 userArea = document.createElement('div');
                 userArea.id = 'userAuthArea';
@@ -37,8 +86,9 @@ const TronixAuth = {
                 userArea.innerHTML = `
                     <span class="user-welcome">欢迎，<span class="user-name">${this.escapeHtml(user.username)}</span></span>
                     <div class="user-avatar-container">
-                        <img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=fc00ef&color=fff'}" alt="用户头像" class="user-avatar" id="userAvatar">
+                        <img src="${avatarSrc}" alt="用户头像" class="user-avatar" id="userAvatar">
                         <div class="user-dropdown" id="userDropdown">
+                            ${adminLinkHtml}
                             <a href="#" data-action="profile"><i class="fas fa-user-circle"></i> 个人中心</a>
                             <a href="#" data-action="settings"><i class="fas fa-cog"></i> 账户设置</a>
                             <a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
@@ -85,7 +135,19 @@ const TronixAuth = {
                 const avatarEl = userArea.querySelector('.user-avatar');
                 if (userNameEl) userNameEl.textContent = user.username;
                 if (avatarEl) {
-                    avatarEl.src = user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=fc00ef&color=fff';
+                    avatarEl.src = avatarSrc;
+                }
+                // 同步管理后台链接（缓存与验证后角色可能不同）
+                const dropdown = document.getElementById('userDropdown');
+                const existingAdmin = dropdown ? dropdown.querySelector('a[data-action="admin"]') : null;
+                if (user.role === 'admin' && !existingAdmin && dropdown) {
+                    const adminA = document.createElement('a');
+                    adminA.href = 'admin.html';
+                    adminA.dataset.action = 'admin';
+                    adminA.innerHTML = '<i class="fas fa-shield-alt"></i> 管理后台';
+                    dropdown.insertBefore(adminA, dropdown.firstChild);
+                } else if (user.role !== 'admin' && existingAdmin) {
+                    existingAdmin.remove();
                 }
             }
         } else {

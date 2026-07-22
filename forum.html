@@ -343,6 +343,76 @@
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
 
+        /* 用户操作按钮（删除/私信/管理） */
+        .post-header-actions { margin-left: auto; display: flex; gap: 0.4rem; align-items: center; flex-shrink: 0; }
+        .icon-action-btn { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.3s ease; background: rgba(255,255,255,0.08); color: #a0a0d0; }
+        .icon-action-btn:hover { transform: scale(1.1); }
+        .del-btn { color: #ff6b6b; background: rgba(255,77,77,0.12); }
+        .del-btn:hover { background: rgba(255,77,77,0.3); color: #fff; }
+        .pm-trigger-btn { color: #04eff7; background: rgba(4,239,247,0.12); }
+        .pm-trigger-btn:hover { background: rgba(4,239,247,0.3); color: #fff; }
+        .admin-trigger-btn { color: #fc00ef; background: rgba(252,0,239,0.12); }
+        .admin-trigger-btn:hover { background: rgba(252,0,239,0.3); color: #fff; }
+        .chat-del-btn { align-self: center; width: 26px; height: 26px; font-size: 0.7rem; opacity: 0.55; }
+        .chat-del-btn:hover { opacity: 1; }
+        .comment-top .icon-action-btn { width: 24px; height: 24px; font-size: 0.7rem; }
+
+        /* 管理员徽章 */
+        .admin-badge { display: inline-block; font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 10px; background: linear-gradient(45deg, #fc00ef, #04eff7); color: #fff; vertical-align: middle; margin-left: 0.4rem; font-weight: 600; }
+
+        /* 邀请码 */
+        .invite-code-box { margin-top: 1rem; }
+        .invite-row { display: flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.05); padding: 0.6rem 0.8rem; border-radius: 12px; border: 1px dashed rgba(4,239,247,0.3); }
+        .invite-label { font-size: 0.78rem; color: #a0a0d0; flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.3rem; }
+        .invite-code { flex-grow: 1; font-family: 'Courier New', monospace; font-weight: 700; color: #04eff7; letter-spacing: 1px; font-size: 0.9rem; word-break: break-all; }
+        .invite-copy { background: none; border: none; color: #a0a0d0; cursor: pointer; font-size: 0.85rem; transition: color 0.3s ease; flex-shrink: 0; }
+        .invite-copy:hover { color: #04eff7; }
+        .admin-link { display: block; text-align: center; margin-top: 0.7rem; padding: 0.6rem; border-radius: 12px; background: rgba(252,0,239,0.12); color: #fc00ef; text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: all 0.3s ease; }
+        .admin-link:hover { background: rgba(252,0,239,0.25); transform: translateY(-2px); }
+
+        /* 私信面板 */
+        .pm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2400; display: none; }
+        .pm-overlay.active { display: block; }
+        .pm-panel { position: fixed; top: 0; right: -440px; width: 420px; max-width: 95vw; height: 100vh; background: rgba(15,12,35,0.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 1px solid rgba(252,0,239,0.2); box-shadow: -10px 0 40px rgba(0,0,0,0.5); z-index: 2500; transition: right 0.4s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; }
+        .pm-panel.open { right: 0; }
+        .pm-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .pm-header .pm-title { font-size: 1.1rem; font-weight: 600; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .pm-close { background: none; border: none; color: #a0a0d0; font-size: 1.2rem; cursor: pointer; }
+        .pm-close:hover { color: #ff4d4d; }
+        .pm-body { flex-grow: 1; display: flex; overflow: hidden; }
+        .pm-list { width: 150px; border-right: 1px solid rgba(255,255,255,0.08); overflow-y: auto; flex-shrink: 0; }
+        .pm-conv-item { display: flex; gap: 0.5rem; padding: 0.7rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.3s ease; align-items: center; }
+        .pm-conv-item:hover { background: rgba(255,255,255,0.05); }
+        .pm-conv-item.active { background: rgba(252,0,239,0.12); }
+        .pm-conv-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .pm-conv-info { min-width: 0; flex-grow: 1; }
+        .pm-conv-name { font-size: 0.8rem; font-weight: 600; color: #e0e0ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pm-conv-last { font-size: 0.7rem; color: #8080b0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pm-unread { display: inline-block; background: #ff4d4d; color: #fff; font-size: 0.65rem; border-radius: 10px; padding: 0 0.4rem; margin-left: 0.2rem; }
+        .pm-thread { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+        .pm-thread-header { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .pm-thread-name { font-weight: 600; color: #04eff7; }
+        .pm-messages { flex-grow: 1; overflow-y: auto; padding: 0.7rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .pm-compose { padding: 0.7rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 0.4rem; align-items: center; }
+        .pm-img-btn { background: none; border: none; color: #a0a0d0; cursor: pointer; font-size: 1rem; }
+        .pm-img-btn:hover { color: #04eff7; }
+        .pm-compose input { flex-grow: 1; padding: 0.5rem 0.9rem; border-radius: 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 0.88rem; }
+        .pm-compose input:focus { outline: none; border-color: #04eff7; }
+        .pm-send { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); border: none; color: #fff; cursor: pointer; flex-shrink: 0; transition: all 0.3s ease; }
+        .pm-send:hover { transform: scale(1.1); }
+        #pmImgPreview { padding: 0 0.7rem 0.4rem; }
+        #pmImgPreview img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+
+        /* 管理员用户操作模态框 */
+        .admin-modal-section-title { font-size: 0.85rem; color: #a0a0d0; margin: 0.8rem 0 0.4rem; }
+        .admin-modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        .admin-action-btn { padding: 0.7rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #e0e0ff; cursor: pointer; font-size: 0.88rem; transition: all 0.3s ease; }
+        .admin-action-btn:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+        .admin-action-btn.danger { background: rgba(255,77,77,0.15); color: #ff8a8a; border-color: rgba(255,77,77,0.3); }
+        .admin-action-btn.danger:hover { background: rgba(255,77,77,0.3); color: #fff; }
+        .admin-action-btn.success { background: rgba(0,200,83,0.15); color: #69f0ae; border-color: rgba(0,200,83,0.3); }
+        .admin-action-btn.success:hover { background: rgba(0,200,83,0.3); color: #fff; }
+
         /* 响应式 */
         @media (max-width: 1024px) {
             .forum-container { grid-template-columns: 1fr; }
@@ -541,7 +611,7 @@
                     <textarea id="postContent" placeholder="请输入帖子内容..."></textarea>
                 </div>
                 <div class="form-row">
-                    <label>添加图片（可选，最多4张）</label>
+                    <label>添加图片（可选，最多1张）</label>
                     <div class="img-upload-zone" onclick="document.getElementById('postImageInput').click()">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <p>点击上传图片</p>
@@ -553,6 +623,57 @@
             <div class="modal-foot">
                 <button class="btn-secondary" onclick="closeModal('createPostModal')">取消</button>
                 <button class="btn-primary" onclick="createPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 私信面板 -->
+    <div class="pm-overlay" id="pmOverlay" onclick="closePrivateChat()"></div>
+    <aside class="pm-panel" id="pmPanel">
+        <div class="pm-header">
+            <span class="pm-title"><i class="fas fa-envelope"></i> 私信</span>
+            <button class="pm-close" onclick="closePrivateChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="pm-body">
+            <div class="pm-list" id="pmConvList"></div>
+            <div class="pm-thread">
+                <div class="pm-thread-header" id="pmThreadHeader"><div class="pm-thread-name">选择一个对话</div></div>
+                <div class="pm-messages" id="pmMessages"><p class="no-comments" style="padding:1rem;">从左侧选择对话，或点击其他用户头像发起私信</p></div>
+                <div id="pmImgPreview"></div>
+                <div class="pm-compose">
+                    <button class="pm-img-btn" onclick="document.getElementById('pmImageInput').click()" title="发送图片"><i class="far fa-image"></i></button>
+                    <input type="file" id="pmImageInput" accept="image/*" style="display:none;" onchange="handlePmImageUpload(event)">
+                    <input type="text" id="pmInput" placeholder="输入私信..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendPmMessage();}">
+                    <button class="pm-send" onclick="sendPmMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 管理员用户操作模态框 -->
+    <div class="modal-overlay" id="adminUserModal">
+        <div class="modal-box" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>管理用户 · <span id="adminUserModalName"></span></h3>
+                <button class="modal-close" onclick="closeAdminUserModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-modal-section-title">禁言操作</div>
+                <div class="admin-modal-actions">
+                    <button class="admin-action-btn" onclick="adminUserAction('mute', 1)">禁言 1 天</button>
+                    <button class="admin-action-btn" onclick="adminUserAction('mute', 7)">禁言 7 天</button>
+                    <button class="admin-action-btn" onclick="adminUserAction('mute', 30)">禁言 30 天</button>
+                    <button class="admin-action-btn" onclick="adminUserAction('mute', 0)">永久禁言</button>
+                </div>
+                <div class="admin-modal-section-title">封禁 / 解除</div>
+                <div class="admin-modal-actions">
+                    <button class="admin-action-btn danger" onclick="adminUserAction('ban', 0)">封号</button>
+                    <button class="admin-action-btn success" onclick="adminUserAction('unban', 0)">解封</button>
+                    <button class="admin-action-btn success" onclick="adminUserAction('unmute', 0)">解除禁言</button>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn-secondary" onclick="closeAdminUserModal()">关闭</button>
             </div>
         </div>
     </div>
@@ -573,203 +694,187 @@
     </footer>
 
     <script>
-        const FORUM_STORAGE_KEY = 'tronix_forum_posts';
-        const CHAT_STORAGE_KEY = 'tronix_chat_messages';
-        const ONLINE_USERS_KEY = 'tronix_online_users';
+        const API_BASE = '/api';
         let postImages = [];
         let chatImageToSend = null;
+        let pmImageToSend = null;
+        let allPosts = [];
+        let currentChatUser = null;
+        let pmConversations = [];
 
-        function initData() {
-            if (!localStorage.getItem(FORUM_STORAGE_KEY)) {
-                const defaultPosts = [
-                    {
-                        id: Date.now() - 7200000,
-                        title: 'Tronix v3.3.0测试版新功能体验分享',
-                        author: '技术探索者',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=技术探索者&background=6366f1&color=fff',
-                        category: '开发',
-                        content: '最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。强烈推荐大家试试！',
-                        images: [],
-                        likes: 48, likedBy: [], views: 245,
-                        createdAt: Date.now() - 7200000,
-                        tags: ['Tronix', '新版本', '体验分享'],
-                        comments: [
-                            { id: 1, author: '小白用户', authorAvatar: 'https://ui-avatars.com/api/?name=小白用户&background=10b981&color=fff', content: '请问测试版在哪里下载？我也想试试！', images: [], createdAt: Date.now() - 3600000 },
-                            { id: 2, author: '老司机', authorAvatar: 'https://ui-avatars.com/api/?name=老司机&background=f59e0b&color=fff', content: '已经用了一周了，确实很稳定，比上一版强多了。', images: [], createdAt: Date.now() - 1800000 }
-                        ]
-                    },
-                    {
-                        id: Date.now() - 18000000,
-                        title: '如何解决Windows 11下的兼容性问题？',
-                        author: 'Win用户',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=Win用户&background=f59e0b&color=fff',
-                        category: '反馈',
-                        content: '最近升级到Windows 11后，发现Tronix在某些场景下会出现卡顿现象。特别是在打开大型文档时，响应速度明显变慢。有没有其他用户遇到类似问题？求解决方案！',
-                        images: [],
-                        likes: 23, likedBy: [], views: 187,
-                        createdAt: Date.now() - 18000000,
-                        tags: ['Windows11', '兼容性'],
-                        comments: []
-                    },
-                    {
-                        id: Date.now() - 86400000,
-                        title: '分享一个我开发的Tronix插件',
-                        author: '插件开发者',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=插件开发者&background=8b5cf6&color=fff',
-                        category: '创意',
-                        content: '花了两周时间开发了一个Tronix插件，可以实现自动化报表生成功能。支持多种数据源接入，自动生成可视化图表。已经在GitHub上开源，欢迎大家试用和反馈！',
-                        images: [],
-                        likes: 124, likedBy: [], views: 562,
-                        createdAt: Date.now() - 86400000,
-                        tags: ['插件开发', '开源', '自动化'],
-                        comments: [
-                            { id: 3, author: '技术探索者', authorAvatar: 'https://ui-avatars.com/api/?name=技术探索者&background=6366f1&color=fff', content: '太棒了！正好需要这个功能，马上去试试。', images: [], createdAt: Date.now() - 7200000 }
-                        ]
-                    }
-                ];
-                localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(defaultPosts));
-            }
-            if (!localStorage.getItem(CHAT_STORAGE_KEY)) {
-                const defaultMessages = [
-                    { id: 1, author: '系统公告', authorAvatar: 'https://ui-avatars.com/api/?name=系统&background=ef4444&color=fff', content: '欢迎来到Tronix公共聊天室！请文明交流。', images: [], createdAt: Date.now() - 600000, isSystem: true },
-                    { id: 2, author: '技术达人', authorAvatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff', content: '大家好，有人用过Tronix的API吗？', images: [], createdAt: Date.now() - 300000 },
-                    { id: 3, author: '新手上路', authorAvatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff', content: '刚下载Tronix，正在学习中~', images: [], createdAt: Date.now() - 120000 }
-                ];
-                localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(defaultMessages));
-            }
-            if (!localStorage.getItem(ONLINE_USERS_KEY)) {
-                const defaultUsers = [
-                    { name: '技术达人', avatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff', lastSeen: Date.now() },
-                    { name: '新手上路', avatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff', lastSeen: Date.now() },
-                    { name: '老玩家', avatar: 'https://ui-avatars.com/api/?name=老玩家&background=f59e0b&color=fff', lastSeen: Date.now() }
-                ];
-                localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(defaultUsers));
-            }
+        /* ---------- 认证 & API 工具 ---------- */
+        function getToken() { return localStorage.getItem('tronixToken') || sessionStorage.getItem('tronixToken'); }
+        function getCurrentUser() {
+            try { return JSON.parse(localStorage.getItem('tronixUser') || sessionStorage.getItem('tronixUser') || 'null'); }
+            catch { return null; }
         }
-
-        function getPosts() { try { return JSON.parse(localStorage.getItem(FORUM_STORAGE_KEY)) || []; } catch { return []; } }
-        function savePosts(posts) { localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(posts)); }
-        function getChatMessages() { try { return JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || []; } catch { return []; } }
-        function saveChatMessages(messages) { localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages)); }
-        function getOnlineUsers() { try { return JSON.parse(localStorage.getItem(ONLINE_USERS_KEY)) || []; } catch { return []; } }
-        function saveOnlineUsers(users) { localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(users)); }
-
-        function formatTime(ts) {
-            const diff = Date.now() - ts;
-            if (diff < 60000) return '刚刚';
-            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
-            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
-            if (diff < 2592000000) return Math.floor(diff / 86400000) + '天前';
-            return new Date(ts).toLocaleDateString('zh-CN');
+        function authHeaders() {
+            const h = { 'Content-Type': 'application/json' };
+            const t = getToken();
+            if (t) h['Authorization'] = 'Bearer ' + t;
+            return h;
         }
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        function getCurrentUser() { return typeof TronixAuth !== 'undefined' ? TronixAuth.getCurrentUser() : null; }
-        function getUsername() { const u = getCurrentUser(); return u ? u.username : '游客' + Math.floor(Math.random() * 1000); }
+        async function apiGet(path) {
+            try { const r = await fetch(API_BASE + path, { headers: authHeaders() }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        async function apiPost(path, body) {
+            try { const r = await fetch(API_BASE + path, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        async function apiDelete(path) {
+            try { const r = await fetch(API_BASE + path, { method: 'DELETE', headers: authHeaders() }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        function showFeedback(msg, type) { if (typeof TronixAuth !== 'undefined' && TronixAuth.showFeedback) TronixAuth.showFeedback(msg, type); }
+        function isLoggedIn() { return !!getCurrentUser() && !!getToken(); }
+        function isAdmin() { const u = getCurrentUser(); return !!(u && u.role === 'admin'); }
+        function getUsername() { const u = getCurrentUser(); return u ? u.username : '游客'; }
         function getUserAvatar() {
             const u = getCurrentUser();
             if (u && u.avatar) return u.avatar;
             if (u) return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username) + '&background=6366f1&color=fff';
             return 'https://ui-avatars.com/api/?name=游客&background=6b7280&color=fff';
         }
+        function isBanned() { const u = getCurrentUser(); return !!(u && u.status === 'banned'); }
+        function isMuted() {
+            const u = getCurrentUser(); if (!u || u.status !== 'muted') return false;
+            if (u.muteUntil) { const t = new Date(u.muteUntil).getTime(); if (!isNaN(t) && t < Date.now()) return false; }
+            return true;
+        }
+        function canPost() {
+            if (isBanned()) { showFeedback('您的账号已被封禁', 'error'); return false; }
+            if (isMuted()) { showFeedback('您已被禁言，暂时无法发布内容', 'error'); return false; }
+            return true;
+        }
         function requireLogin() {
-            const u = getCurrentUser();
-            if (!u) {
-                if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请先登录后再操作', 'error');
+            if (!isLoggedIn()) {
+                showFeedback('请先登录后再操作', 'error');
                 setTimeout(() => window.location.href = 'login.html', 1000);
                 return false;
             }
             return true;
         }
+        function checkAuthOnLoad() {
+            if (!isLoggedIn()) { window.location.href = 'login.html'; return false; }
+            if (isBanned()) {
+                showFeedback('您的账号已被封禁', 'error');
+                localStorage.removeItem('tronixToken'); sessionStorage.removeItem('tronixToken');
+                localStorage.removeItem('tronixUser'); sessionStorage.removeItem('tronixUser');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return false;
+            }
+            return true;
+        }
 
+        /* ---------- 格式化 & 字段归一化 ---------- */
+        function formatTime(ts) {
+            if (!ts) return '';
+            const t = typeof ts === 'number' ? ts : new Date(ts).getTime();
+            if (isNaN(t)) return '';
+            const diff = Date.now() - t;
+            if (diff < 0) return '刚刚';
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            if (diff < 2592000000) return Math.floor(diff / 86400000) + '天前';
+            return new Date(t).toLocaleDateString('zh-CN');
+        }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text == null ? '' : text; return div.innerHTML; }
+        const fallbackAvatar = name => 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name || '用户') + '&background=6366f1&color=fff';
+        const postAuthor = p => p.username || p.author || '匿名';
+        const postAvatar = p => p.avatar || p.authorAvatar || fallbackAvatar(postAuthor(p));
+        const postUserId = p => p.userId || p.authorId || p.uid || null;
+        const postImgList = p => Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+        const cmtAuthor = c => c.username || c.author || '匿名';
+        const cmtAvatar = c => c.avatar || c.authorAvatar || fallbackAvatar(cmtAuthor(c));
+        const cmtUserId = c => c.userId || c.authorId || c.uid || null;
+        const cmtImgList = c => Array.isArray(c.images) ? c.images : (c.image ? [c.image] : []);
+        const chatAuthor = m => m.username || m.author || '系统';
+        const chatAvatar = m => m.avatar || m.authorAvatar || fallbackAvatar(chatAuthor(m));
+        const chatUserId = m => m.userId || m.authorId || m.uid || null;
+        const chatImgList = m => Array.isArray(m.images) ? m.images : (m.image ? [m.image] : []);
+        function sameUser(a, b) { return !!(a && b && String(a) === String(b)); }
+        function canDeletePost(p) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(postUserId(p), u.id); }
+        function canDeleteComment(c) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(cmtUserId(c), u.id); }
+        function canDeleteChat(m) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(chatUserId(m), u.id); }
+
+        /* ---------- 帖子 ---------- */
+        async function loadPosts() {
+            const res = await apiGet('/posts');
+            allPosts = (res && res.success && Array.isArray(res.posts)) ? res.posts : [];
+            renderPosts();
+        }
         function renderPosts() {
             const container = document.getElementById('postsList');
             const sortValue = document.getElementById('sortSelect').value;
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const activeCategory = document.querySelector('.filter-tab.active').dataset.category;
-
-            let posts = getPosts();
-            if (activeCategory !== 'all') posts = posts.filter(p => p.category === activeCategory);
-            if (searchQuery) posts = posts.filter(p => p.title.toLowerCase().includes(searchQuery) || p.author.toLowerCase().includes(searchQuery) || p.content.toLowerCase().includes(searchQuery));
-            if (sortValue === 'newest') posts.sort((a, b) => b.createdAt - a.createdAt);
-            else if (sortValue === 'comments') posts.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
-            else if (sortValue === 'likes') posts.sort((a, b) => b.likes - a.likes);
-
-            container.innerHTML = posts.map(post => renderPostCard(post)).join('');
+            let posts = [...allPosts];
+            if (activeCategory !== 'all') posts = posts.filter(p => (p.category || '') === activeCategory);
+            if (searchQuery) posts = posts.filter(p => (p.title || '').toLowerCase().includes(searchQuery) || postAuthor(p).toLowerCase().includes(searchQuery) || (p.content || '').toLowerCase().includes(searchQuery));
+            if (sortValue === 'likes') posts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            else posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            if (!posts.length) { container.innerHTML = '<p class="no-comments">暂无帖子，快来发布第一篇吧~</p>'; return; }
+            container.innerHTML = posts.map(renderPostCard).join('');
+            allPosts.forEach(p => loadCommentsForPost(p.id || p._id));
         }
-
         function renderPostCard(post) {
+            const pid = post.id || post._id;
             const user = getCurrentUser();
-            const username = user ? user.username : '';
-            const isLiked = post.likedBy && post.likedBy.includes(username);
-            const commentCount = post.comments ? post.comments.length : 0;
-
-            const imagesHtml = post.images && post.images.length > 0
-                ? `<div class="post-images-row">${post.images.slice(0, 3).map(img => `<div class="post-img" onclick="openImageViewer('${img}')"><img src="${img}" alt="帖子图片" loading="lazy"></div>`).join('')}</div>` : '';
-
-            const tagsHtml = post.tags && post.tags.length > 0
-                ? `<div class="post-tags-row">${post.tags.map(tag => `<span class="post-tag-pill">#${escapeHtml(tag)}</span>`).join('')}</div>` : '';
-
-            const commentsHtml = post.comments && post.comments.length > 0
-                ? post.comments.map(c => `
-                    <div class="comment-row">
-                        <div class="comment-avatar-sm"><img src="${c.authorAvatar}" alt="${escapeHtml(c.author)}" loading="lazy"></div>
-                        <div class="comment-main">
-                            <div class="comment-top">
-                                <span class="comment-author-name">${escapeHtml(c.author)}</span>
-                                <span class="comment-time">${formatTime(c.createdAt)}</span>
-                            </div>
-                            <div class="comment-text">${escapeHtml(c.content)}</div>
-                            ${c.images && c.images.length > 0 ? `<div class="comment-images-row">${c.images.map(img => `<div class="comment-img-sm" onclick="openImageViewer('${img}')"><img src="${img}" alt="评论图片" loading="lazy"></div>`).join('')}</div>` : ''}
-                        </div>
-                    </div>
-                `).join('')
-                : '<p class="no-comments">暂无评论，来抢沙发吧~</p>';
-
+            const images = postImgList(post);
+            const isLiked = post.likedBy && user && post.likedBy.includes(user.username);
+            const authorId = postUserId(post);
+            const canDelete = canDeletePost(post);
+            const showPm = authorId && (!user || !sameUser(authorId, user.id));
+            const showAdmin = isAdmin() && authorId;
+            const imagesHtml = images.length ? `<div class="post-images-row">${images.slice(0, 3).map(img => `<div class="post-img" onclick="openImageViewer('${img}')"><img src="${img}" alt="帖子图片" loading="lazy"></div>`).join('')}</div>` : '';
+            const tagsHtml = (post.tags && post.tags.length) ? `<div class="post-tags-row">${post.tags.map(tag => `<span class="post-tag-pill">#${escapeHtml(tag)}</span>`).join('')}</div>` : '';
+            const headerActions = (showPm || showAdmin || canDelete) ? `
+                <div class="post-header-actions">
+                    ${showPm ? `<button class="icon-action-btn pm-trigger-btn" data-user-id="${authorId}" data-username="${escapeHtml(postAuthor(post))}" onclick="onPmClick(this)" title="私信作者"><i class="fas fa-envelope"></i></button>` : ''}
+                    ${showAdmin ? `<button class="icon-action-btn admin-trigger-btn" data-user-id="${authorId}" data-username="${escapeHtml(postAuthor(post))}" onclick="onAdminClick(this)" title="管理用户"><i class="fas fa-gavel"></i></button>` : ''}
+                    ${canDelete ? `<button class="icon-action-btn del-btn" onclick="deletePost('${pid}', this)" title="删除帖子"><i class="fas fa-trash"></i></button>` : ''}
+                </div>` : '';
             return `
-                <div class="post-card" data-category="${post.category}" data-id="${post.id}">
+                <div class="post-card" data-category="${escapeHtml(post.category || '')}" data-id="${pid}">
                     <div class="post-header">
-                        <div class="post-author-avatar"><img src="${post.authorAvatar}" alt="${escapeHtml(post.author)}" loading="lazy"></div>
+                        <div class="post-author-avatar" data-user-id="${authorId || ''}" data-username="${escapeHtml(postAuthor(post))}" onclick="onUserAvatarClick(this)" style="cursor:pointer;" title="点击发送私信">
+                            <img src="${postAvatar(post)}" alt="${escapeHtml(postAuthor(post))}" loading="lazy">
+                        </div>
                         <div class="post-meta-info">
                             <h4>${escapeHtml(post.title)}</h4>
                             <div class="post-meta-row">
-                                <span><i class="fas fa-user-circle"></i> ${escapeHtml(post.author)}</span>
+                                <span><i class="fas fa-user-circle"></i> ${escapeHtml(postAuthor(post))}</span>
                                 <span><i class="far fa-clock"></i> ${formatTime(post.createdAt)}</span>
-                                <span><i class="far fa-eye"></i> ${post.views}</span>
-                                <span><i class="far fa-comment"></i> ${commentCount}</span>
+                                <span><i class="far fa-eye"></i> ${post.views || 0}</span>
                             </div>
                         </div>
+                        ${headerActions}
                     </div>
-                    <div class="post-body-content">
-                        <p>${escapeHtml(post.content)}</p>
-                    </div>
+                    <div class="post-body-content"><p>${escapeHtml(post.content)}</p></div>
                     ${imagesHtml}
                     ${tagsHtml}
                     <div class="post-actions-bar">
-                        <div class="post-action like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(this, ${post.id})">
+                        <div class="post-action like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(this, '${pid}')">
                             <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-                            <span>${post.likes}</span>
+                            <span>${post.likes || 0}</span>
                         </div>
-                        <div class="post-action"><i class="far fa-comment"></i> <span>${commentCount}</span></div>
+                        <div class="post-action"><i class="far fa-comment"></i> <span id="comment-action-count-${pid}">…</span></div>
                         <div class="post-action"><i class="far fa-share-square"></i> <span>分享</span></div>
                     </div>
                     <div class="comments-area">
-                        <div class="comments-area-header">
-                            <span>评论 (${commentCount})</span>
-                        </div>
-                        <div class="comments-scroll">
-                            ${commentsHtml}
-                        </div>
+                        <div class="comments-area-header"><span id="comments-count-${pid}">评论加载中...</span></div>
+                        <div class="comments-scroll" id="comments-scroll-${pid}"><p class="no-comments">加载中...</p></div>
                         <div class="comment-compose">
                             <div class="compose-avatar"><img src="${getUserAvatar()}" alt="当前用户" loading="lazy"></div>
                             <div class="compose-fields">
-                                <input type="text" class="compose-input" placeholder="写下你的评论，按Enter快速发送..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
+                                <input type="text" class="compose-input" placeholder="写下你的评论，按Enter快速发送..." onkeydown="handleCommentKeydown(event, '${pid}', this)">
                                 <div class="compose-actions">
-                                    <button class="compose-img-btn" onclick="document.getElementById('commentImage_${post.id}').click()">
-                                        <i class="far fa-image"></i> 图片
-                                    </button>
-                                    <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
-                                    <span class="compose-img-preview" id="commentImgPreview_${post.id}"></span>
-                                    <button class="compose-send-btn" onclick="addComment(${post.id}, this)">发送</button>
+                                    <button class="compose-img-btn" onclick="document.getElementById('commentImage_${pid}').click()"><i class="far fa-image"></i> 图片</button>
+                                    <input type="file" id="commentImage_${pid}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, '${pid}')">
+                                    <span class="compose-img-preview" id="commentImgPreview_${pid}"></span>
+                                    <button class="compose-send-btn" onclick="addComment('${pid}', this)">发送</button>
                                 </div>
                             </div>
                         </div>
@@ -777,50 +882,91 @@
                 </div>
             `;
         }
-
-        function toggleLike(btn, postId) {
-            event.stopPropagation();
+        async function loadCommentsForPost(pid) {
+            const res = await apiGet('/comments?postId=' + encodeURIComponent(pid));
+            const comments = (res && res.success && Array.isArray(res.comments)) ? res.comments : [];
+            const scrollEl = document.getElementById('comments-scroll-' + pid);
+            const headerEl = document.getElementById('comments-count-' + pid);
+            const actionEl = document.getElementById('comment-action-count-' + pid);
+            if (headerEl) headerEl.textContent = '评论 (' + comments.length + ')';
+            if (actionEl) actionEl.textContent = comments.length;
+            if (scrollEl) scrollEl.innerHTML = comments.length ? comments.map(renderComment).join('') : '<p class="no-comments">暂无评论，来抢沙发吧~</p>';
+        }
+        function renderComment(c) {
+            const cid = c.id || c._id;
+            const pid = c.postId;
+            const images = cmtImgList(c);
             const user = getCurrentUser();
-            if (!user) { requireLogin(); return; }
-            const username = user.username;
-            let posts = getPosts();
-            const post = posts.find(p => p.id === postId);
+            const userId = cmtUserId(c);
+            const canDelete = canDeleteComment(c);
+            const showPm = userId && (!user || !sameUser(userId, user.id));
+            const showAdmin = isAdmin() && userId;
+            const imgHtml = images.length ? `<div class="comment-images-row">${images.map(img => `<div class="comment-img-sm" onclick="openImageViewer('${img}')"><img src="${img}" alt="评论图片" loading="lazy"></div>`).join('')}</div>` : '';
+            const actions = (showPm || showAdmin || canDelete) ? `
+                ${showPm ? `<button class="icon-action-btn pm-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onPmClick(this)" title="私信"><i class="fas fa-envelope"></i></button>` : ''}
+                ${showAdmin ? `<button class="icon-action-btn admin-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onAdminClick(this)" title="管理用户"><i class="fas fa-gavel"></i></button>` : ''}
+                ${canDelete ? `<button class="icon-action-btn del-btn" onclick="deleteComment('${cid}', '${pid}')" title="删除评论"><i class="fas fa-trash"></i></button>` : ''}` : '';
+            return `
+                <div class="comment-row">
+                    <div class="comment-avatar-sm" data-user-id="${userId || ''}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onUserAvatarClick(this)" style="cursor:pointer;" title="点击发送私信">
+                        <img src="${cmtAvatar(c)}" alt="${escapeHtml(cmtAuthor(c))}" loading="lazy">
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-top">
+                            <span class="comment-author-name">${escapeHtml(cmtAuthor(c))}</span>
+                            <span class="comment-time">${formatTime(c.createdAt)}</span>
+                            ${actions}
+                        </div>
+                        <div class="comment-text">${escapeHtml(c.content)}</div>
+                        ${imgHtml}
+                    </div>
+                </div>`;
+        }
+        function toggleLike(btn, pid) {
+            event.stopPropagation();
+            if (!requireLogin()) return;
+            const user = getCurrentUser(); const username = user.username;
+            const post = allPosts.find(p => (p.id || p._id) === pid || (p._id || p.id) === pid);
             if (!post) return;
             if (!post.likedBy) post.likedBy = [];
-            const index = post.likedBy.indexOf(username);
-            if (index > -1) { post.likedBy.splice(index, 1); post.likes--; btn.classList.remove('liked'); btn.querySelector('i').className = 'far fa-heart'; }
-            else { post.likedBy.push(username); post.likes++; btn.classList.add('liked'); btn.querySelector('i').className = 'fas fa-heart'; }
+            const idx = post.likedBy.indexOf(username);
+            if (idx > -1) { post.likedBy.splice(idx, 1); post.likes = (post.likes || 1) - 1; btn.classList.remove('liked'); btn.querySelector('i').className = 'far fa-heart'; }
+            else { post.likedBy.push(username); post.likes = (post.likes || 0) + 1; btn.classList.add('liked'); btn.querySelector('i').className = 'fas fa-heart'; }
             btn.querySelector('span').textContent = post.likes;
-            savePosts(posts);
         }
-
         function handleCommentKeydown(event, postId, input) {
             if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); addComment(postId, input); }
         }
-
-        function addComment(postId, el) {
-            if (!requireLogin()) return;
+        async function addComment(postId, el) {
+            if (!requireLogin() || !canPost()) return;
             const card = el.closest('.post-card');
             const input = card.querySelector('.compose-input');
             const content = input.value.trim();
             const previewSpan = document.getElementById('commentImgPreview_' + postId);
-            const imageData = previewSpan ? previewSpan.dataset.image : null;
-            if (!content && !imageData) return;
-
-            let posts = getPosts();
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-            const comment = { id: Date.now(), author: getUsername(), authorAvatar: getUserAvatar(), content: content, images: imageData ? [imageData] : [], createdAt: Date.now() };
-            if (!post.comments) post.comments = [];
-            post.comments.push(comment);
-            savePosts(posts);
-
-            input.value = '';
-            if (previewSpan) { previewSpan.textContent = ''; previewSpan.removeAttribute('data-image'); }
-            renderPosts();
-            if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('评论发布成功！', 'success');
+            const image = previewSpan ? previewSpan.dataset.image : null;
+            if (!content && !image) return;
+            const res = await apiPost('/comments', { postId, content, image: image || '' });
+            if (res && res.success) {
+                input.value = '';
+                if (previewSpan) { previewSpan.textContent = ''; previewSpan.removeAttribute('data-image'); }
+                showFeedback('评论发布成功！', 'success');
+                loadCommentsForPost(postId);
+            } else showFeedback((res && res.message) || '评论失败', 'error');
         }
-
+        async function deletePost(pid, btn) {
+            if (!requireLogin()) return;
+            if (!confirm('确定删除这篇帖子吗？')) return;
+            const res = await apiDelete('/posts/' + encodeURIComponent(pid));
+            if (res && res.success) { showFeedback('帖子已删除', 'success'); loadPosts(); }
+            else showFeedback((res && res.message) || '删除失败', 'error');
+        }
+        async function deleteComment(cid, pid) {
+            if (!requireLogin()) return;
+            if (!confirm('确定删除这条评论吗？')) return;
+            const res = await apiDelete('/comments/' + encodeURIComponent(cid) + '?postId=' + encodeURIComponent(pid));
+            if (res && res.success) { showFeedback('评论已删除', 'success'); loadCommentsForPost(pid); }
+            else showFeedback((res && res.message) || '删除失败', 'error');
+        }
         function handleCommentImageUpload(event, postId) {
             const file = event.target.files[0];
             if (!file) return;
@@ -830,19 +976,18 @@
                 if (previewSpan) { previewSpan.textContent = '已选择1张图片'; previewSpan.dataset.image = e.target.result; }
             };
             reader.readAsDataURL(file);
+            event.target.value = '';
         }
-
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
         function handlePostImageUpload(event) {
             const files = Array.from(event.target.files);
-            const remaining = 4 - postImages.length;
-            files.slice(0, remaining).forEach(file => {
+            files.slice(0, 1 - postImages.length).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = function(e) { postImages.push(e.target.result); renderPostImagePreview(); };
+                reader.onload = function(e) { postImages = [e.target.result]; renderPostImagePreview(); };
                 reader.readAsDataURL(file);
             });
+            event.target.value = '';
         }
         function renderPostImagePreview() {
             const preview = document.getElementById('postImagePreview');
@@ -854,59 +999,65 @@
             `).join('');
         }
         function removePostImage(index) { postImages.splice(index, 1); renderPostImagePreview(); }
-
-        function createPost() {
-            if (!requireLogin()) return;
+        async function createPost() {
+            if (!requireLogin() || !canPost()) return;
             const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
             const content = document.getElementById('postContent').value.trim();
-            if (!title) { if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请输入标题', 'error'); return; }
-            if (!content) { if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请输入内容', 'error'); return; }
-
-            const newPost = { id: Date.now(), title, author: getUsername(), authorAvatar: getUserAvatar(), category, content, images: [...postImages], likes: 0, likedBy: [], views: 0, createdAt: Date.now(), tags: [], comments: [] };
-            let posts = getPosts();
-            posts.unshift(newPost);
-            savePosts(posts);
-
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-            postImages = [];
-            renderPostImagePreview();
-            closeModal('createPostModal');
-            renderPosts();
-            if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('帖子发布成功！', 'success');
+            if (!title) { showFeedback('请输入标题', 'error'); return; }
+            if (!content) { showFeedback('请输入内容', 'error'); return; }
+            const image = postImages.length ? postImages[0] : '';
+            const res = await apiPost('/posts', { title, content, category, image });
+            if (res && res.success) {
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                postImages = []; renderPostImagePreview();
+                closeModal('createPostModal');
+                showFeedback('帖子发布成功！', 'success');
+                loadPosts();
+            } else showFeedback((res && res.message) || '发布失败', 'error');
         }
 
-        /* 聊天室 */
+        /* ---------- 聊天室 ---------- */
         function toggleChatSidebar() {
             const body = document.getElementById('chatSidebarBody');
             const icon = document.getElementById('chatToggleIcon');
             body.classList.toggle('collapsed');
             icon.classList.toggle('rotated');
-            if (!body.classList.contains('collapsed')) { scrollChatToBottom(); clearUnreadBadge(); updateOnlineUsers(); }
+            if (!body.classList.contains('collapsed')) scrollChatToBottom();
         }
-        function renderChatMessages() {
+        async function loadChatMessages() {
+            const res = await apiGet('/chat/messages');
+            const messages = (res && res.success && Array.isArray(res.messages)) ? res.messages : [];
+            renderChatMessages(messages);
+        }
+        function renderChatMessages(messages) {
             const container = document.getElementById('chatMessages');
-            const messages = getChatMessages();
-            const currentUser = getUsername();
+            if (!container) return;
+            const me = getCurrentUser();
             container.innerHTML = messages.map(msg => {
-                const isOwn = msg.author === currentUser && !msg.isSystem;
-                const imagesHtml = msg.images && msg.images.length > 0 ? msg.images.map(img => `<img src="${img}" class="chat-msg-img" onclick="openImageViewer('${img}')" loading="lazy">`).join('') : '';
+                const isOwn = me && sameUser(chatUserId(msg), me.id);
+                const images = chatImgList(msg);
+                const imgHtml = images.length ? images.map(img => `<img src="${img}" class="chat-msg-img" onclick="openImageViewer('${img}')" loading="lazy">`).join('') : '';
+                const delBtn = canDeleteChat(msg) ? `<button class="icon-action-btn del-btn chat-del-btn" onclick="deleteChatMessage('${msg.id || msg._id}')" title="删除"><i class="fas fa-trash"></i></button>` : '';
                 return `
                     <div class="chat-msg ${isOwn ? 'own' : ''}">
-                        <div class="chat-msg-avatar"><img src="${msg.authorAvatar}" alt="${escapeHtml(msg.author)}" loading="lazy"></div>
+                        <div class="chat-msg-avatar" data-user-id="${chatUserId(msg) || ''}" data-username="${escapeHtml(chatAuthor(msg))}" onclick="onUserAvatarClick(this)" style="cursor:pointer;">
+                            <img src="${chatAvatar(msg)}" alt="${escapeHtml(chatAuthor(msg))}" loading="lazy">
+                        </div>
                         <div class="chat-msg-content">
-                            ${!isOwn ? `<div class="chat-msg-user">${escapeHtml(msg.author)}</div>` : ''}
-                            <div class="chat-msg-bubble">${escapeHtml(msg.content)}${imagesHtml}</div>
+                            ${!isOwn ? `<div class="chat-msg-user">${escapeHtml(chatAuthor(msg))}</div>` : ''}
+                            <div class="chat-msg-bubble">${escapeHtml(msg.content)}${imgHtml}</div>
                             <div class="chat-msg-time">${formatTime(msg.createdAt)}</div>
                         </div>
+                        ${delBtn}
                     </div>
                 `;
             }).join('');
+            renderOnlineUsers(messages);
             scrollChatToBottom();
         }
-        function scrollChatToBottom() { const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
-        function clearUnreadBadge() { const badge = document.getElementById('chatUnreadBadge'); if (badge) { badge.style.display = 'none'; badge.textContent = '0'; } localStorage.setItem('tronix_chat_last_read', Date.now().toString()); }
+        function scrollChatToBottom() { const c = document.getElementById('chatMessages'); if (c) c.scrollTop = c.scrollHeight; }
         function handleChatKeydown(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); } }
         function handleChatImageUpload(event) {
             const file = event.target.files[0];
@@ -914,54 +1065,55 @@
             const reader = new FileReader();
             reader.onload = function(e) { chatImageToSend = e.target.result; const input = document.getElementById('chatInput'); input.placeholder = '已选择图片，输入文字（可选）后发送...'; input.focus(); };
             reader.readAsDataURL(file);
+            event.target.value = '';
         }
-        function sendChatMessage() {
+        async function sendChatMessage() {
+            if (!requireLogin() || !canPost()) return;
             const input = document.getElementById('chatInput');
             const content = input.value.trim();
             if (!content && !chatImageToSend) return;
-            if (!getCurrentUser()) { requireLogin(); return; }
-            const message = { id: Date.now(), author: getUsername(), authorAvatar: getUserAvatar(), content, images: chatImageToSend ? [chatImageToSend] : [], createdAt: Date.now(), isSystem: false };
-            let messages = getChatMessages();
-            messages.push(message);
-            if (messages.length > 100) messages = messages.slice(-100);
-            saveChatMessages(messages);
-            input.value = ''; chatImageToSend = null; input.placeholder = '输入消息...';
-            renderChatMessages();
-            updateUserOnline();
+            const res = await apiPost('/chat/messages', { content, image: chatImageToSend || '' });
+            if (res && res.success) {
+                input.value = ''; chatImageToSend = null; input.placeholder = '输入消息...';
+                loadChatMessages();
+            } else showFeedback((res && res.message) || '发送失败', 'error');
         }
-        function updateUserOnline() {
-            const username = getUsername();
-            const avatar = getUserAvatar();
-            let users = getOnlineUsers();
-            const idx = users.findIndex(u => u.name === username);
-            if (idx > -1) { users[idx].lastSeen = Date.now(); users[idx].avatar = avatar; }
-            else { users.push({ name: username, avatar, lastSeen: Date.now() }); }
-            users = users.filter(u => Date.now() - u.lastSeen < 300000);
-            saveOnlineUsers(users);
-            renderOnlineUsers();
+        async function deleteChatMessage(mid) {
+            if (!requireLogin()) return;
+            if (!confirm('确定删除这条消息吗？')) return;
+            const res = await apiDelete('/chat/messages/' + encodeURIComponent(mid));
+            if (res && res.success) { showFeedback('消息已删除', 'success'); loadChatMessages(); }
+            else showFeedback((res && res.message) || '删除失败', 'error');
         }
-        function renderOnlineUsers() {
+        function renderOnlineUsers(messages) {
             const container = document.getElementById('onlineUsersList');
             const countEl = document.getElementById('chatOnlineCount');
-            let users = getOnlineUsers().filter(u => Date.now() - u.lastSeen < 300000);
-            if (countEl) countEl.textContent = users.length + '人在线';
-            if (container) container.innerHTML = users.map(u => `<div class="chat-online-user"><span class="chat-online-dot"></span><span>${escapeHtml(u.name)}</span></div>`).join('');
+            const seen = new Map();
+            (messages || []).forEach(m => { if (m.isSystem) return; const id = chatUserId(m) || chatAuthor(m); if (id) seen.set(id, chatAuthor(m)); });
+            const users = Array.from(seen.values()).slice(0, 12);
+            if (countEl) countEl.textContent = (users.length || 1) + '人在线';
+            if (container) container.innerHTML = users.map(name => `<div class="chat-online-user"><span class="chat-online-dot"></span><span>${escapeHtml(name)}</span></div>`).join('');
         }
-        function updateOnlineUsers() { updateUserOnline(); }
 
+        /* ---------- 图片查看器 ---------- */
         function openImageViewer(src) { document.getElementById('viewerImage').src = src; document.getElementById('imageViewer').classList.add('active'); }
         function closeImageViewer() { document.getElementById('imageViewer').classList.remove('active'); }
 
+        /* ---------- 侧边栏资料 + 邀请码 ---------- */
         function updateSidebarProfile() {
             const container = document.getElementById('sidebarProfile');
             const user = getCurrentUser();
             if (user) {
+                const adminBadge = user.role === 'admin' ? ' <span class="admin-badge">管理员</span>' : '';
                 container.innerHTML = `
-                    <div class="profile-avatar-lg"><img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff'}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
-                    <div class="profile-name">${escapeHtml(user.username)}</div>
-                    <div class="profile-role">欢迎回来！</div>
+                    <div class="profile-avatar-lg"><img src="${user.avatar || fallbackAvatar(user.username)}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+                    <div class="profile-name">${escapeHtml(user.username)}${adminBadge}</div>
+                    <div class="profile-role">${user.role === 'admin' ? '管理员账户' : '欢迎回来！'}</div>
                     <button class="profile-btn" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
+                    <div class="invite-code-box" id="inviteCodeBox"><div class="invite-row"><span class="invite-label"><i class="fas fa-ticket-alt"></i> 邀请码加载中...</span></div></div>
+                    ${user.role === 'admin' ? '<a class="admin-link" href="admin.html"><i class="fas fa-shield-alt"></i> 进入管理后台</a>' : ''}
                 `;
+                loadInviteCode();
             } else {
                 container.innerHTML = `
                     <div class="profile-avatar-lg"><i class="fas fa-user" style="font-size:2rem;"></i></div>
@@ -971,7 +1123,136 @@
                 `;
             }
         }
+        async function loadInviteCode() {
+            const res = await apiGet('/invite/code');
+            const box = document.getElementById('inviteCodeBox');
+            if (!box) return;
+            if (res && res.success && res.inviteCode) {
+                box.innerHTML = `
+                    <div class="invite-row">
+                        <span class="invite-label"><i class="fas fa-ticket-alt"></i> 我的邀请码</span>
+                        <span class="invite-code" id="inviteCodeText">${escapeHtml(res.inviteCode)}</span>
+                        <button class="invite-copy" onclick="copyInviteCode()" title="复制"><i class="fas fa-copy"></i></button>
+                    </div>`;
+            } else {
+                box.innerHTML = `<div class="invite-row"><span class="invite-label">邀请码暂不可用</span></div>`;
+            }
+        }
+        function copyInviteCode() {
+            const txt = document.getElementById('inviteCodeText');
+            if (!txt) return;
+            const code = txt.textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => showFeedback('邀请码已复制', 'success')).catch(() => fallbackCopy(code));
+            } else fallbackCopy(code);
+        }
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); showFeedback('邀请码已复制', 'success'); } catch { showFeedback('复制失败，请手动复制', 'error'); }
+            document.body.removeChild(ta);
+        }
 
+        /* ---------- 用户头像点击 / 私信 / 管理入口 ---------- */
+        function onUserAvatarClick(el) {
+            const userId = el.dataset.userId;
+            const username = el.dataset.username || '用户';
+            if (!userId) return;
+            const u = getCurrentUser();
+            if (!u) { requireLogin(); return; }
+            if (sameUser(userId, u.id)) return;
+            openPrivateChat(userId, username);
+        }
+        function onPmClick(el) { openPrivateChat(el.dataset.userId, el.dataset.username || '用户'); }
+        function onAdminClick(el) { openAdminUserModal(el.dataset.userId, el.dataset.username || '用户'); }
+        function openPrivateChat(userId, username) {
+            if (!requireLogin()) return;
+            const panel = document.getElementById('pmPanel');
+            const overlay = document.getElementById('pmOverlay');
+            panel.classList.add('open'); overlay.classList.add('active');
+            currentChatUser = { userId, username };
+            document.getElementById('pmThreadHeader').innerHTML = `<div class="pm-thread-name">${escapeHtml(username)}</div>`;
+            document.getElementById('pmMessages').innerHTML = '<p class="no-comments" style="padding:1rem;">加载中...</p>';
+            document.getElementById('pmInput').value = '';
+            document.getElementById('pmImgPreview').innerHTML = '';
+            pmImageToSend = null;
+            loadPmConversations(userId);
+            loadPmThread(userId);
+        }
+        function closePrivateChat() {
+            document.getElementById('pmPanel').classList.remove('open');
+            document.getElementById('pmOverlay').classList.remove('active');
+            currentChatUser = null;
+        }
+        async function loadPmConversations(activeUserId) {
+            const res = await apiGet('/messages');
+            pmConversations = (res && res.success && Array.isArray(res.conversations)) ? res.conversations : [];
+            const list = document.getElementById('pmConvList');
+            if (!pmConversations.length) { list.innerHTML = '<p class="no-comments" style="padding:1rem;">暂无对话</p>'; return; }
+            list.innerHTML = pmConversations.map(c => `
+                <div class="pm-conv-item ${activeUserId && sameUser(c.userId, activeUserId) ? 'active' : ''}" data-user-id="${c.userId}" data-username="${escapeHtml(c.username)}" onclick="onPmConvClick(this)">
+                    <img src="${c.avatar || fallbackAvatar(c.username)}" class="pm-conv-avatar" alt="${escapeHtml(c.username)}">
+                    <div class="pm-conv-info">
+                        <div class="pm-conv-name">${escapeHtml(c.username)}${c.unreadCount > 0 ? `<span class="pm-unread">${c.unreadCount}</span>` : ''}</div>
+                        <div class="pm-conv-last">${escapeHtml(c.lastMessage || '')}</div>
+                    </div>
+                </div>`).join('');
+        }
+        function onPmConvClick(el) { openPrivateChat(el.dataset.userId, el.dataset.username || '用户'); }
+        async function loadPmThread(userId) {
+            const res = await apiGet('/messages/' + encodeURIComponent(userId));
+            const messages = (res && res.success && Array.isArray(res.messages)) ? res.messages : [];
+            const me = getCurrentUser();
+            const container = document.getElementById('pmMessages');
+            container.innerHTML = messages.length ? messages.map(m => {
+                const isOwn = me && sameUser(m.senderId || m.userId, me.id);
+                const img = m.image ? `<img src="${m.image}" class="chat-msg-img" onclick="openImageViewer('${m.image}')" loading="lazy">` : '';
+                return `<div class="chat-msg ${isOwn ? 'own' : ''}"><div class="chat-msg-content"><div class="chat-msg-bubble">${escapeHtml(m.content || '')}${img}</div><div class="chat-msg-time">${formatTime(m.createdAt)}</div></div></div>`;
+            }).join('') : '<p class="no-comments" style="padding:1rem;">还没有消息，发条私信打个招呼吧~</p>';
+            container.scrollTop = container.scrollHeight;
+        }
+        function handlePmImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pmImageToSend = e.target.result;
+                document.getElementById('pmImgPreview').innerHTML = `<img src="${pmImageToSend}" alt="预览"><button class="img-preview-remove" style="position:relative;top:-30px;left:-10px;" onclick="clearPmImage()"><i class="fas fa-times"></i></button>`;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+        function clearPmImage() { pmImageToSend = null; document.getElementById('pmImgPreview').innerHTML = ''; }
+        async function sendPmMessage() {
+            if (!requireLogin() || !canPost() || !currentChatUser) return;
+            const input = document.getElementById('pmInput');
+            const content = input.value.trim();
+            if (!content && !pmImageToSend) return;
+            const res = await apiPost('/messages', { receiverId: currentChatUser.userId, content, image: pmImageToSend || '' });
+            if (res && res.success) {
+                input.value = ''; clearPmImage();
+                loadPmThread(currentChatUser.userId); loadPmConversations(currentChatUser.userId);
+            } else showFeedback((res && res.message) || '发送失败', 'error');
+        }
+
+        /* ---------- 管理员用户操作 ---------- */
+        function openAdminUserModal(userId, username) {
+            if (!isAdmin()) return;
+            const m = document.getElementById('adminUserModal');
+            document.getElementById('adminUserModalName').textContent = username;
+            m.dataset.userId = userId;
+            m.classList.add('active');
+        }
+        function closeAdminUserModal() { document.getElementById('adminUserModal').classList.remove('active'); }
+        async function adminUserAction(action, duration) {
+            const m = document.getElementById('adminUserModal');
+            const userId = m.dataset.userId;
+            if (!userId) return;
+            const res = await apiPost('/admin/user-status', { userId, action, duration });
+            if (res && res.success) { showFeedback('操作成功', 'success'); closeAdminUserModal(); }
+            else showFeedback((res && res.message) || '操作失败', 'error');
+        }
+
+        /* ---------- 导航 ---------- */
         function toggleMobileMenu() { const navLinks = document.getElementById('navLinks'); navLinks.classList.toggle('active'); }
         document.addEventListener('click', function(e) {
             const navLinks = document.getElementById('navLinks');
@@ -981,14 +1262,29 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.opacity = '1';
-            initData();
-            renderPosts();
-            updateSidebarProfile();
-            renderChatMessages();
-            renderOnlineUsers();
-            updateUserOnline();
+            if (!checkAuthOnLoad()) return;
 
-            document.getElementById('openCreateBtn').addEventListener('click', function() { if (!requireLogin()) return; openModal('createPostModal'); });
+            // 让旧版 auth.js 的导航头像也能识别当前用户
+            const me = getCurrentUser();
+            if (me && !localStorage.getItem('tronixCurrentUser') && !sessionStorage.getItem('tronixCurrentUser')) {
+                const store = localStorage.getItem('tronixUser') ? localStorage : sessionStorage;
+                store.setItem('tronixCurrentUser', JSON.stringify(me));
+            }
+            if (typeof TronixAuth !== 'undefined') {
+                const origLogout = TronixAuth.logout;
+                TronixAuth.logout = function() {
+                    localStorage.removeItem('tronixToken'); sessionStorage.removeItem('tronixToken');
+                    localStorage.removeItem('tronixUser'); sessionStorage.removeItem('tronixUser');
+                    if (origLogout) origLogout.call(this);
+                };
+                if (TronixAuth.updateNavigation) TronixAuth.updateNavigation();
+            }
+
+            updateSidebarProfile();
+            loadPosts();
+            loadChatMessages();
+
+            document.getElementById('openCreateBtn').addEventListener('click', function() { if (!requireLogin() || !canPost()) return; openModal('createPostModal'); });
             document.getElementById('sortSelect').addEventListener('change', renderPosts);
             document.getElementById('searchInput').addEventListener('input', renderPosts);
             document.querySelectorAll('.filter-tab').forEach(btn => {
@@ -1008,23 +1304,21 @@
             window.addEventListener('scroll', function() { if (window.pageYOffset > 100) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); });
 
             document.getElementById('createPostModal').addEventListener('click', function(e) { if (e.target === this) closeModal('createPostModal'); });
+            document.getElementById('adminUserModal').addEventListener('click', function(e) { if (e.target === this) closeAdminUserModal(); });
 
-            setInterval(() => { const expanded = !document.getElementById('chatSidebarBody').classList.contains('collapsed'); renderChatMessages(); renderOnlineUsers(); if (expanded) scrollChatToBottom(); }, 3000);
-            setInterval(updateUserOnline, 30000);
-
-            window.addEventListener('storage', function(e) {
-                if (e.key === CHAT_STORAGE_KEY) {
-                    renderChatMessages();
-                    const chatExpanded = !document.getElementById('chatSidebarBody').classList.contains('collapsed');
-                    if (!chatExpanded) { const badge = document.getElementById('chatUnreadBadge'); if (badge) { let count = parseInt(badge.textContent) || 0; count++; badge.textContent = count; badge.style.display = 'block'; } }
+            // 聊天每5秒轮询新消息
+            setInterval(loadChatMessages, 5000);
+            // 私信轮询（面板打开时）
+            setInterval(() => {
+                if (document.getElementById('pmPanel').classList.contains('open')) {
+                    if (currentChatUser) loadPmThread(currentChatUser.userId);
+                    loadPmConversations(currentChatUser ? currentChatUser.userId : null);
                 }
-                if (e.key === FORUM_STORAGE_KEY) renderPosts();
-                if (e.key === ONLINE_USERS_KEY) renderOnlineUsers();
-            });
+            }, 5000);
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal('createPostModal'); closeImageViewer(); }
+            if (e.key === 'Escape') { closeModal('createPostModal'); closeAdminUserModal(); closeImageViewer(); closePrivateChat(); }
         });
     </script>
     <script src="auth.js"></script>

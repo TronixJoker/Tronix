@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tronix | 管理后台 · 控制中心</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #fc00ef, #04eff7); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff4df0, #3df7ff); }
+
+        body {
+            position: relative; min-height: 100vh; color: #fff; line-height: 1.6;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow-x: hidden; opacity: 0; transition: opacity 0.5s ease;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(59,0,70,0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0,70,112,0.4) 0%, transparent 40%),
+                url(computer-bg.png) center/cover no-repeat;
+            filter: brightness(0.3) contrast(1.3); transition: filter 0.5s;
+        }
+
+        /* 液态玻璃导航栏 */
+        nav {
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 95vw; max-width: 1400px;
+            background: rgba(10,8,25,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 0.9rem 2rem; display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        nav.scrolled { top: 0; width: 100%; max-width: 100%; border-radius: 0; padding: 0.7rem 5%; background: rgba(10,8,25,0.85); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+        .nav-links a { font-weight: 500; color: #d0d0ff; display: inline-block; text-decoration: none; position: relative; padding: 0.5rem 1rem; font-size: 0.95rem; transition: all 0.3s ease; border-radius: 10px; }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .nav-links a::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: linear-gradient(90deg, #fc00ef, #04eff7); transition: width 0.3s ease; border-radius: 2px; }
+        .nav-links a:hover::after { width: 30px; }
+        .nav-actions { display: flex; align-items: center; gap: 0.8rem; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 0.5rem; }
+
+        /* 主内容 */
+        .admin-hero { padding: 120px 5% 1rem; text-align: center; }
+        .admin-hero h1 {
+            font-size: 2.6rem; margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .admin-hero p { color: #c0c0ff; font-size: 1.05rem; }
+
+        .admin-container { max-width: 1400px; margin: 1.5rem auto 3rem; padding: 0 5%; }
+
+        /* 选项卡 */
+        .tab-bar { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 0.7rem 1.4rem; border-radius: 14px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1); color: #d0d0ff; font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .tab-btn.active { background: linear-gradient(45deg, #fc00ef, #04eff7); border-color: transparent; color: #fff; box-shadow: 0 4px 18px rgba(252,0,239,0.3); }
+
+        /* 面板 */
+        .panel {
+            background: rgba(15,12,35,0.5); border-radius: 20px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            padding: 1.5rem; animation: fadeIn 0.4s ease;
+        }
+        .panel.hidden { display: none; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; gap: 1rem; }
+        .panel-header h2 { font-size: 1.35rem; color: #e0e0ff; display: inline-flex; align-items: center; gap: 0.6rem; }
+        .panel-header h2 i { background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .panel-toolbar { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+        .search-box { position: relative; }
+        .search-box input {
+            width: 280px; max-width: 70vw; padding: 0.7rem 1rem 0.7rem 2.6rem; border-radius: 30px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.92rem; transition: all 0.3s ease;
+        }
+        .search-box input:focus { outline: none; border-color: #04eff7; box-shadow: 0 0 15px rgba(4,239,247,0.2); background: rgba(255,255,255,0.12); }
+        .search-box i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #a0a0d0; font-size: 0.95rem; }
+        .tool-btn {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #d0d0ff;
+            padding: 0.6rem 1.1rem; border-radius: 12px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .tool-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+        /* 表格 */
+        .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); }
+        table { width: 100%; border-collapse: collapse; min-width: 880px; }
+        thead th {
+            background: rgba(255,255,255,0.04); color: #b0b0e0; font-size: 0.85rem; font-weight: 600;
+            text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+            white-space: nowrap; position: sticky; top: 0;
+        }
+        tbody td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; color: #d8d8f0; vertical-align: middle; }
+        tbody tr { transition: background 0.2s ease; }
+        tbody tr:hover { background: rgba(252,0,239,0.05); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .user-cell { display: flex; align-items: center; gap: 0.7rem; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-name { font-weight: 600; color: #fff; }
+        .user-id { color: #8080b0; font-size: 0.78rem; }
+
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .badge-admin { background: rgba(252,0,239,0.18); color: #ff7df0; border: 1px solid rgba(252,0,239,0.3); }
+        .badge-user { background: rgba(99,102,241,0.18); color: #a0a8ff; border: 1px solid rgba(99,102,241,0.3); }
+        .badge-active { background: rgba(0,200,83,0.18); color: #5cf0a0; border: 1px solid rgba(0,200,83,0.3); }
+        .badge-muted { background: rgba(255,152,0,0.18); color: #ffc266; border: 1px solid rgba(255,152,0,0.3); }
+        .badge-banned { background: rgba(255,23,68,0.18); color: #ff7a85; border: 1px solid rgba(255,23,68,0.3); }
+
+        .invite-code { font-family: 'Courier New', monospace; color: #04eff7; letter-spacing: 0.5px; }
+
+        .row-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .act-btn {
+            padding: 0.35rem 0.7rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.25s ease;
+            border: 1px solid transparent; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.3rem;
+        }
+        .act-btn.warn { background: rgba(255,152,0,0.15); color: #ffc266; border-color: rgba(255,152,0,0.3); }
+        .act-btn.warn:hover { background: rgba(255,152,0,0.3); }
+        .act-btn.danger { background: rgba(255,23,68,0.15); color: #ff7a85; border-color: rgba(255,23,68,0.3); }
+        .act-btn.danger:hover { background: rgba(255,23,68,0.3); }
+        .act-btn.success { background: rgba(0,200,83,0.15); color: #5cf0a0; border-color: rgba(0,200,83,0.3); }
+        .act-btn.success:hover { background: rgba(0,200,83,0.3); }
+        .act-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* 帖子管理卡片 */
+        .post-card-admin {
+            background: rgba(25,20,55,0.7); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3); margin-bottom: 1.2rem; padding: 1.2rem 1.4rem;
+            transition: all 0.3s ease;
+        }
+        .post-card-admin:hover { border-color: rgba(252,0,239,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .post-card-admin .pc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; }
+        .post-card-admin .pc-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
+        .post-card-admin .pc-meta { color: #a0a0d0; font-size: 0.85rem; margin-bottom: 0.6rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .post-card-admin .pc-content { color: #d0d0ff; font-size: 0.92rem; line-height: 1.6; max-height: 4.8em; overflow: hidden; }
+        .post-card-admin .pc-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); }
+        .post-card-admin .pc-cat { background: rgba(99,102,241,0.18); color: #c0c0ff; padding: 0.2rem 0.7rem; border-radius: 12px; font-size: 0.78rem; }
+
+        .empty-state { text-align: center; padding: 3rem 1rem; color: #8080b0; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.5; }
+        .empty-state p { font-size: 0.95rem; }
+
+        .loading-row { text-align: center; padding: 2rem; color: #8080b0; }
+        .loading-row i { animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card {
+            background: rgba(20,15,45,0.6); border-radius: 16px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+        .stat-icon.pink { background: rgba(252,0,239,0.18); color: #ff7df0; }
+        .stat-icon.cyan { background: rgba(4,239,247,0.18); color: #4df7ff; }
+        .stat-icon.green { background: rgba(0,200,83,0.18); color: #5cf0a0; }
+        .stat-icon.red { background: rgba(255,23,68,0.18); color: #ff7a85; }
+        .stat-info .num { font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1.2; }
+        .stat-info .label { font-size: 0.82rem; color: #a0a0d0; }
+
+        /* 反馈提示 */
+        .feedback-toast {
+            position: fixed; top: 100px; right: 30px; padding: 0.9rem 1.6rem; border-radius: 12px;
+            color: #fff; font-weight: 600; z-index: 10000; opacity: 0; transform: translateX(60px);
+            transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            max-width: 320px;
+        }
+        .feedback-toast.show { opacity: 1; transform: translateX(0); }
+        .feedback-toast.success { background: linear-gradient(45deg, #00c853, #00e676); }
+        .feedback-toast.error { background: linear-gradient(45deg, #ff1744, #ff5252); }
+        .feedback-toast.info { background: linear-gradient(45deg, #fc00ef, #04eff7); }
+
+        footer { position: relative; padding: 2rem 5%; text-align: center; background: rgba(10,8,25,0.6); backdrop-filter: blur(10px); border-top: 1px solid rgba(252,0,239,0.15); }
+        .copyright { font-size: 0.9rem; color: #a0a0d0; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            nav { padding: 0.7rem 1rem; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; background: rgba(10,8,25,0.95); backdrop-filter: blur(20px); padding: 1rem; border-radius: 0 0 16px 16px; border: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; }
+            .nav-links.active { display: flex; }
+            .nav-links a { width: 100%; }
+            .mobile-menu-btn { display: block; }
+            .admin-hero { padding-top: 100px; }
+            .admin-hero h1 { font-size: 1.9rem; }
+            .panel { padding: 1rem; }
+            .search-box input { width: 100%; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="logo">Tronix</div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">首页</a>
+            <a href="forum.html">论坛</a>
+            <a href="tools.html">工具</a>
+            <a href="download.html">下载</a>
+            <a href="admin.html">管理后台</a>
+            <a href="login.html">登录</a>
+        </div>
+        <div class="nav-actions">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="admin-hero">
+        <h1><i class="fas fa-shield-alt"></i> 管理后台</h1>
+        <p>用户与内容控制中心 · 维护社区秩序</p>
+    </div>
+
+    <div class="admin-container">
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon cyan"><i class="fas fa-users"></i></div>
+                <div class="stat-info"><div class="num" id="statTotal">-</div><div class="label">用户总数</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-user-check"></i></div>
+                <div class="stat-info"><div class="num" id="statActive">-</div><div class="label">正常用户</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pink"><i class="fas fa-volume-mute"></i></div>
+                <div class="stat-info"><div class="num" id="statMuted">-</div><div class="label">禁言中</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-ban"></i></div>
+                <div class="stat-info"><div class="num" id="statBanned">-</div><div class="label">已封号</div></div>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="users" onclick="switchTab('users')"><i class="fas fa-user-cog"></i> 用户管理</button>
+            <button class="tab-btn" data-tab="posts" onclick="switchTab('posts')"><i class="fas fa-file-alt"></i> 帖子管理</button>
+        </div>
+
+        <!-- 用户管理 -->
+        <div class="panel" id="usersPanel">
+            <div class="panel-header">
+                <h2><i class="fas fa-user-cog"></i> 用户管理</h2>
+                <div class="panel-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearch" placeholder="搜索用户名 / 邀请码..." oninput="renderUsersTable()">
+                    </div>
+                    <button class="tool-btn" onclick="loadUsers()"><i class="fas fa-sync-alt"></i> 刷新</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>用户</th>
+                            <th>角色</th>
+                            <th>状态</th>
+                            <th>注册时间</th>
+                            <th>邀请人</th>
+                            <th>邀请码</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTbody">
+                        <tr><td colspan="7" class="loading-row"><i class="fas fa-spinner"></i> 加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 帖子管理 -->
+        <div class="panel hidden" id="postsPanel">
+            <div class="panel-header">
+                <h2><i class="fas fa-file-alt"></i> 帖子管理</h2>
+                <div class="panel-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="postSearch" placeholder="搜索标题 / 作者..." oninput="renderPostsList()">
+                    </div>
+                    <button class="tool-btn" onclick="loadPosts()"><i class="fas fa-sync-alt"></i> 刷新</button>
+                </div>
+            </div>
+            <div id="postsList">
+                <div class="loading-row"><i class="fas fa-spinner"></i> 加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">版权所有 &copy; Tronix · 管理后台 · 最终解释权归 Tronix 所有</div>
+    </footer>
+
+    <div class="feedback-toast" id="feedbackToast"></div>
+
+    <script>
+        const API_BASE = '/api';
+        let allUsers = [];
+        let allPosts = [];
+
+        /* ---------- 认证 & API 工具 ---------- */
+        function getToken() { return localStorage.getItem('tronixToken') || sessionStorage.getItem('tronixToken'); }
+        function getCurrentUser() {
+            try { return JSON.parse(localStorage.getItem('tronixUser') || sessionStorage.getItem('tronixUser') || 'null'); }
+            catch { return null; }
+        }
+        function authHeaders() {
+            const h = { 'Content-Type': 'application/json' };
+            const t = getToken();
+            if (t) h['Authorization'] = 'Bearer ' + t;
+            return h;
+        }
+        async function apiGet(path) {
+            try { const r = await fetch(API_BASE + path, { headers: authHeaders() }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        async function apiPost(path, body) {
+            try { const r = await fetch(API_BASE + path, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        async function apiDelete(path) {
+            try { const r = await fetch(API_BASE + path, { method: 'DELETE', headers: authHeaders() }); return await r.json(); }
+            catch { return { success: false, message: '网络错误，请稍后重试' }; }
+        }
+        function showFeedback(msg, type) {
+            if (typeof TronixAuth !== 'undefined' && TronixAuth.showFeedback) { TronixAuth.showFeedback(msg, type); return; }
+            const el = document.getElementById('feedbackToast');
+            if (!el) return;
+            el.className = 'feedback-toast ' + (type || 'info');
+            el.innerHTML = (type === 'success' ? '<i class="fas fa-check-circle"></i> ' : type === 'error' ? '<i class="fas fa-exclamation-circle"></i> ' : '<i class="fas fa-info-circle"></i> ') + msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2500);
+        }
+        function isAdmin() { const u = getCurrentUser(); return !!(u && u.role === 'admin'); }
+        function isLoggedIn() { return !!getCurrentUser() && !!getToken(); }
+
+        function checkAdminOnLoad() {
+            if (!isLoggedIn()) { window.location.href = 'login.html'; return false; }
+            if (!isAdmin()) {
+                showFeedback('仅管理员可访问后台', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1200);
+                return false;
+            }
+            return true;
+        }
+
+        /* ---------- 格式化 & 字段归一化 ---------- */
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text == null ? '' : text; return div.innerHTML; }
+        function formatTime(ts) {
+            if (!ts) return '-';
+            const t = typeof ts === 'number' ? ts : new Date(ts).getTime();
+            if (isNaN(t)) return String(ts);
+            return new Date(t).toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+        const fallbackAvatar = name => 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name || '用户') + '&background=6366f1&color=fff';
+        const userId = u => u.id || u._id || u.uid || null;
+        const userInviter = u => u.inviter || u.invitedBy || u.referrer || u.parentUsername || u.inviterName || '-';
+        const userInviteCode = u => u.inviteCode || u.invitationCode || u.invite_code || '-';
+        const postAuthor = p => p.username || p.author || '匿名';
+        const postUserId = p => p.userId || p.authorId || p.uid || null;
+        const postId = p => p.id || p._id || null;
+        const postCategory = p => p.category || p.tag || '未分类';
+        const postImgList = p => Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+
+        function statusBadge(u) {
+            const status = u.status || 'active';
+            if (status === 'banned') return '<span class="badge badge-banned"><i class="fas fa-ban"></i> 已封号</span>';
+            if (status === 'muted') {
+                let extra = '';
+                if (u.muteUntil) {
+                    const t = new Date(u.muteUntil).getTime();
+                    if (!isNaN(t) && t < Date.now()) return '<span class="badge badge-active"><i class="fas fa-check"></i> 正常</span>';
+                    if (!isNaN(t)) extra = ' 至 ' + new Date(t).toLocaleDateString('zh-CN');
+                    else extra = ' 永久';
+                } else if (u.muteDuration === 'permanent' || u.muteDuration === 'forever') {
+                    extra = ' 永久';
+                }
+                return '<span class="badge badge-muted"><i class="fas fa-volume-mute"></i> 禁言中' + extra + '</span>';
+            }
+            return '<span class="badge badge-active"><i class="fas fa-check"></i> 正常</span>';
+        }
+
+        /* ---------- 选项卡 ---------- */
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            document.getElementById('usersPanel').classList.toggle('hidden', tab !== 'users');
+            document.getElementById('postsPanel').classList.toggle('hidden', tab !== 'posts');
+        }
+
+        /* ---------- 用户管理 ---------- */
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="loading-row"><i class="fas fa-spinner"></i> 加载中...</td></tr>';
+            const res = await apiGet('/admin/users');
+            if (res && res.success && Array.isArray(res.users)) {
+                allUsers = res.users;
+            } else if (res && Array.isArray(res.data)) {
+                allUsers = res.data;
+            } else if (Array.isArray(res)) {
+                allUsers = res;
+            } else {
+                allUsers = [];
+                showFeedback(res?.message || '加载用户失败', 'error');
+            }
+            updateStats();
+            renderUsersTable();
+        }
+
+        function updateStats() {
+            const total = allUsers.length;
+            const active = allUsers.filter(u => (u.status || 'active') === 'active').length;
+            const muted = allUsers.filter(u => u.status === 'muted').length;
+            const banned = allUsers.filter(u => u.status === 'banned').length;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statActive').textContent = active;
+            document.getElementById('statMuted').textContent = muted;
+            document.getElementById('statBanned').textContent = banned;
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTbody');
+            const kw = (document.getElementById('userSearch').value || '').trim().toLowerCase();
+            let list = allUsers;
+            if (kw) {
+                list = allUsers.filter(u => {
+                    const name = (u.username || '').toLowerCase();
+                    const code = (userInviteCode(u) || '').toLowerCase();
+                    return name.includes(kw) || code.includes(kw);
+                });
+            }
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-user-slash"></i><p>暂无用户数据</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = list.map(u => {
+                const uid = userId(u);
+                const name = u.username || '未知';
+                const avatar = u.avatar || fallbackAvatar(name);
+                const avatarHtml = avatar.startsWith('http') || avatar.startsWith('data:')
+                    ? `<img src="${escapeHtml(avatar)}" alt="">`
+                    : escapeHtml(name.charAt(0).toUpperCase());
+                const roleBadge = u.role === 'admin'
+                    ? '<span class="badge badge-admin"><i class="fas fa-crown"></i> 管理员</span>'
+                    : '<span class="badge badge-user"><i class="fas fa-user"></i> 普通用户</span>';
+                const isSelf = uid && String(uid) === String((getCurrentUser() || {}).id);
+                const isOtherAdmin = u.role === 'admin' && !isSelf;
+                return `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">${avatarHtml}</div>
+                                <div>
+                                    <div class="user-name">${escapeHtml(name)}${isSelf ? ' <span style="color:#04eff7;font-size:0.75rem;">(你)</span>' : ''}</div>
+                                    <div class="user-id">ID: ${escapeHtml(uid || '-')}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${roleBadge}</td>
+                        <td>${statusBadge(u)}</td>
+                        <td>${escapeHtml(formatTime(u.createdAt || u.created_at || u.registeredAt))}</td>
+                        <td>${escapeHtml(userInviter(u))}</td>
+                        <td><span class="invite-code">${escapeHtml(userInviteCode(u))}</span></td>
+                        <td>
+                            <div class="row-actions">
+                                ${isOtherAdmin ? '<span style="color:#8080b0;font-size:0.78rem;">不可操作</span>' : `
+                                    ${u.status === 'muted'
+                                        ? '<button class="act-btn success" onclick="userStatus(\'' + uid + '\',\'unmute\')"><i class="fas fa-microphone"></i> 解禁</button>'
+                                        : `<button class="act-btn warn" onclick="userStatus('${uid}','mute','1d')"><i class="fas fa-clock"></i> 1天</button>
+                                            <button class="act-btn warn" onclick="userStatus('${uid}','mute','7d')"><i class="fas fa-calendar-week"></i> 7天</button>
+                                            <button class="act-btn warn" onclick="userStatus('${uid}','mute','30d')"><i class="fas fa-calendar-alt"></i> 30天</button>
+                                            <button class="act-btn warn" onclick="userStatus('${uid}','mute','permanent')"><i class="fas fa-infinity"></i> 永久</button>`}
+                                    ${u.status === 'banned'
+                                        ? '<button class="act-btn success" onclick="userStatus(\'' + uid + '\',\'unban\')"><i class="fas fa-unlock"></i> 解封</button>'
+                                        : '<button class="act-btn danger" onclick="userStatus(\'' + uid + '\',\'ban\')"><i class="fas fa-ban"></i> 封号</button>'}
+                                `}
+                            </div>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        async function userStatus(uid, action, duration) {
+            if (!uid) { showFeedback('用户 ID 缺失', 'error'); return; }
+            const actionLabel = { mute: '禁言', unmute: '解除禁言', ban: '封号', unban: '解封' }[action] || action;
+            if (!confirm(`确认对用户执行「${actionLabel}${duration ? (duration === 'permanent' ? '（永久）' : '（' + duration + '）') : ''}」操作？`)) return;
+            const body = { userId: uid, action };
+            if (duration) body.duration = duration;
+            const res = await apiPost('/admin/user-status', body);
+            if (res && (res.success || res.ok)) {
+                showFeedback(actionLabel + '操作成功', 'success');
+                await loadUsers();
+            } else {
+                showFeedback(res?.message || (actionLabel + '操作失败'), 'error');
+            }
+        }
+
+        /* ---------- 帖子管理 ---------- */
+        async function loadPosts() {
+            const wrap = document.getElementById('postsList');
+            wrap.innerHTML = '<div class="loading-row"><i class="fas fa-spinner"></i> 加载中...</div>';
+            const res = await apiGet('/posts');
+            if (res && res.success && Array.isArray(res.posts)) {
+                allPosts = res.posts;
+            } else if (Array.isArray(res)) {
+                allPosts = res;
+            } else if (res && Array.isArray(res.data)) {
+                allPosts = res.data;
+            } else {
+                allPosts = [];
+                showFeedback(res?.message || '加载帖子失败', 'error');
+            }
+            renderPostsList();
+        }
+
+        function renderPostsList() {
+            const wrap = document.getElementById('postsList');
+            const kw = (document.getElementById('postSearch').value || '').trim().toLowerCase();
+            let list = allPosts;
+            if (kw) {
+                list = allPosts.filter(p => {
+                    const title = (p.title || '').toLowerCase();
+                    const author = (postAuthor(p) || '').toLowerCase();
+                    const content = (p.content || '').toLowerCase();
+                    return title.includes(kw) || author.includes(kw) || content.includes(kw);
+                });
+            }
+            if (!list.length) {
+                wrap.innerHTML = '<div class="empty-state"><i class="fas fa-file-circle-xmark"></i><p>暂无帖子</p></div>';
+                return;
+            }
+            wrap.innerHTML = list.map(p => {
+                const pid = postId(p);
+                const name = postAuthor(p);
+                const imgs = postImgList(p);
+                const imgHtml = imgs.length ? `<div style="display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap;">${imgs.slice(0,4).map(src => `<img src="${escapeHtml(src)}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.15);">`).join('')}</div>` : '';
+                return `
+                    <div class="post-card-admin">
+                        <div class="pc-head">
+                            <div>
+                                <div class="pc-title">${escapeHtml(p.title || '(无标题)')}</div>
+                                <div class="pc-meta">
+                                    <span><i class="fas fa-user"></i> ${escapeHtml(name)}</span>
+                                    <span><i class="fas fa-clock"></i> ${escapeHtml(formatTime(p.createdAt || p.created_at))}</span>
+                                    ${p.likes != null ? `<span><i class="fas fa-heart"></i> ${p.likes}</span>` : ''}
+                                    ${p.commentCount != null ? `<span><i class="fas fa-comment"></i> ${p.commentCount}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="pc-cat">${escapeHtml(postCategory(p))}</span>
+                        </div>
+                        <div class="pc-content">${escapeHtml(p.content || '')}</div>
+                        ${imgHtml}
+                        <div class="pc-foot">
+                            <span style="color:#8080b0;font-size:0.8rem;">ID: ${escapeHtml(pid || '-')}</span>
+                            <button class="act-btn danger" onclick="deletePost('${pid}', this)"><i class="fas fa-trash"></i> 快速删除</button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        async function deletePost(pid, btn) {
+            if (!pid) { showFeedback('帖子 ID 缺失', 'error'); return; }
+            if (!confirm('确认删除该帖子？此操作不可恢复。')) return;
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner"></i> 删除中...'; }
+            const res = await apiDelete('/posts/' + encodeURIComponent(pid));
+            if (res && (res.success || res.ok)) {
+                showFeedback('帖子已删除', 'success');
+                await loadPosts();
+            } else {
+                showFeedback(res?.message || '删除失败', 'error');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash"></i> 快速删除'; }
+            }
+        }
+
+        /* ---------- 导航 ---------- */
+        function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        document.addEventListener('click', function(e) {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (navLinks && menuBtn && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) navLinks.classList.remove('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '1';
+            if (!checkAdminOnLoad()) return;
+
+            // 桥接旧版 auth.js 导航
+            const me = getCurrentUser();
+            if (me && !localStorage.getItem('tronixCurrentUser') && !sessionStorage.getItem('tronixCurrentUser')) {
+                const store = localStorage.getItem('tronixUser') ? localStorage : sessionStorage;
+                store.setItem('tronixCurrentUser', JSON.stringify(me));
+            }
+            if (typeof TronixAuth !== 'undefined') {
+                const origLogout = TronixAuth.logout;
+                TronixAuth.logout = function() {
+                    localStorage.removeItem('tronixToken'); sessionStorage.removeItem('tronixToken');
+                    localStorage.removeItem('tronixUser'); sessionStorage.removeItem('tronixUser');
+                    if (origLogout) origLogout.call(this);
+                };
+                if (TronixAuth.updateNavigation) TronixAuth.updateNavigation();
+            }
+
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() { if (window.pageYOffset > 100) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); });
+
+            loadUsers();
+            loadPosts();
+        });
+    </script>
+    <script src="auth.js"></script>
+</body>
+</html>

@@ -1106,10 +1106,10 @@
                 
                 <form id="loginFormContent">
                     <div class="form-group">
-                        <label for="loginUsername">用户名/邮箱</label>
+                        <label for="loginUsername">用户名</label>
                         <div class="input-field">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="loginUsername" placeholder="请输入用户名或邮箱" required>
+                            <input type="text" id="loginUsername" placeholder="请输入用户名" required>
                         </div>
                         <div class="error-message" id="loginUsernameError"></div>
                     </div>
@@ -1185,12 +1185,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="regEmail">邮箱</label>
+                        <label for="regInviteCode">邀请码</label>
                         <div class="input-field">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="请输入有效邮箱" required>
+                            <i class="fas fa-ticket-alt"></i>
+                            <input type="text" id="regInviteCode" placeholder="请输入邀请码" required>
                         </div>
-                        <div class="error-message" id="regEmailError"></div>
+                        <div class="error-message" id="regInviteCodeError"></div>
                     </div>
                     
                     <div class="form-group">
@@ -1258,23 +1258,17 @@
             <!-- 忘记密码区域 -->
             <div class="form-section" id="forgotSection">
                 <div class="login-header">
-                    <h2>重置密码</h2>
-                    <p>输入注册邮箱以接收重置链接</p>
+                    <h2>找回密码</h2>
+                    <p>如忘记密码，请联系管理员重置</p>
                 </div>
-                
-                <form id="forgotFormContent">
-                    <div class="form-group">
-                        <label for="forgotEmail">注册邮箱</label>
-                        <div class="input-field">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="forgotEmail" placeholder="请输入注册时的邮箱" required>
-                        </div>
-                        <div class="error-message" id="forgotEmailError"></div>
-                    </div>
-                    
-                    <button type="submit" class="login-btn">发送重置链接</button>
-                </form>
-                
+
+                <div class="form-group">
+                    <p style="color:#d0d0ff; line-height:1.8; text-align:center; padding:1rem 0;">
+                        <i class="fas fa-info-circle" style="color:#04eff7; margin-right:0.5rem;"></i>
+                        本系统已启用邀请码注册，如需重置密码请联系管理员处理。
+                    </p>
+                </div>
+
                 <div class="switch-link">
                     <a id="backToLogin">返回登录</a>
                 </div>
@@ -1327,74 +1321,15 @@
     </footer>
 
     <script>
-        // ==================== 用户数据管理 ====================
+        // ==================== 用户数据管理（调用后端 API） ====================
         const UserManager = {
-            // 获取所有用户
-            getUsers: function() {
-                return JSON.parse(localStorage.getItem('tronixUsers') || '[]');
+            // 获取 token
+            getToken: function() {
+                return localStorage.getItem('tronixToken') || sessionStorage.getItem('tronixToken');
             },
-            
-            // 保存所有用户
-            saveUsers: function(users) {
-                localStorage.setItem('tronixUsers', JSON.stringify(users));
-            },
-            
-            // 根据用户名或邮箱查找用户
-            findUser: function(identifier) {
-                const users = this.getUsers();
-                return users.find(u => 
-                    u.username.toLowerCase() === identifier.toLowerCase() || 
-                    u.email.toLowerCase() === identifier.toLowerCase()
-                );
-            },
-            
-            // 注册新用户
-            register: function(userData) {
-                const users = this.getUsers();
-                // 检查用户名是否已存在
-                if (users.find(u => u.username.toLowerCase() === userData.username.toLowerCase())) {
-                    return { success: false, message: '用户名已被注册' };
-                }
-                // 检查邮箱是否已存在
-                if (users.find(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
-                    return { success: false, message: '邮箱已被注册' };
-                }
-                
-                users.push({
-                    username: userData.username,
-                    email: userData.email,
-                    password: userData.password, // 实际应用中应加密
-                    avatar: `https://ui-avatars.com/api/?name=${userData.username}&background=6366f1&color=fff`,
-                    registerDate: new Date().toISOString(),
-                    loginCount: 0
-                });
-                this.saveUsers(users);
-                return { success: true, message: '注册成功' };
-            },
-            
-            // 登录验证
-            login: function(identifier, password) {
-                const user = this.findUser(identifier);
-                if (!user) {
-                    return { success: false, message: '用户不存在，请先注册' };
-                }
-                if (user.password !== password) {
-                    return { success: false, message: '密码错误' };
-                }
-                // 更新登录次数
-                const users = this.getUsers();
-                const idx = users.findIndex(u => u.username === user.username);
-                if (idx !== -1) {
-                    users[idx].loginCount = (users[idx].loginCount || 0) + 1;
-                    users[idx].lastLogin = new Date().toISOString();
-                    this.saveUsers(users);
-                }
-                return { success: true, user: user };
-            },
-            
-            // 获取当前登录用户
+
+            // 获取缓存的当前用户（同步）
             getCurrentUser: function() {
-                // 优先检查 localStorage（记住我），再检查 sessionStorage
                 let session = localStorage.getItem('tronixCurrentUser');
                 if (!session) {
                     session = sessionStorage.getItem('tronixCurrentUser');
@@ -1406,33 +1341,56 @@
                     return null;
                 }
             },
-            
-            // 设置当前登录用户
-            setCurrentUser: function(user, remember) {
-                const userData = {
-                    username: user.username,
-                    email: user.email,
-                    avatar: user.avatar,
-                    loginTime: new Date().toISOString()
-                };
-                if (remember) {
-                    localStorage.setItem('tronixCurrentUser', JSON.stringify(userData));
-                } else {
-                    sessionStorage.setItem('tronixCurrentUser', JSON.stringify(userData));
-                }
+
+            // 设置当前登录用户（存储 token 与用户缓存）
+            setCurrentUser: function(user, token, remember) {
+                const storage = remember ? localStorage : sessionStorage;
+                storage.setItem('tronixToken', token);
+                storage.setItem('tronixCurrentUser', JSON.stringify(user));
+                storage.setItem('tronixUser', JSON.stringify(user));
             },
-            
+
             // 退出登录
             logout: function() {
+                localStorage.removeItem('tronixToken');
                 localStorage.removeItem('tronixCurrentUser');
+                localStorage.removeItem('tronixUser');
+                sessionStorage.removeItem('tronixToken');
                 sessionStorage.removeItem('tronixCurrentUser');
+                sessionStorage.removeItem('tronixUser');
                 localStorage.removeItem('tronixAvatar');
             },
-            
-            // 检查邮箱是否存在（用于忘记密码）
-            checkEmail: function(email) {
-                const users = this.getUsers();
-                return users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            // 注册（调用 API）
+            register: async function(userData) {
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: userData.username,
+                            password: userData.password,
+                            inviteCode: userData.inviteCode
+                        })
+                    });
+                    return await res.json();
+                } catch (err) {
+                    return { success: false, message: '网络错误，请稍后重试' };
+                }
+            },
+
+            // 登录（调用 API）
+            login: async function(username, password, remember) {
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password, remember })
+                    });
+                    return await res.json();
+                } catch (err) {
+                    return { success: false, message: '网络错误，请稍后重试' };
+                }
             }
         };
 
@@ -1518,13 +1476,11 @@
             const value = input.value.trim();
             
             if (!value) {
-                setFieldState(input, error, false, '请输入用户名或邮箱');
+                setFieldState(input, error, false, '请输入用户名');
                 return false;
             }
-            const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-            const isUsername = /^[a-zA-Z0-9_]{3,20}$/.test(value);
-            if (!isEmail && !isUsername) {
-                setFieldState(input, error, false, '请输入有效的邮箱或用户名');
+            if (!/^[a-zA-Z0-9_]{3,20}$/.test(value)) {
+                setFieldState(input, error, false, '请输入有效的用户名');
                 return false;
             }
             setFieldState(input, error, true);
@@ -1562,33 +1518,17 @@
                 setFieldState(input, error, false, '用户名为3-20位字母、数字或下划线');
                 return false;
             }
-            // 检查用户名是否已存在
-            const existingUser = UserManager.findUser(value);
-            if (existingUser) {
-                setFieldState(input, error, false, '用户名已被注册');
-                return false;
-            }
             setFieldState(input, error, true);
             return true;
         }
 
-        function validateRegEmail() {
-            const input = document.getElementById('regEmail');
-            const error = document.getElementById('regEmailError');
+        function validateRegInviteCode() {
+            const input = document.getElementById('regInviteCode');
+            const error = document.getElementById('regInviteCodeError');
             const value = input.value.trim();
             
             if (!value) {
-                setFieldState(input, error, false, '请输入邮箱');
-                return false;
-            }
-            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
-                setFieldState(input, error, false, '请输入有效的邮箱地址');
-                return false;
-            }
-            // 检查邮箱是否已存在
-            const existingUser = UserManager.findUser(value);
-            if (existingUser) {
-                setFieldState(input, error, false, '邮箱已被注册');
+                setFieldState(input, error, false, '请输入邀请码');
                 return false;
             }
             setFieldState(input, error, true);
@@ -1641,24 +1581,6 @@
             return true;
         }
 
-        // 忘记密码验证
-        function validateForgotEmail() {
-            const input = document.getElementById('forgotEmail');
-            const error = document.getElementById('forgotEmailError');
-            const value = input.value.trim();
-            
-            if (!value) {
-                setFieldState(input, error, false, '请输入邮箱');
-                return false;
-            }
-            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
-                setFieldState(input, error, false, '请输入有效的邮箱地址');
-                return false;
-            }
-            setFieldState(input, error, true);
-            return true;
-        }
-
         // ==================== 密码强度检测 ====================
         function checkPasswordStrength(password) {
             let strength = 0;
@@ -1702,7 +1624,7 @@
         document.getElementById('loginUsername').addEventListener('blur', validateLoginUsername);
         document.getElementById('loginPassword').addEventListener('blur', validateLoginPassword);
         document.getElementById('regUsername').addEventListener('blur', validateRegUsername);
-        document.getElementById('regEmail').addEventListener('blur', validateRegEmail);
+        document.getElementById('regInviteCode').addEventListener('blur', validateRegInviteCode);
         document.getElementById('regPassword').addEventListener('blur', validateRegPassword);
         document.getElementById('regConfirmPassword').addEventListener('blur', validateRegConfirmPassword);
         document.getElementById('regConfirmPassword').addEventListener('input', function() {
@@ -1710,10 +1632,9 @@
                 validateRegConfirmPassword();
             }
         });
-        document.getElementById('forgotEmail').addEventListener('blur', validateForgotEmail);
 
         // ==================== 登录表单提交 ====================
-        document.getElementById('loginFormContent').addEventListener('submit', function(e) {
+        document.getElementById('loginFormContent').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const isValidUsername = validateLoginUsername();
@@ -1733,51 +1654,49 @@
             loginBtn.classList.add('loading');
             loginBtn.textContent = '登录中';
             
-            // 模拟登录请求
-            setTimeout(() => {
-                const result = UserManager.login(identifier, password);
+            // 调用登录 API
+            const result = await UserManager.login(identifier, password, remember);
+            
+            loginBtn.classList.remove('loading');
+            loginBtn.textContent = '登录';
+            
+            if (result.success) {
+                // 保存登录状态（token + 用户缓存）
+                UserManager.setCurrentUser(result.user, result.token, remember);
                 
-                loginBtn.classList.remove('loading');
-                loginBtn.textContent = '登录';
+                // 更新UI
+                updateNavigationState();
                 
-                if (result.success) {
-                    // 保存登录状态
-                    UserManager.setCurrentUser(result.user, remember);
-                    
-                    // 更新UI
-                    updateNavigationState();
-                    
-                    showFeedback(`登录成功！欢迎回来，${result.user.username}`, 'success');
-                    
-                    // 清空表单
-                    this.reset();
-                    document.querySelectorAll('.form-group').forEach(group => {
-                        group.classList.remove('success', 'error');
-                    });
-                    
-                    // 延迟跳转
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                } else {
-                    showFeedback(result.message, 'error');
-                    const errorElement = document.getElementById('loginPasswordError');
-                    setFieldState(document.getElementById('loginPassword'), errorElement, false, result.message);
-                }
-            }, 1000);
+                showFeedback(`登录成功！欢迎回来，${result.user.username}`, 'success');
+                
+                // 清空表单
+                this.reset();
+                document.querySelectorAll('.form-group').forEach(group => {
+                    group.classList.remove('success', 'error');
+                });
+                
+                // 延迟跳转
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showFeedback(result.message, 'error');
+                const errorElement = document.getElementById('loginPasswordError');
+                setFieldState(document.getElementById('loginPassword'), errorElement, false, result.message);
+            }
         });
 
         // ==================== 注册表单提交 ====================
-        document.getElementById('registerFormContent').addEventListener('submit', function(e) {
+        document.getElementById('registerFormContent').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const isValidUsername = validateRegUsername();
-            const isValidEmail = validateRegEmail();
+            const isValidInviteCode = validateRegInviteCode();
             const isValidPassword = validateRegPassword();
             const isValidConfirm = validateRegConfirmPassword();
             const isValidAgreement = validateAgreement();
             
-            if (!isValidUsername || !isValidEmail || !isValidPassword || !isValidConfirm || !isValidAgreement) {
+            if (!isValidUsername || !isValidInviteCode || !isValidPassword || !isValidConfirm || !isValidAgreement) {
                 showFeedback('请检查表单中的错误', 'error');
                 return;
             }
@@ -1785,7 +1704,7 @@
             const registerBtn = this.querySelector('.login-btn');
             const userData = {
                 username: document.getElementById('regUsername').value.trim(),
-                email: document.getElementById('regEmail').value.trim(),
+                inviteCode: document.getElementById('regInviteCode').value.trim(),
                 password: document.getElementById('regPassword').value
             };
             
@@ -1793,65 +1712,30 @@
             registerBtn.classList.add('loading');
             registerBtn.textContent = '注册中';
             
-            // 模拟注册请求
-            setTimeout(() => {
-                const result = UserManager.register(userData);
-                
-                registerBtn.classList.remove('loading');
-                registerBtn.textContent = '注册';
-                
-                if (result.success) {
-                    showFeedback('注册成功！正在跳转登录...', 'success');
-                    
-                    // 清空注册表单
-                    this.reset();
-                    document.querySelectorAll('.form-group').forEach(group => {
-                        group.classList.remove('success', 'error');
-                    });
-                    document.getElementById('passwordStrength').classList.remove('show');
-                    
-                    // 切换到登录表单，并预填用户名
-                    setTimeout(() => {
-                        switchSection(loginSection);
-                        document.getElementById('loginUsername').value = userData.username;
-                    }, 1500);
-                } else {
-                    showFeedback(result.message, 'error');
-                }
-            }, 1000);
-        });
-
-        // ==================== 忘记密码提交 ====================
-        document.getElementById('forgotFormContent').addEventListener('submit', function(e) {
-            e.preventDefault();
+            // 调用注册 API
+            const result = await UserManager.register(userData);
             
-            const isValid = validateForgotEmail();
-            if (!isValid) {
-                showFeedback('请输入有效的邮箱', 'error');
-                return;
+            registerBtn.classList.remove('loading');
+            registerBtn.textContent = '注册';
+            
+            if (result.success) {
+                showFeedback('注册成功！正在跳转登录...', 'success');
+                
+                // 清空注册表单
+                this.reset();
+                document.querySelectorAll('.form-group').forEach(group => {
+                    group.classList.remove('success', 'error');
+                });
+                document.getElementById('passwordStrength').classList.remove('show');
+                
+                // 切换到登录表单，并预填用户名
+                setTimeout(() => {
+                    switchSection(loginSection);
+                    document.getElementById('loginUsername').value = userData.username;
+                }, 1500);
+            } else {
+                showFeedback(result.message, 'error');
             }
-            
-            const submitBtn = this.querySelector('.login-btn');
-            const email = document.getElementById('forgotEmail').value.trim();
-            
-            submitBtn.classList.add('loading');
-            submitBtn.textContent = '发送中';
-            
-            setTimeout(() => {
-                const user = UserManager.checkEmail(email);
-                submitBtn.classList.remove('loading');
-                submitBtn.textContent = '发送重置链接';
-                
-                if (user) {
-                    showFeedback('重置链接已发送到您的邮箱，请查收', 'success');
-                    setTimeout(() => {
-                        switchSection(loginSection);
-                        this.reset();
-                    }, 2000);
-                } else {
-                    showFeedback('该邮箱未注册，请检查或先注册账户', 'error');
-                }
-            }, 1200);
         });
 
         // ==================== 第三方登录 ====================
@@ -2002,20 +1886,12 @@
                 navAvatar.src = avatarSrc;
                 localStorage.setItem('tronixAvatar', avatarSrc);
                 
-                // 更新当前用户的头像
+                // 更新本地缓存的用户头像
                 const currentUser = UserManager.getCurrentUser();
                 if (currentUser) {
                     currentUser.avatar = avatarSrc;
                     const storage = localStorage.getItem('tronixCurrentUser') ? localStorage : sessionStorage;
                     storage.setItem('tronixCurrentUser', JSON.stringify(currentUser));
-                    
-                    // 更新用户列表中的头像
-                    const users = UserManager.getUsers();
-                    const idx = users.findIndex(u => u.username === currentUser.username);
-                    if (idx !== -1) {
-                        users[idx].avatar = avatarSrc;
-                        UserManager.saveUsers(users);
-                    }
                 }
                 
                 avatarModal.classList.remove('active');
@@ -2069,7 +1945,7 @@
             
             // 恢复保存的头像
             const savedAvatar = localStorage.getItem('tronixAvatar');
-            if (savedAvatar) {
+            if (savedAvatar && navAvatar) {
                 navAvatar.src = savedAvatar;
             }
         });
