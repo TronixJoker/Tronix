@@ -41,6 +41,33 @@ export async function onRequestPost({ request, env }) {
         targetUser.status = 'active';
         targetUser.muteUntil = null;
         break;
+      case 'delete':
+        if (targetUser.id === admin.id) {
+          return jsonResponse({ success: false, message: '不能删除自己' }, 400);
+        }
+        const idx = users.findIndex(u => u.id === userId);
+        if (idx !== -1) users.splice(idx, 1);
+        const sessions = await getJSON(env, 'sessions', {});
+        for (const [token, uid] of Object.entries(sessions)) {
+          if (uid === userId) delete sessions[token];
+        }
+        await putJSON(env, 'sessions', sessions);
+        const posts = await getJSON(env, 'posts', []);
+        const remainingPosts = posts.filter(p => p.userId !== userId);
+        await putJSON(env, 'posts', remainingPosts);
+        const allKeys = await env.TRONIX_DB.list({ prefix: 'comments:' });
+        for (const keyObj of allKeys.keys) {
+          const comments = await getJSON(env, keyObj.name, []);
+          const filtered = comments.filter(c => c.userId !== userId);
+          if (filtered.length !== comments.length) {
+            await putJSON(env, keyObj.name, filtered);
+          }
+        }
+        const chat = await getJSON(env, 'chat', []);
+        const filteredChat = chat.filter(m => m.userId !== userId);
+        await putJSON(env, 'chat', filteredChat);
+        await putJSON(env, 'users', users);
+        return jsonResponse({ success: true, message: '用户已删除' });
       default:
         return jsonResponse({ success: false, message: '无效的操作' }, 400);
     }

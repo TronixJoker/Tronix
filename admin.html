@@ -135,6 +135,8 @@
         .act-btn.warn:hover { background: rgba(255,152,0,0.3); }
         .act-btn.danger { background: rgba(255,23,68,0.15); color: #ff7a85; border-color: rgba(255,23,68,0.3); }
         .act-btn.danger:hover { background: rgba(255,23,68,0.3); }
+        .act-btn.delete { background: rgba(138,43,226,0.15); color: #d8a4ff; border-color: rgba(138,43,226,0.3); }
+        .act-btn.delete:hover { background: rgba(138,43,226,0.3); }
         .act-btn.success { background: rgba(0,200,83,0.15); color: #5cf0a0; border-color: rgba(0,200,83,0.3); }
         .act-btn.success:hover { background: rgba(0,200,83,0.3); }
         .act-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -490,6 +492,7 @@
                                     ${u.status === 'banned'
                                         ? '<button class="act-btn success" onclick="userStatus(\'' + uid + '\',\'unban\')"><i class="fas fa-unlock"></i> 解封</button>'
                                         : '<button class="act-btn danger" onclick="userStatus(\'' + uid + '\',\'ban\')"><i class="fas fa-ban"></i> 封号</button>'}
+                                    <button class="act-btn delete" onclick="deleteUser('${uid}','${u.username}')"><i class="fas fa-trash"></i> 删除</button>
                                 `}
                             </div>
                         </td>
@@ -509,6 +512,17 @@
                 await loadUsers();
             } else {
                 showFeedback(res?.message || (actionLabel + '操作失败'), 'error');
+            }
+        }
+
+        async function deleteUser(uid, username) {
+            if (!confirm(`确认删除用户「${username}」？\n\n此操作将同时删除该用户的所有帖子、评论、聊天记录，且不可恢复！`)) return;
+            const res = await apiPost('/admin/user-status', { userId: uid, action: 'delete' });
+            if (res && res.success) {
+                showFeedback('用户已删除', 'success');
+                await loadUsers();
+            } else {
+                showFeedback(res?.message || '删除失败', 'error');
             }
         }
 
