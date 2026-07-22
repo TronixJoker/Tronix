@@ -1895,24 +1895,26 @@
             }
         }
 
-        // ==================== 头像下拉菜单 ====================
+        // ==================== 头像下拉菜单（旧代码保留兼容） ====================
         const navAvatar = document.getElementById('navAvatar');
         const avatarDropdown = document.getElementById('avatarDropdown');
         
-        navAvatar.addEventListener('click', function(e) {
-            e.stopPropagation();
-            avatarDropdown.classList.toggle('active');
-        });
-        
-        document.addEventListener('click', function() {
-            avatarDropdown.classList.remove('active');
-        });
-        
-        avatarDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
+        if (navAvatar && avatarDropdown) {
+            navAvatar.addEventListener('click', function(e) {
+                e.stopPropagation();
+                avatarDropdown.classList.toggle('active');
+            });
+            
+            document.addEventListener('click', function() {
+                avatarDropdown.classList.remove('active');
+            });
+            
+            avatarDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
 
-        // ==================== 头像上传模态框 ====================
+        // ==================== 头像上传模态框（旧代码保留兼容） ====================
         const avatarModal = document.getElementById('avatarModal');
         const avatarModalClose = document.getElementById('avatarModalClose');
         const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
@@ -1923,97 +1925,115 @@
         const avatarSaveBtn = document.getElementById('avatarSaveBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         
-        navAvatar.addEventListener('dblclick', function() {
-            avatarModal.classList.add('active');
-        });
-        
-        avatarModalClose.addEventListener('click', function() {
-            avatarModal.classList.remove('active');
-        });
-        
-        avatarModal.addEventListener('click', function(e) {
-            if (e.target === avatarModal) {
-                avatarModal.classList.remove('active');
-            }
-        });
-        
-        uploadAvatarBtn.addEventListener('click', function() {
-            avatarUpload.click();
-        });
-        
-        avatarUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    avatarPreview.innerHTML = `<img src="${event.target.result}" alt="头像预览">`;
-                    document.querySelectorAll('.default-avatar').forEach(avatar => {
-                        avatar.classList.remove('selected');
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        defaultAvatarBtn.addEventListener('click', function() {
-            defaultAvatars.style.display = defaultAvatars.style.display === 'none' ? 'grid' : 'none';
-        });
-        
-        document.querySelectorAll('.default-avatar').forEach(avatar => {
-            avatar.addEventListener('click', function() {
-                document.querySelectorAll('.default-avatar').forEach(a => {
-                    a.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                avatarPreview.innerHTML = `<img src="${this.src}" alt="默认头像">`;
-                avatarUpload.value = '';
+        if (navAvatar && avatarModal) {
+            navAvatar.addEventListener('dblclick', function() {
+                avatarModal.classList.add('active');
             });
-        });
+        }
         
-        avatarSaveBtn.addEventListener('click', function() {
-            let avatarSrc;
-            const selectedAvatar = document.querySelector('.default-avatar.selected');
-            if (selectedAvatar) {
-                avatarSrc = selectedAvatar.src;
-            } else if (avatarPreview.querySelector('img')) {
-                avatarSrc = avatarPreview.querySelector('img').src;
-            } else {
-                showFeedback('请选择或上传头像', 'error');
-                return;
-            }
-            
-            navAvatar.src = avatarSrc;
-            localStorage.setItem('tronixAvatar', avatarSrc);
-            
-            // 更新当前用户的头像
-            const currentUser = UserManager.getCurrentUser();
-            if (currentUser) {
-                currentUser.avatar = avatarSrc;
-                const storage = localStorage.getItem('tronixCurrentUser') ? localStorage : sessionStorage;
-                storage.setItem('tronixCurrentUser', JSON.stringify(currentUser));
-                
-                // 更新用户列表中的头像
-                const users = UserManager.getUsers();
-                const idx = users.findIndex(u => u.username === currentUser.username);
-                if (idx !== -1) {
-                    users[idx].avatar = avatarSrc;
-                    UserManager.saveUsers(users);
+        if (avatarModalClose && avatarModal) {
+            avatarModalClose.addEventListener('click', function() {
+                avatarModal.classList.remove('active');
+            });
+        }
+        
+        if (avatarModal) {
+            avatarModal.addEventListener('click', function(e) {
+                if (e.target === avatarModal) {
+                    avatarModal.classList.remove('active');
                 }
-            }
-            
-            avatarModal.classList.remove('active');
-            showFeedback('头像保存成功', 'success');
-        });
+            });
+        }
+        
+        if (uploadAvatarBtn && avatarUpload) {
+            uploadAvatarBtn.addEventListener('click', function() {
+                avatarUpload.click();
+            });
+        }
+        
+        if (avatarUpload && avatarPreview) {
+            avatarUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        avatarPreview.innerHTML = `<img src="${event.target.result}" alt="头像预览">`;
+                        document.querySelectorAll('.default-avatar').forEach(avatar => {
+                            avatar.classList.remove('selected');
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        if (defaultAvatarBtn && defaultAvatars) {
+            defaultAvatarBtn.addEventListener('click', function() {
+                defaultAvatars.style.display = defaultAvatars.style.display === 'none' ? 'grid' : 'none';
+            });
+        }
+        
+        if (avatarPreview) {
+            document.querySelectorAll('.default-avatar').forEach(avatar => {
+                avatar.addEventListener('click', function() {
+                    document.querySelectorAll('.default-avatar').forEach(a => {
+                        a.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    avatarPreview.innerHTML = `<img src="${this.src}" alt="默认头像">`;
+                    if (avatarUpload) avatarUpload.value = '';
+                });
+            });
+        }
+        
+        if (avatarSaveBtn && navAvatar && avatarModal && avatarPreview) {
+            avatarSaveBtn.addEventListener('click', function() {
+                let avatarSrc;
+                const selectedAvatar = document.querySelector('.default-avatar.selected');
+                if (selectedAvatar) {
+                    avatarSrc = selectedAvatar.src;
+                } else if (avatarPreview.querySelector('img')) {
+                    avatarSrc = avatarPreview.querySelector('img').src;
+                } else {
+                    showFeedback('请选择或上传头像', 'error');
+                    return;
+                }
+                
+                navAvatar.src = avatarSrc;
+                localStorage.setItem('tronixAvatar', avatarSrc);
+                
+                // 更新当前用户的头像
+                const currentUser = UserManager.getCurrentUser();
+                if (currentUser) {
+                    currentUser.avatar = avatarSrc;
+                    const storage = localStorage.getItem('tronixCurrentUser') ? localStorage : sessionStorage;
+                    storage.setItem('tronixCurrentUser', JSON.stringify(currentUser));
+                    
+                    // 更新用户列表中的头像
+                    const users = UserManager.getUsers();
+                    const idx = users.findIndex(u => u.username === currentUser.username);
+                    if (idx !== -1) {
+                        users[idx].avatar = avatarSrc;
+                        UserManager.saveUsers(users);
+                    }
+                }
+                
+                avatarModal.classList.remove('active');
+                showFeedback('头像保存成功', 'success');
+            });
+        }
         
         // 退出登录
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            UserManager.logout();
-            showFeedback('已退出登录', 'info');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        });
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                UserManager.logout();
+                showFeedback('已退出登录', 'info');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+        }
 
         function toggleMobileMenu() {
             const navLinks = document.getElementById('navLinks');
