@@ -1,7 +1,9 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// api/_lib.js
+// .wrangler/tmp/pages-LLWri1/functionsWorker-0.043227540040929546.mjs
+var __defProp2 = Object.defineProperty;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -9,6 +11,7 @@ function jsonResponse(data, status = 200) {
   });
 }
 __name(jsonResponse, "jsonResponse");
+__name2(jsonResponse, "jsonResponse");
 async function getJSON(env, key, defaultValue = null) {
   const val = await env.TRONIX_DB.get(key);
   if (!val) return defaultValue;
@@ -19,14 +22,17 @@ async function getJSON(env, key, defaultValue = null) {
   }
 }
 __name(getJSON, "getJSON");
+__name2(getJSON, "getJSON");
 async function putJSON(env, key, value) {
   await env.TRONIX_DB.put(key, JSON.stringify(value));
 }
 __name(putJSON, "putJSON");
+__name2(putJSON, "putJSON");
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 __name(generateId, "generateId");
+__name2(generateId, "generateId");
 function generateInviteCode() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
@@ -36,12 +42,14 @@ function generateInviteCode() {
   return code;
 }
 __name(generateInviteCode, "generateInviteCode");
+__name2(generateInviteCode, "generateInviteCode");
 function generateToken() {
   const arr = new Uint8Array(32);
   crypto.getRandomValues(arr);
   return Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(generateToken, "generateToken");
+__name2(generateToken, "generateToken");
 async function hashPassword(password) {
   const encoder = new TextEncoder();
   const data = encoder.encode(password + "tronix_salt_2024");
@@ -49,6 +57,7 @@ async function hashPassword(password) {
   return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(hashPassword, "hashPassword");
+__name2(hashPassword, "hashPassword");
 async function getUserFromRequest(env, request) {
   const auth = request.headers.get("Authorization");
   if (!auth || !auth.startsWith("Bearer ")) return null;
@@ -60,6 +69,7 @@ async function getUserFromRequest(env, request) {
   return users.find((u) => u.id === userId) || null;
 }
 __name(getUserFromRequest, "getUserFromRequest");
+__name2(getUserFromRequest, "getUserFromRequest");
 async function requireAuth(env, request) {
   const user = await getUserFromRequest(env, request);
   if (!user) return { error: jsonResponse({ success: false, message: "\u8BF7\u5148\u767B\u5F55" }, 401), user: null };
@@ -67,6 +77,7 @@ async function requireAuth(env, request) {
   return { error: null, user };
 }
 __name(requireAuth, "requireAuth");
+__name2(requireAuth, "requireAuth");
 async function requireAdmin(env, request) {
   const result = await requireAuth(env, request);
   if (result.error) return result;
@@ -76,14 +87,14 @@ async function requireAdmin(env, request) {
   return result;
 }
 __name(requireAdmin, "requireAdmin");
+__name2(requireAdmin, "requireAdmin");
 function isMuted(user) {
   if (user.status !== "muted") return false;
   if (user.muteUntil && new Date(user.muteUntil) < /* @__PURE__ */ new Date()) return false;
   return true;
 }
 __name(isMuted, "isMuted");
-
-// api/chat/messages/[id].js
+__name2(isMuted, "isMuted");
 async function onRequestDelete({ request, env, params }) {
   try {
     const user = await getUserFromRequest(env, request);
@@ -122,8 +133,7 @@ async function onRequestDelete({ request, env, params }) {
   }
 }
 __name(onRequestDelete, "onRequestDelete");
-
-// api/admin/user-status.js
+__name2(onRequestDelete, "onRequestDelete");
 async function onRequestPost({ request, env }) {
   try {
     const { error, user: admin } = await requireAdmin(env, request);
@@ -197,8 +207,7 @@ async function onRequestPost({ request, env }) {
   }
 }
 __name(onRequestPost, "onRequestPost");
-
-// api/admin/users.js
+__name2(onRequestPost, "onRequestPost");
 async function onRequestGet({ request, env }) {
   try {
     const { error, user } = await requireAdmin(env, request);
@@ -215,8 +224,7 @@ async function onRequestGet({ request, env }) {
   }
 }
 __name(onRequestGet, "onRequestGet");
-
-// api/auth/change-password.js
+__name2(onRequestGet, "onRequestGet");
 async function onRequestPost2({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -244,9 +252,8 @@ async function onRequestPost2({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost2, "onRequestPost");
-
-// api/auth/login.js
+__name(onRequestPost2, "onRequestPost2");
+__name2(onRequestPost2, "onRequestPost");
 async function onRequestPost3({ request, env }) {
   try {
     const { username, password, remember } = await request.json();
@@ -280,9 +287,8 @@ async function onRequestPost3({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost3, "onRequestPost");
-
-// api/auth/me.js
+__name(onRequestPost3, "onRequestPost3");
+__name2(onRequestPost3, "onRequestPost");
 async function onRequestGet2({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -293,9 +299,8 @@ async function onRequestGet2({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet2, "onRequestGet");
-
-// api/auth/register.js
+__name(onRequestGet2, "onRequestGet2");
+__name2(onRequestGet2, "onRequestGet");
 async function onRequestPost4({ request, env }) {
   try {
     const { username, password, inviteCode } = await request.json();
@@ -331,9 +336,8 @@ async function onRequestPost4({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost4, "onRequestPost");
-
-// api/chat/messages.js
+__name(onRequestPost4, "onRequestPost4");
+__name2(onRequestPost4, "onRequestPost");
 async function onRequestGet3({ request, env }) {
   try {
     const messages = await getJSON(env, "chat", []);
@@ -343,7 +347,8 @@ async function onRequestGet3({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet3, "onRequestGet");
+__name(onRequestGet3, "onRequestGet3");
+__name2(onRequestGet3, "onRequestGet");
 async function onRequestPost5({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -375,7 +380,8 @@ async function onRequestPost5({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost5, "onRequestPost");
+__name(onRequestPost5, "onRequestPost5");
+__name2(onRequestPost5, "onRequestPost");
 async function onRequestDelete2({ request, env }) {
   try {
     const user = await getUserFromRequest(env, request);
@@ -414,9 +420,8 @@ async function onRequestDelete2({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestDelete2, "onRequestDelete");
-
-// api/chat/pin.js
+__name(onRequestDelete2, "onRequestDelete2");
+__name2(onRequestDelete2, "onRequestDelete");
 async function onRequestPost6({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
@@ -446,7 +451,8 @@ async function onRequestPost6({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost6, "onRequestPost");
+__name(onRequestPost6, "onRequestPost6");
+__name2(onRequestPost6, "onRequestPost");
 async function onRequestGet4({ env }) {
   try {
     const pinned = await getJSON(env, "chat_pinned", null);
@@ -455,9 +461,8 @@ async function onRequestGet4({ env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet4, "onRequestGet");
-
-// api/invite/code.js
+__name(onRequestGet4, "onRequestGet4");
+__name2(onRequestGet4, "onRequestGet");
 async function onRequestGet5({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -467,9 +472,8 @@ async function onRequestGet5({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet5, "onRequestGet");
-
-// api/invite/mine.js
+__name(onRequestGet5, "onRequestGet5");
+__name2(onRequestGet5, "onRequestGet");
 async function onRequestGet6({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -488,9 +492,8 @@ async function onRequestGet6({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet6, "onRequestGet");
-
-// api/posts/pin.js
+__name(onRequestGet6, "onRequestGet6");
+__name2(onRequestGet6, "onRequestGet");
 async function onRequestPost7({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
@@ -517,9 +520,53 @@ async function onRequestPost7({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost7, "onRequestPost");
-
-// api/comments/[id].js
+__name(onRequestPost7, "onRequestPost7");
+__name2(onRequestPost7, "onRequestPost");
+async function onRequestPost8({ request, env }) {
+  try {
+    const { error, user } = await requireAuth(env, request);
+    if (error) return error;
+    const contentType = request.headers.get("content-type") || "";
+    let avatarDataUrl = "";
+    if (contentType.includes("application/json")) {
+      const body = await request.json();
+      avatarDataUrl = body.avatar || "";
+    } else if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("avatar");
+      if (file && file.arrayBuffer) {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = "";
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const base64 = btoa(binary);
+        const mimeType = file.type || "image/png";
+        avatarDataUrl = `data:${mimeType};base64,${base64}`;
+      }
+    }
+    if (!avatarDataUrl) {
+      return jsonResponse({ success: false, message: "\u8BF7\u63D0\u4F9B\u5934\u50CF\u56FE\u7247" }, 400);
+    }
+    if (avatarDataUrl.length > 500 * 1024) {
+      return jsonResponse({ success: false, message: "\u5934\u50CF\u56FE\u7247\u8FC7\u5927\uFF0C\u8BF7\u538B\u7F29\u540E\u518D\u4E0A\u4F20\uFF08\u6700\u5927500KB\uFF09" }, 400);
+    }
+    const users = await getJSON(env, "users", []);
+    const idx = users.findIndex((u) => u.id === user.id || u._id === user.id);
+    if (idx === -1) {
+      return jsonResponse({ success: false, message: "\u7528\u6237\u4E0D\u5B58\u5728" }, 404);
+    }
+    users[idx].avatar = avatarDataUrl;
+    await putJSON(env, "users", users);
+    const { password: _, ...userWithoutPassword } = users[idx];
+    return jsonResponse({ success: true, message: "\u5934\u50CF\u66F4\u65B0\u6210\u529F", user: userWithoutPassword });
+  } catch (err) {
+    return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
+  }
+}
+__name(onRequestPost8, "onRequestPost8");
+__name2(onRequestPost8, "onRequestPost");
 async function onRequestDelete3({ request, env, params }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -552,14 +599,14 @@ async function onRequestDelete3({ request, env, params }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestDelete3, "onRequestDelete");
-
-// api/messages/[userId].js
+__name(onRequestDelete3, "onRequestDelete3");
+__name2(onRequestDelete3, "onRequestDelete");
 function pmKey(id1, id2) {
   const ids = [id1, id2].sort();
   return `pm:${ids[0]}:${ids[1]}`;
 }
 __name(pmKey, "pmKey");
+__name2(pmKey, "pmKey");
 async function onRequestGet7({ request, env, params }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -582,9 +629,8 @@ async function onRequestGet7({ request, env, params }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet7, "onRequestGet");
-
-// api/posts/[id].js
+__name(onRequestGet7, "onRequestGet7");
+__name2(onRequestGet7, "onRequestGet");
 async function onRequestDelete4({ request, env, params }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -606,9 +652,8 @@ async function onRequestDelete4({ request, env, params }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestDelete4, "onRequestDelete");
-
-// api/announcement.js
+__name(onRequestDelete4, "onRequestDelete4");
+__name2(onRequestDelete4, "onRequestDelete");
 async function onRequestGet8({ env }) {
   try {
     const announcement = await getJSON(env, "announcement", null);
@@ -617,8 +662,9 @@ async function onRequestGet8({ env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet8, "onRequestGet");
-async function onRequestPost8({ request, env }) {
+__name(onRequestGet8, "onRequestGet8");
+__name2(onRequestGet8, "onRequestGet");
+async function onRequestPost9({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
     if (error) return error;
@@ -637,7 +683,8 @@ async function onRequestPost8({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost8, "onRequestPost");
+__name(onRequestPost9, "onRequestPost9");
+__name2(onRequestPost9, "onRequestPost");
 async function onRequestDelete5({ request, env }) {
   try {
     const { error } = await requireAdmin(env, request);
@@ -648,9 +695,8 @@ async function onRequestDelete5({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestDelete5, "onRequestDelete");
-
-// api/comments/index.js
+__name(onRequestDelete5, "onRequestDelete5");
+__name2(onRequestDelete5, "onRequestDelete");
 async function onRequestGet9({ request, env }) {
   try {
     const url = new URL(request.url);
@@ -664,8 +710,9 @@ async function onRequestGet9({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet9, "onRequestGet");
-async function onRequestPost9({ request, env }) {
+__name(onRequestGet9, "onRequestGet9");
+__name2(onRequestGet9, "onRequestGet");
+async function onRequestPost10({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -694,9 +741,8 @@ async function onRequestPost9({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost9, "onRequestPost");
-
-// api/init.js
+__name(onRequestPost10, "onRequestPost10");
+__name2(onRequestPost10, "onRequestPost");
 async function onRequestGet10({ env }) {
   try {
     const users = await getJSON(env, "users", []);
@@ -723,14 +769,14 @@ async function onRequestGet10({ env }) {
     return jsonResponse({ success: false, message: "\u521D\u59CB\u5316\u5931\u8D25: " + err.message }, 500);
   }
 }
-__name(onRequestGet10, "onRequestGet");
-
-// api/messages/index.js
+__name(onRequestGet10, "onRequestGet10");
+__name2(onRequestGet10, "onRequestGet");
 function pmKey2(id1, id2) {
   const ids = [id1, id2].sort();
   return `pm:${ids[0]}:${ids[1]}`;
 }
-__name(pmKey2, "pmKey");
+__name(pmKey2, "pmKey2");
+__name2(pmKey2, "pmKey");
 async function onRequestGet11({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
@@ -754,8 +800,9 @@ async function onRequestGet11({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet11, "onRequestGet");
-async function onRequestPost10({ request, env }) {
+__name(onRequestGet11, "onRequestGet11");
+__name2(onRequestGet11, "onRequestGet");
+async function onRequestPost11({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -804,9 +851,8 @@ async function onRequestPost10({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost10, "onRequestPost");
-
-// api/posts/index.js
+__name(onRequestPost11, "onRequestPost11");
+__name2(onRequestPost11, "onRequestPost");
 async function onRequestGet12({ request, env }) {
   try {
     const posts = await getJSON(env, "posts", []);
@@ -816,8 +862,9 @@ async function onRequestGet12({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestGet12, "onRequestGet");
-async function onRequestPost11({ request, env }) {
+__name(onRequestGet12, "onRequestGet12");
+__name2(onRequestGet12, "onRequestGet");
+async function onRequestPost12({ request, env }) {
   try {
     const { error, user } = await requireAuth(env, request);
     if (error) return error;
@@ -847,9 +894,8 @@ async function onRequestPost11({ request, env }) {
     return jsonResponse({ success: false, message: "\u670D\u52A1\u5668\u9519\u8BEF: " + err.message }, 500);
   }
 }
-__name(onRequestPost11, "onRequestPost");
-
-// ../.wrangler/tmp/pages-dcKDGz/functionsRoutes-0.9890794237084677.mjs
+__name(onRequestPost12, "onRequestPost12");
+__name2(onRequestPost12, "onRequestPost");
 var routes = [
   {
     routePath: "/api/chat/messages/:id",
@@ -957,6 +1003,13 @@ var routes = [
     modules: [onRequestPost7]
   },
   {
+    routePath: "/api/user/avatar",
+    mountPath: "/api/user",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost8]
+  },
+  {
     routePath: "/api/comments/:id",
     mountPath: "/api/comments",
     method: "DELETE",
@@ -996,7 +1049,7 @@ var routes = [
     mountPath: "/api",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost8]
+    modules: [onRequestPost9]
   },
   {
     routePath: "/api/comments",
@@ -1010,7 +1063,7 @@ var routes = [
     mountPath: "/api/comments",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost9]
+    modules: [onRequestPost10]
   },
   {
     routePath: "/api/init",
@@ -1031,7 +1084,7 @@ var routes = [
     mountPath: "/api/messages",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost10]
+    modules: [onRequestPost11]
   },
   {
     routePath: "/api/posts",
@@ -1045,11 +1098,9 @@ var routes = [
     mountPath: "/api/posts",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost11]
+    modules: [onRequestPost12]
   }
 ];
-
-// ../../root/.npm/_npx/32026684e21afda6/node_modules/path-to-regexp/dist.es2015/index.js
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -1134,6 +1185,7 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
+__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -1144,18 +1196,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name2(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name2(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name2(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -1163,7 +1215,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name2(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -1171,7 +1223,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -1234,12 +1286,14 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
+__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
+__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -1253,7 +1307,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -1272,14 +1326,17 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
+__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
+__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
+__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -1300,6 +1357,7 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
+__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -1307,10 +1365,12 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
+__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
+__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -1366,6 +1426,7 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
+__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -1374,8 +1435,7 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-
-// ../../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/pages-template-worker.ts
+__name2(pathToRegexp, "pathToRegexp");
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -1426,13 +1486,14 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
+__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name(async (input, init) => {
+    const next = /* @__PURE__ */ __name2(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -1459,7 +1520,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name(() => {
+          passThroughOnException: /* @__PURE__ */ __name2(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -1487,16 +1548,14 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name((response) => (
+var cloneResponse = /* @__PURE__ */ __name2((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-
-// ../../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -1512,8 +1571,6 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -1523,7 +1580,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -1541,20 +1599,17 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-lrjHbP/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-
-// ../../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -1566,6 +1621,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -1573,9 +1629,11 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-lrjHbP/middleware-loader.entry.ts
+__name2(__facade_invoke__, "__facade_invoke__");
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
+  static {
+    __name(this, "___Facade_ScheduledController__");
+  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
@@ -1584,7 +1642,7 @@ var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   scheduledTime;
   cron;
   static {
-    __name(this, "__Facade_ScheduledController__");
+    __name2(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -1601,7 +1659,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -1610,7 +1668,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -1626,6 +1684,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -1634,7 +1693,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -1642,7 +1701,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -1665,6 +1724,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -1672,8 +1732,186 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// ../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// ../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    const body = JSON.stringify(error);
+    const headers = {
+      "Content-Type": "application/json",
+      "MF-Experimental-Error-Stack": "true"
+    };
+    const encoded = encodeURIComponent(body);
+    if (encoded.length <= 8192) {
+      headers["MF-Experimental-Error-Stack-Payload"] = encoded;
+    }
+    return new Response(body, { status: 500, headers });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-bxflIv/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = middleware_loader_entry_default;
+
+// ../root/.npm/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-bxflIv/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  scheduledTime;
+  cron;
+  static {
+    __name(this, "__Facade_ScheduledController__");
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof ___Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
 };
-//# sourceMappingURL=functionsWorker-0.4854113762565012.mjs.map
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    }, "#fetchDispatcher");
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    }, "#dispatcher");
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=functionsWorker-0.043227540040929546.js.map

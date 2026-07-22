@@ -125,9 +125,12 @@ const TronixAuth = {
                         TronixAuth.logout();
                         TronixAuth.showFeedback('已退出登录', 'info');
                         setTimeout(() => window.location.reload(), 800);
-                    } else if (action === 'profile' || action === 'settings') {
+                    } else if (action === 'profile') {
                         e.preventDefault();
-                        TronixAuth.showFeedback('功能开发中...', 'info');
+                        window.location.href = 'profile.html';
+                    } else if (action === 'settings') {
+                        e.preventDefault();
+                        window.location.href = 'profile.html?tab=settings';
                     }
                 });
             } else {

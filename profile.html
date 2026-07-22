@@ -18,6 +18,8 @@
             position: relative; min-height: 100vh; color: #fff; line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             overflow-x: hidden; opacity: 0; transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
         }
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
@@ -89,6 +91,8 @@
         .page-container {
             max-width: 1100px; margin: 0 auto;
             padding: 120px 5% 60px;
+            flex-grow: 1;
+            width: 100%;
         }
 
         /* 页面标题 */
@@ -518,6 +522,25 @@
             color: #fff;
         }
 
+        .settings-avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fc00ef, #04eff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(252,0,239,0.3);
+        }
+        .settings-avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
         /* 页脚 */
         footer {
             padding: 2.5rem 5% 2rem;
@@ -525,7 +548,8 @@
             background: rgba(10,8,25,0.6);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(252,0,239,0.15);
-            margin-top: 3rem;
+            margin-top: auto;
+            flex-shrink: 0;
         }
         .footer-inner {
             max-width: 1200px;
@@ -720,6 +744,26 @@
             <div class="settings-card fade-in">
                 <div class="settings-section">
                     <h3 class="settings-section-title">
+                        <i class="fas fa-user-circle"></i> 头像设置
+                    </h3>
+                    <div style="display:flex; align-items:center; gap:2rem; flex-wrap:wrap;">
+                        <div class="settings-avatar-preview" id="settingsAvatarPreview">
+                            <img src="" alt="头像预览" id="settingsAvatarImg">
+                        </div>
+                        <div>
+                            <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="onAvatarFileChange(event)">
+                            <button class="btn-primary" onclick="document.getElementById('avatarFileInput').click()">
+                                <i class="fas fa-upload"></i> 上传头像
+                            </button>
+                            <p style="color:#8080b0; font-size:0.82rem; margin-top:0.8rem;">
+                                支持 JPG、PNG、GIF 格式，建议尺寸 200×200，最大 500KB
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="settings-section-title">
                         <i class="fas fa-key"></i> 修改密码
                     </h3>
                     <form id="changePasswordForm" onsubmit="changePassword(event)">
@@ -770,8 +814,31 @@
 
         function getToken() { return localStorage.getItem('tronixToken') || sessionStorage.getItem('tronixToken'); }
         function getCurrentUser() {
-            try { return JSON.parse(localStorage.getItem('tronixUser') || sessionStorage.getItem('tronixUser') || 'null'); }
-            catch { return null; }
+            try {
+                return JSON.parse(
+                    localStorage.getItem('tronixCurrentUser') ||
+                    sessionStorage.getItem('tronixCurrentUser') ||
+                    localStorage.getItem('tronixUser') ||
+                    sessionStorage.getItem('tronixUser') ||
+                    'null'
+                );
+            } catch { return null; }
+        }
+        function setCurrentUser(user) {
+            const storage = localStorage.getItem('tronixToken') ? localStorage : sessionStorage;
+            storage.setItem('tronixCurrentUser', JSON.stringify(user));
+            storage.setItem('tronixUser', JSON.stringify(user));
+        }
+        async function fetchCurrentUser() {
+            try {
+                const r = await fetch(API_BASE + '/auth/me', { headers: authHeaders() });
+                const data = await r.json();
+                if (data.success && data.user) {
+                    setCurrentUser(data.user);
+                    return data.user;
+                }
+                return null;
+            } catch { return null; }
         }
         function authHeaders() {
             const h = { 'Content-Type': 'application/json' };
@@ -827,8 +894,7 @@
             return true;
         }
 
-        function loadProfile() {
-            const user = getCurrentUser();
+        function loadProfile(user) {
             if (!user) return;
 
             const avatarEl = document.getElementById('profileAvatar');
@@ -844,13 +910,16 @@
 
             document.getElementById('infoUsername').textContent = user.username;
             document.getElementById('infoRole').textContent = user.role === 'admin' ? '管理员' : '普通用户';
-            document.getElementById('infoId').textContent = user.id || '-';
+            document.getElementById('infoId').textContent = user.id || user._id || '-';
 
             if (user.createdAt) {
                 const date = new Date(user.createdAt);
                 document.getElementById('infoCreated').textContent = date.toLocaleDateString('zh-CN');
                 const days = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
                 document.getElementById('joinDays').textContent = days;
+            } else {
+                document.getElementById('infoCreated').textContent = '-';
+                document.getElementById('joinDays').textContent = 0;
             }
         }
 
@@ -939,6 +1008,69 @@
             }
         }
 
+        function updateAvatarDisplay(user) {
+            const avatarUrl = user.avatar || fallbackAvatar(user.username);
+            const profileAvatar = document.getElementById('profileAvatar');
+            const settingsAvatarImg = document.getElementById('settingsAvatarImg');
+            if (profileAvatar) {
+                profileAvatar.innerHTML = `<img src="${avatarUrl}" alt="头像">`;
+            }
+            if (settingsAvatarImg) {
+                settingsAvatarImg.src = avatarUrl;
+            }
+        }
+
+        function onAvatarFileChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('请选择图片文件', 'error');
+                return;
+            }
+
+            if (file.size > 500 * 1024) {
+                showToast('图片不能超过 500KB', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const settingsAvatarImg = document.getElementById('settingsAvatarImg');
+                if (settingsAvatarImg) {
+                    settingsAvatarImg.src = e.target.result;
+                }
+                uploadAvatar(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadAvatar(avatarDataUrl) {
+            if (!checkAuth()) return;
+            showToast('正在上传...', 'info');
+            try {
+                const res = await fetch(API_BASE + '/user/avatar', {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ avatar: avatarDataUrl })
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    setCurrentUser(data.user);
+                    updateAvatarDisplay(data.user);
+                    showToast('头像更新成功', 'success');
+                } else {
+                    showToast((data && data.message) || '上传失败', 'error');
+                    const user = getCurrentUser();
+                    if (user) updateAvatarDisplay(user);
+                }
+            } catch (err) {
+                showToast('网络错误，请稍后重试', 'error');
+                const user = getCurrentUser();
+                if (user) updateAvatarDisplay(user);
+            }
+        }
+
         async function changePassword(e) {
             e.preventDefault();
             if (!checkAuth()) return;
@@ -971,10 +1103,22 @@
             setTimeout(() => window.location.href = 'login.html', 800);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             document.body.style.opacity = '1';
+
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab === 'settings') {
+                switchTab('settings');
+            }
+
             if (checkAuth()) {
-                loadProfile();
+                const user = await fetchCurrentUser();
+                const userData = user || getCurrentUser();
+                if (userData) {
+                    loadProfile(userData);
+                    updateAvatarDisplay(userData);
+                }
                 loadInviteCode();
                 loadInvitedUsers();
             }

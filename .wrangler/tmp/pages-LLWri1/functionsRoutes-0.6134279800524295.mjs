@@ -13,6 +13,7 @@ import { onRequestPost as __api_chat_pin_js_onRequestPost } from "/workspace/fun
 import { onRequestGet as __api_invite_code_js_onRequestGet } from "/workspace/functions/api/invite/code.js"
 import { onRequestGet as __api_invite_mine_js_onRequestGet } from "/workspace/functions/api/invite/mine.js"
 import { onRequestPost as __api_posts_pin_js_onRequestPost } from "/workspace/functions/api/posts/pin.js"
+import { onRequestPost as __api_user_avatar_js_onRequestPost } from "/workspace/functions/api/user/avatar.js"
 import { onRequestDelete as __api_comments__id__js_onRequestDelete } from "/workspace/functions/api/comments/[id].js"
 import { onRequestGet as __api_messages__userId__js_onRequestGet } from "/workspace/functions/api/messages/[userId].js"
 import { onRequestDelete as __api_posts__id__js_onRequestDelete } from "/workspace/functions/api/posts/[id].js"
@@ -132,6 +133,13 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_posts_pin_js_onRequestPost],
+    },
+  {
+      routePath: "/api/user/avatar",
+      mountPath: "/api/user",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_user_avatar_js_onRequestPost],
     },
   {
       routePath: "/api/comments/:id",
