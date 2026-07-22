@@ -671,8 +671,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="profile-info">
-                        <h2 id="profileUsername">
-                            加载中...
+                        <h2>
+                            <span id="profileUsernameText">加载中...</span>
                             <span class="admin-badge" id="adminBadge" style="display:none;">管理员</span>
                         </h2>
                         <div class="role-text" id="profileRole">欢迎来到 Tronix</div>
@@ -904,8 +904,9 @@
                 avatarEl.innerHTML = `<img src="${fallbackAvatar(user.username)}" alt="头像">`;
             }
 
-            document.getElementById('profileUsername').innerHTML = escapeHtml(user.username);
-            document.getElementById('adminBadge').style.display = user.role === 'admin' ? 'inline-block' : 'none';
+            document.getElementById('profileUsernameText').textContent = user.username;
+            const adminBadge = document.getElementById('adminBadge');
+            if (adminBadge) adminBadge.style.display = user.role === 'admin' ? 'inline-block' : 'none';
             document.getElementById('profileRole').textContent = user.role === 'admin' ? '管理员账户' : '普通用户';
 
             document.getElementById('infoUsername').textContent = user.username;
