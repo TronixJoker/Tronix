@@ -1334,7 +1334,6 @@
                     <div class="profile-name">${escapeHtml(user.username)}${adminBadge}</div>
                     <div class="profile-role">${user.role === 'admin' ? '管理员账户' : '欢迎回来！'}</div>
                     <button class="profile-btn" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
-                    <a class="profile-btn" href="profile.html" style="margin-top:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);"><i class="fas fa-user-circle"></i> 个人中心</a>
                     ${user.role === 'admin' ? '<a class="admin-link" href="admin.html"><i class="fas fa-shield-alt"></i> 进入管理后台</a>' : ''}
                 `;
             } else {
