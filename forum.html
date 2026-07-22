@@ -267,6 +267,50 @@
         .chat-online-dot { width: 6px; height: 6px; border-radius: 50%; background: #00f535; }
         .chat-online-count { font-size: 0.75rem; color: #00f535; margin-left: 0.4rem; font-weight: 500; }
 
+        .chat-pinned-box {
+            background: linear-gradient(90deg, rgba(252,0,239,0.15), rgba(4,239,247,0.15));
+            border-bottom: 1px solid rgba(252,0,239,0.2);
+            padding: 0.6rem 0.8rem;
+            font-size: 0.8rem;
+            color: #e0e0ff;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .chat-pinned-box .pin-icon {
+            color: #fc00ef;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        .chat-pinned-box .pinned-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .chat-pinned-box .pinned-title {
+            font-weight: 600;
+            color: #fc00ef;
+            font-size: 0.75rem;
+            margin-bottom: 0.2rem;
+        }
+        .chat-pinned-box .pinned-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+        }
+        .chat-pinned-box .unpin-btn {
+            background: none;
+            border: none;
+            color: #a0a0d0;
+            cursor: pointer;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            padding: 0.2rem;
+        }
+        .chat-pinned-box .unpin-btn:hover { color: #ff6b6b; }
+
         .chat-message-list { flex-grow: 1; padding: 0.7rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.7rem; }
         .chat-message-list::-webkit-scrollbar { width: 5px; }
         .chat-message-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
@@ -373,6 +417,9 @@
         .pm-trigger-btn:hover { background: rgba(4,239,247,0.3); color: #fff; }
         .admin-trigger-btn { color: #fc00ef; background: rgba(252,0,239,0.12); }
         .admin-trigger-btn:hover { background: rgba(252,0,239,0.3); color: #fff; }
+        .pin-btn { color: #fc00ef; background: rgba(252,0,239,0.12); }
+        .pin-btn:hover { background: rgba(252,0,239,0.3); color: #fff; }
+        .pin-btn.active { background: linear-gradient(45deg, #fc00ef, #04eff7); color: #fff; }
         .chat-del-btn { align-self: center; width: 26px; height: 26px; font-size: 0.7rem; opacity: 0.55; }
         .chat-del-btn:hover { opacity: 1; }
         .comment-top .icon-action-btn { width: 24px; height: 24px; font-size: 0.7rem; }
@@ -568,6 +615,7 @@
                 </div>
                 <div class="sidebar-box-body chat-body" id="chatSidebarBody">
                     <div class="chat-online-bar" id="onlineUsersList"></div>
+                    <div id="chatPinnedMsg" class="chat-pinned-box" style="display:none;"></div>
                     <div class="chat-message-list" id="chatMessages"></div>
                     <div class="chat-compose">
                         <button class="chat-compose-btn" onclick="document.getElementById('chatImageInput').click()" title="发送图片">
@@ -605,10 +653,10 @@
             <div class="sidebar-box fade-in delay-3">
                 <div class="sidebar-box-header" style="cursor:default;">
                     <div class="sidebar-box-title"><i class="fas fa-info-circle"></i> 论坛公告</div>
+                    ${isAdmin() ? '<button class="icon-action-btn pin-btn" id="editAnnounceBtn" onclick="openAnnouncementModal()" title="编辑公告" style="width:28px;height:28px;font-size:0.75rem;"><i class="fas fa-edit"></i></button>' : ''}
                 </div>
-                <div class="announce-body">
-                    <p style="color:#04eff7; margin-bottom:0.5rem;">Tronix v3.3.0测试版现已发布，欢迎下载体验并反馈问题！</p>
-                    <p class="announce-date">发布日期: 2025-06-15</p>
+                <div class="announce-body" id="announceBody">
+                    <p class="no-comments">加载中...</p>
                 </div>
             </div>
         </aside>
@@ -702,6 +750,31 @@
             </div>
             <div class="modal-foot">
                 <button class="btn-secondary" onclick="closeAdminUserModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑公告模态框 -->
+    <div class="modal-overlay" id="announcementModal">
+        <div class="modal-box" style="max-width:500px;">
+            <div class="modal-head">
+                <h3>编辑公告</h3>
+                <button class="modal-close" onclick="closeAnnouncementModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <label>公告标题</label>
+                    <input type="text" id="announceTitle" placeholder="请输入公告标题" value="论坛公告">
+                </div>
+                <div class="form-row">
+                    <label>公告内容</label>
+                    <textarea id="announceContent" placeholder="请输入公告内容..." style="min-height:120px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn-secondary" onclick="deleteAnnouncement()" style="margin-right:auto;color:#ff6b6b;">删除公告</button>
+                <button class="btn-secondary" onclick="closeAnnouncementModal()">取消</button>
+                <button class="btn-primary" onclick="saveAnnouncement()">保存</button>
             </div>
         </div>
     </div>
@@ -825,13 +898,29 @@
         const chatImgList = m => Array.isArray(m.images) ? m.images : (m.image ? [m.image] : []);
         function sameUser(a, b) { return !!(a && b && String(a) === String(b)); }
         function canDeletePost(p) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(postUserId(p), u.id); }
-        function canDeleteComment(c) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(cmtUserId(c), u.id); }
-        function canDeleteChat(m) { const u = getCurrentUser(); if (!u) return false; return isAdmin() || sameUser(chatUserId(m), u.id); }
+        function canPinPost(p) { return isAdmin(); }
+        function canDeleteComment(c, postUserId) {
+            const u = getCurrentUser();
+            if (!u) return false;
+            if (isAdmin()) return true;
+            if (sameUser(cmtUserId(c), u.id)) return true;
+            if (sameUser(postUserId, u.id)) return true;
+            return false;
+        }
+        function canDeleteChat(m) {
+            const u = getCurrentUser();
+            if (!u) return false;
+            if (isAdmin()) return true;
+            if (!sameUser(chatUserId(m), u.id)) return false;
+            const createdAt = new Date(m.createdAt).getTime();
+            return (Date.now() - createdAt) <= 2 * 60 * 1000;
+        }
 
         /* ---------- 帖子 ---------- */
         async function loadPosts() {
             const res = await apiGet('/posts');
             allPosts = (res && res.success && Array.isArray(res.posts)) ? res.posts : [];
+            window.__allPosts = allPosts;
             renderPosts();
         }
         function renderPosts() {
@@ -844,6 +933,7 @@
             if (searchQuery) posts = posts.filter(p => (p.title || '').toLowerCase().includes(searchQuery) || postAuthor(p).toLowerCase().includes(searchQuery) || (p.content || '').toLowerCase().includes(searchQuery));
             if (sortValue === 'likes') posts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
             else posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            posts.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
             if (!posts.length) { container.innerHTML = '<p class="no-comments">暂无帖子，快来发布第一篇吧~</p>'; return; }
             container.innerHTML = posts.map(renderPostCard).join('');
             allPosts.forEach(p => loadCommentsForPost(p.id || p._id));
@@ -855,12 +945,15 @@
             const isLiked = post.likedBy && user && post.likedBy.includes(user.username);
             const authorId = postUserId(post);
             const canDelete = canDeletePost(post);
+            const canPin = canPinPost(post);
+            const isPinned = !!post.isPinned;
             const showPm = authorId && (!user || !sameUser(authorId, user.id));
             const showAdmin = isAdmin() && authorId;
             const imagesHtml = images.length ? `<div class="post-images-row">${images.slice(0, 3).map(img => `<div class="post-img" onclick="openImageViewer('${img}')"><img src="${img}" alt="帖子图片" loading="lazy"></div>`).join('')}</div>` : '';
             const tagsHtml = (post.tags && post.tags.length) ? `<div class="post-tags-row">${post.tags.map(tag => `<span class="post-tag-pill">#${escapeHtml(tag)}</span>`).join('')}</div>` : '';
-            const headerActions = (showPm || showAdmin || canDelete) ? `
+            const headerActions = (showPm || showAdmin || canDelete || canPin) ? `
                 <div class="post-header-actions">
+                    ${canPin ? `<button class="icon-action-btn ${isPinned ? 'pin-btn active' : 'pin-btn'}" onclick="togglePostPin('${pid}', ${!isPinned})" title="${isPinned ? '取消置顶' : '置顶帖子'}"><i class="fas fa-thumbtack"></i></button>` : ''}
                     ${showPm ? `<button class="icon-action-btn pm-trigger-btn" data-user-id="${authorId}" data-username="${escapeHtml(postAuthor(post))}" onclick="onPmClick(this)" title="私信作者"><i class="fas fa-envelope"></i></button>` : ''}
                     ${showAdmin ? `<button class="icon-action-btn admin-trigger-btn" data-user-id="${authorId}" data-username="${escapeHtml(postAuthor(post))}" onclick="onAdminClick(this)" title="管理用户"><i class="fas fa-gavel"></i></button>` : ''}
                     ${canDelete ? `<button class="icon-action-btn del-btn" onclick="deletePost('${pid}', this)" title="删除帖子"><i class="fas fa-trash"></i></button>` : ''}
@@ -872,7 +965,7 @@
                             <img src="${postAvatar(post)}" alt="${escapeHtml(postAuthor(post))}" loading="lazy">
                         </div>
                         <div class="post-meta-info">
-                            <h4>${escapeHtml(post.title)}</h4>
+                            <h4>${isPinned ? '<i class="fas fa-thumbtack" style="color:#fc00ef; font-size:0.85rem; margin-right:0.3rem;"></i>' : ''}${escapeHtml(post.title)}</h4>
                             <div class="post-meta-row">
                                 <span><i class="fas fa-user-circle"></i> ${escapeHtml(postAuthor(post))}</span>
                                 <span><i class="far fa-clock"></i> ${formatTime(post.createdAt)}</span>
@@ -919,15 +1012,18 @@
             const actionEl = document.getElementById('comment-action-count-' + pid);
             if (headerEl) headerEl.textContent = '评论 (' + comments.length + ')';
             if (actionEl) actionEl.textContent = comments.length;
-            if (scrollEl) scrollEl.innerHTML = comments.length ? comments.map(renderComment).join('') : '<p class="no-comments">暂无评论，来抢沙发吧~</p>';
+            if (scrollEl) scrollEl.innerHTML = comments.length ? comments.map(c => renderComment(c, pid)).join('') : '<p class="no-comments">暂无评论，来抢沙发吧~</p>';
         }
-        function renderComment(c) {
+        function renderComment(c, postId) {
             const cid = c.id || c._id;
-            const pid = c.postId;
+            const pid = postId || c.postId;
             const images = cmtImgList(c);
             const user = getCurrentUser();
             const userId = cmtUserId(c);
-            const canDelete = canDeleteComment(c);
+            const posts = window.__allPosts || [];
+            const post = posts.find(p => (p.id || p._id) === pid);
+            const postAuthorId = post ? postUserId(post) : null;
+            const canDelete = canDeleteComment(c, postAuthorId);
             const showPm = userId && (!user || !sameUser(userId, user.id));
             const showAdmin = isAdmin() && userId;
             const imgHtml = images.length ? `<div class="comment-images-row">${images.map(img => `<div class="comment-img-sm" onclick="openImageViewer('${img}')"><img src="${img}" alt="评论图片" loading="lazy"></div>`).join('')}</div>` : '';
@@ -1049,6 +1145,15 @@
             if (res && res.success) { showFeedback('帖子已删除', 'success'); loadPosts(); }
             else showFeedback((res && res.message) || '删除失败', 'error');
         }
+        async function togglePostPin(pid, shouldPin) {
+            if (!requireLogin() || !isAdmin()) return;
+            const action = shouldPin ? 'pin' : 'unpin';
+            const res = await apiPost('/posts/pin', { postId: pid, action });
+            if (res && res.success) {
+                showFeedback(res.message || (shouldPin ? '置顶成功' : '已取消置顶'), 'success');
+                loadPosts();
+            } else showFeedback((res && res.message) || '操作失败', 'error');
+        }
         async function deleteComment(cid, pid) {
             if (!requireLogin()) return;
             if (!confirm('确定删除这条评论吗？')) return;
@@ -1118,17 +1223,36 @@
         async function loadChatMessages() {
             const res = await apiGet('/chat/messages');
             const messages = (res && res.success && Array.isArray(res.messages)) ? res.messages : [];
-            renderChatMessages(messages);
+            const pinned = (res && res.pinned) || null;
+            renderChatPinned(pinned);
+            renderChatMessages(messages, pinned);
         }
-        function renderChatMessages(messages) {
+        function renderChatPinned(pinned) {
+            const box = document.getElementById('chatPinnedMsg');
+            if (!box || !pinned) { if (box) box.style.display = 'none'; return; }
+            const canUnpin = isAdmin();
+            box.style.display = 'flex';
+            box.innerHTML = `
+                <i class="fas fa-thumbtack pin-icon"></i>
+                <div class="pinned-content">
+                    <div class="pinned-title">${escapeHtml(chatAuthor(pinned))} 置顶</div>
+                    <div class="pinned-text">${escapeHtml(pinned.content || '')}</div>
+                </div>
+                ${canUnpin ? `<button class="unpin-btn" onclick="toggleChatPin(null, false)" title="取消置顶"><i class="fas fa-times"></i></button>` : ''}
+            `;
+        }
+        function renderChatMessages(messages, pinned) {
             const container = document.getElementById('chatMessages');
             if (!container) return;
             const me = getCurrentUser();
+            const isAdminUser = isAdmin();
+            const pinnedId = pinned && pinned.id ? pinned.id : null;
             container.innerHTML = messages.map(msg => {
                 const isOwn = me && sameUser(chatUserId(msg), me.id);
                 const images = chatImgList(msg);
                 const imgHtml = images.length ? images.map(img => `<img src="${img}" class="chat-msg-img" onclick="openImageViewer('${img}')" loading="lazy">`).join('') : '';
                 const delBtn = canDeleteChat(msg) ? `<button class="icon-action-btn del-btn chat-del-btn" onclick="deleteChatMessage('${msg.id || msg._id}')" title="删除"><i class="fas fa-trash"></i></button>` : '';
+                const pinBtn = (isAdminUser && !sameUser(pinnedId, msg.id || msg._id)) ? `<button class="icon-action-btn pin-btn chat-del-btn" onclick="toggleChatPin('${msg.id || msg._id}', true)" title="置顶"><i class="fas fa-thumbtack"></i></button>` : '';
                 return `
                     <div class="chat-msg ${isOwn ? 'own' : ''}">
                         <div class="chat-msg-avatar" data-user-id="${chatUserId(msg) || ''}" data-username="${escapeHtml(chatAuthor(msg))}" onclick="onUserAvatarClick(this)" style="cursor:pointer;">
@@ -1139,6 +1263,7 @@
                             <div class="chat-msg-bubble">${escapeHtml(msg.content)}${imgHtml}</div>
                             <div class="chat-msg-time">${formatTime(msg.createdAt)}</div>
                         </div>
+                        ${pinBtn}
                         ${delBtn}
                     </div>
                 `;
@@ -1173,6 +1298,16 @@
             const res = await apiDelete('/chat/messages/' + encodeURIComponent(mid));
             if (res && res.success) { showFeedback('消息已删除', 'success'); loadChatMessages(); }
             else showFeedback((res && res.message) || '删除失败', 'error');
+        }
+        async function toggleChatPin(messageId, shouldPin) {
+            if (!requireLogin() || !isAdmin()) return;
+            const action = shouldPin ? 'pin' : 'unpin';
+            const body = shouldPin ? { messageId, action } : { action: 'unpin' };
+            const res = await apiPost('/chat/pin', body);
+            if (res && res.success) {
+                showFeedback(res.message || (shouldPin ? '置顶成功' : '已取消置顶'), 'success');
+                loadChatMessages();
+            } else showFeedback((res && res.message) || '操作失败', 'error');
         }
         function renderOnlineUsers(messages) {
             const container = document.getElementById('onlineUsersList');
@@ -1340,6 +1475,55 @@
             else showFeedback((res && res.message) || '操作失败', 'error');
         }
 
+        /* ---------- 公告管理 ---------- */
+        async function loadAnnouncement() {
+            const res = await apiGet('/announcement');
+            const box = document.getElementById('announceBody');
+            if (!box) return;
+            if (res && res.success && res.announcement) {
+                const a = res.announcement;
+                box.innerHTML = `
+                    <p style="color:#04eff7; margin-bottom:0.5rem; font-weight:500;">${escapeHtml(a.title || '论坛公告')}</p>
+                    <p style="color:#d0d0ff; font-size:0.92rem; line-height:1.6; white-space:pre-wrap;">${escapeHtml(a.content)}</p>
+                    <p class="announce-date">更新于: ${formatTime(a.updatedAt)}</p>
+                `;
+            } else {
+                box.innerHTML = '<p class="no-comments" style="padding:0.5rem 0;">暂无公告</p>';
+            }
+        }
+        let currentAnnouncement = null;
+        async function openAnnouncementModal() {
+            if (!isAdmin()) return;
+            const res = await apiGet('/announcement');
+            currentAnnouncement = (res && res.success && res.announcement) || null;
+            document.getElementById('announceTitle').value = currentAnnouncement ? (currentAnnouncement.title || '论坛公告') : '论坛公告';
+            document.getElementById('announceContent').value = currentAnnouncement ? (currentAnnouncement.content || '') : '';
+            document.getElementById('announcementModal').classList.add('active');
+        }
+        function closeAnnouncementModal() { document.getElementById('announcementModal').classList.remove('active'); }
+        async function saveAnnouncement() {
+            if (!isAdmin()) return;
+            const title = document.getElementById('announceTitle').value.trim();
+            const content = document.getElementById('announceContent').value.trim();
+            if (!content) { showFeedback('公告内容不能为空', 'error'); return; }
+            const res = await apiPost('/announcement', { title, content });
+            if (res && res.success) {
+                showFeedback('公告已更新', 'success');
+                closeAnnouncementModal();
+                loadAnnouncement();
+            } else showFeedback((res && res.message) || '保存失败', 'error');
+        }
+        async function deleteAnnouncement() {
+            if (!isAdmin()) return;
+            if (!confirm('确定删除公告吗？')) return;
+            const res = await apiDelete('/announcement');
+            if (res && res.success) {
+                showFeedback('公告已删除', 'success');
+                closeAnnouncementModal();
+                loadAnnouncement();
+            } else showFeedback((res && res.message) || '删除失败', 'error');
+        }
+
         /* ---------- 导航 ---------- */
         function toggleMobileMenu() { const navLinks = document.getElementById('navLinks'); navLinks.classList.toggle('active'); }
         document.addEventListener('click', function(e) {
@@ -1371,6 +1555,7 @@
             updateSidebarProfile();
             loadPosts();
             loadChatMessages();
+            loadAnnouncement();
 
             document.getElementById('openCreateBtn').addEventListener('click', function() { if (!requireLogin() || !canPost()) return; openModal('createPostModal'); });
             document.getElementById('sortSelect').addEventListener('change', renderPosts);

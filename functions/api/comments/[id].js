@@ -13,7 +13,11 @@ export async function onRequestDelete({ request, env, params }) {
       const comments = await getJSON(env, `comments:${post.id}`, []);
       const comment = comments.find(c => c.id === id);
       if (comment) {
-        if (comment.userId !== user.id && user.role !== 'admin') {
+        const postAuthor = post.userId;
+        const isAdmin = user.role === 'admin';
+        const isCommentAuthor = comment.userId === user.id;
+        const isPostAuthor = postAuthor === user.id;
+        if (!isAdmin && !isCommentAuthor && !isPostAuthor) {
           return jsonResponse({ success: false, message: '无权限删除' }, 403);
         }
         const newComments = comments.filter(c => c.id !== id);

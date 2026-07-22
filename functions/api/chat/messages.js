@@ -1,9 +1,10 @@
-import { jsonResponse, getJSON, putJSON, generateId, requireAuth, isMuted } from '../_lib.js';
+import { jsonResponse, getJSON, putJSON, generateId, requireAuth, isMuted, getUserFromRequest } from '../_lib.js';
 
 export async function onRequestGet({ request, env }) {
   try {
     const messages = await getJSON(env, 'chat', []);
-    return jsonResponse({ success: true, messages });
+    const pinned = await getJSON(env, 'chat_pinned', null);
+    return jsonResponse({ success: true, messages, pinned });
   } catch (err) {
     return jsonResponse({ success: false, message: '服务器错误: ' + err.message }, 500);
   }
@@ -36,13 +37,61 @@ export async function onRequestPost({ request, env }) {
     };
 
     messages.push(message);
-    // 保留最近200条
     if (messages.length > 200) {
       messages.splice(0, messages.length - 200);
     }
     await putJSON(env, 'chat', messages);
 
     return jsonResponse({ success: true, message: '发送成功', data: message });
+  } catch (err) {
+    return jsonResponse({ success: false, message: '服务器错误: ' + err.message }, 500);
+  }
+}
+
+export async function onRequestDelete({ request, env }) {
+  try {
+    const user = await getUserFromRequest(env, request);
+    if (!user) return jsonResponse({ success: false, message: '请先登录' }, 401);
+
+    const url = new URL(request.url);
+    const msgId = url.pathname.split('/').pop();
+
+    if (!msgId) {
+      return jsonResponse({ success: false, message: '缺少消息ID' }, 400);
+    }
+
+    const messages = await getJSON(env, 'chat', []);
+    const idx = messages.findIndex(m => m.id === msgId);
+
+    if (idx === -1) {
+      return jsonResponse({ success: false, message: '消息不存在' }, 404);
+    }
+
+    const msg = messages[idx];
+    const isAdmin = user.role === 'admin';
+    const isOwn = msg.userId === user.id;
+
+    if (!isAdmin && !isOwn) {
+      return jsonResponse({ success: false, message: '无权限删除' }, 403);
+    }
+
+    if (isOwn && !isAdmin) {
+      const createdAt = new Date(msg.createdAt).getTime();
+      const now = Date.now();
+      if (now - createdAt > 2 * 60 * 1000) {
+        return jsonResponse({ success: false, message: '超过2分钟无法撤回' }, 403);
+      }
+    }
+
+    messages.splice(idx, 1);
+    await putJSON(env, 'chat', messages);
+
+    const pinned = await getJSON(env, 'chat_pinned', null);
+    if (pinned && pinned.id === msgId) {
+      await putJSON(env, 'chat_pinned', null);
+    }
+
+    return jsonResponse({ success: true, message: '删除成功' });
   } catch (err) {
     return jsonResponse({ success: false, message: '服务器错误: ' + err.message }, 500);
   }
