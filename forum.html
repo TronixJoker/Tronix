@@ -15,7 +15,9 @@
         ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff4df0, #3df7ff); }
 
         body {
-            position: relative; min-height: 100vh; color: #fff; line-height: 1.6;
+            position: relative; min-height: 100vh;
+            display: flex; flex-direction: column;
+            color: #fff; line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             overflow-x: hidden; opacity: 0; transition: opacity 0.5s ease;
         }
@@ -50,6 +52,8 @@
         .mobile-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 0.5rem; }
 
         /* 主内容 */
+        .main-content { flex: 1; }
+        
         .hero { height: 32vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 5%; margin-top: 100px; }
         .hero-content { max-width: 900px; padding: 2.5rem; border-radius: 20px; background: rgba(10,10,25,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         .hero-content h1 { font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(45deg, #fff, #c0e0ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; line-height: 1.2; }
@@ -147,62 +151,78 @@
         .post-action.like-btn.liked i { animation: likePop 0.3s ease; }
         @keyframes likePop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
-        /* 评论区 - 重新设计 */
+        /* 评论区 - 抖音风格 */
         .comments-area {
             margin: 0 1.2rem 1.2rem; background: rgba(0,0,0,0.35); border-radius: 14px;
             border: 1px solid rgba(255,255,255,0.06); overflow: hidden;
+            display: flex; flex-direction: column; max-height: 420px;
         }
         .comments-area-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0.8rem 1rem; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
         }
-        .comments-area-header span { font-weight: 600; color: #c0c0ff; font-size: 0.92rem; }
+        .comments-area-header span { font-weight: 600; color: #c0c0ff; font-size: 0.9rem; }
 
         /* 评论列表 - 可滚动 */
         .comments-scroll {
-            max-height: 380px; overflow-y: auto; padding: 0.6rem 0.8rem;
+            flex: 1; overflow-y: auto; padding: 0.4rem 0.8rem;
+            max-height: 280px;
         }
-        .comments-scroll::-webkit-scrollbar { width: 5px; }
+        .comments-scroll::-webkit-scrollbar { width: 4px; }
         .comments-scroll::-webkit-scrollbar-track { background: transparent; }
-        .comments-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-        .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
+        .comments-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+        .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-        .comment-row { display: flex; gap: 0.7rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); animation: fadeIn 0.3s ease; }
+        .comment-row { display: flex; gap: 0.6rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); animation: fadeIn 0.3s ease; }
         .comment-row:last-child { border-bottom: none; }
-        .comment-avatar-sm { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; overflow: hidden; }
+        .comment-avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; overflow: hidden; margin-top: 0.1rem; }
         .comment-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
-        .comment-main { flex-grow: 1; min-width: 0; }
-        .comment-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
-        .comment-author-name { font-weight: 600; color: #04eff7; font-size: 0.88rem; }
-        .comment-time { color: #8080b0; font-size: 0.78rem; }
-        .comment-text { color: #d8d8f0; font-size: 0.92rem; line-height: 1.55; word-break: break-word; }
-        .comment-images-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
-        .comment-img-sm { width: 100px; height: 100px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.3s ease; }
-        .comment-img-sm:hover { transform: scale(1.05); }
+        .comment-main { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; }
+        .comment-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+        .comment-author-name { font-weight: 600; color: #04eff7; font-size: 0.82rem; }
+        .comment-time { color: #7070a0; font-size: 0.72rem; }
+        .comment-text { color: #e8e8f8; font-size: 0.88rem; line-height: 1.5; word-break: break-word; margin-bottom: 0.3rem; }
+        .comment-bottom { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: auto; }
+        .comment-action-btn { display: inline-flex; align-items: center; gap: 0.3rem; color: #8080b0; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease; background: none; border: none; padding: 0.2rem 0.4rem; border-radius: 4px; }
+        .comment-action-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .comment-action-btn.like-btn:hover, .comment-action-btn.like-btn.liked { color: #ff4da6; }
+        .comment-action-btn.like-btn.liked i { animation: likePop 0.3s ease; }
+        .comment-action-btn i { font-size: 0.82rem; }
+        .comment-action-btn.del-btn { color: #ff6b6b; }
+        .comment-action-btn.del-btn:hover { background: rgba(255,77,77,0.15); color: #ff8a8a; }
+        .comment-action-btn.pm-trigger-btn { color: #04eff7; }
+        .comment-action-btn.pm-trigger-btn:hover { background: rgba(4,239,247,0.12); color: #3df7ff; }
+        .comment-action-btn.admin-trigger-btn { color: #fc00ef; }
+        .comment-action-btn.admin-trigger-btn:hover { background: rgba(252,0,239,0.12); color: #ff4df0; }
+        .comment-images-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.3rem; }
+        .comment-img-sm { width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; transition: transform 0.2s ease; }
+        .comment-img-sm:hover { transform: scale(1.03); }
         .comment-img-sm img { width: 100%; height: 100%; object-fit: cover; }
-        .no-comments { color: #8080b0; font-size: 0.9rem; padding: 1rem 0; text-align: center; }
+        .no-comments { color: #7070a0; font-size: 0.85rem; padding: 1.5rem 0; text-align: center; }
 
         /* 评论输入区 - 固定在评论区底部 */
         .comment-compose {
-            display: flex; gap: 0.7rem; padding: 0.8rem; background: rgba(255,255,255,0.02);
-            border-top: 1px solid rgba(255,255,255,0.06); align-items: flex-end;
+            display: flex; gap: 0.6rem; padding: 0.7rem; background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.06); align-items: center;
+            flex-shrink: 0;
         }
-        .compose-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
+        .compose-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; overflow: hidden; }
         .compose-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .compose-fields { flex-grow: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+        .compose-fields { flex-grow: 1; display: flex; flex-direction: column; gap: 0.3rem; }
         .compose-input {
-            width: 100%; padding: 0.6rem 1rem; border-radius: 20px;
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-            color: #fff; font-size: 0.92rem; transition: all 0.3s ease;
+            width: 100%; padding: 0.5rem 0.9rem; border-radius: 18px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 0.88rem; transition: all 0.2s ease;
         }
-        .compose-input:focus { outline: none; border-color: #04eff7; background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(4,239,247,0.15); }
-        .compose-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .compose-input:focus { outline: none; border-color: #04eff7; background: rgba(255,255,255,0.08); box-shadow: 0 0 8px rgba(4,239,247,0.12); }
+        .compose-actions { display: flex; align-items: center; gap: 0.4rem; }
         .compose-img-btn {
-            background: none; border: none; color: #a0a0d0; cursor: pointer; font-size: 1rem;
-            padding: 0.3rem; transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem;
+            background: none; border: none; color: #8080b0; cursor: pointer; font-size: 0.9rem;
+            padding: 0.25rem; transition: color 0.2s ease; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.78rem;
         }
         .compose-img-btn:hover { color: #04eff7; }
-        .compose-img-preview { color: #04eff7; font-size: 0.8rem; }
+        .compose-img-preview { color: #04eff7; font-size: 0.75rem; }
         .compose-send-btn {
             margin-left: auto; padding: 0.45rem 1.2rem; border-radius: 20px;
             background: linear-gradient(45deg, #fc00ef, #04eff7); border: none; color: white;
@@ -438,6 +458,13 @@
             .post-header { padding: 1rem; }
             .post-body-content, .post-images-row, .post-tags-row { padding-left: 1rem; padding-right: 1rem; }
             .comments-area { margin: 0 0.8rem 1rem; }
+            .comment-row { gap: 0.5rem; padding: 0.5rem 0; }
+            .comment-avatar-sm { width: 28px; height: 28px; }
+            .comment-author-name { font-size: 0.78rem; }
+            .comment-time { font-size: 0.68rem; }
+            .comment-text { font-size: 0.82rem; }
+            .comment-action-btn { font-size: 0.72rem; gap: 0.2rem; }
+            .comment-action-btn i { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -458,6 +485,7 @@
         </div>
     </nav>
 
+    <div class="main-content">
     <div class="hero">
         <div class="hero-content fade-in">
             <h1>Tronix 科技论坛</h1>
@@ -685,6 +713,7 @@
             <img id="viewerImage" src="" alt="预览图片">
         </div>
     </div>
+    </div>
 
     <footer>
         <div class="footer-inner">
@@ -902,10 +931,14 @@
             const showPm = userId && (!user || !sameUser(userId, user.id));
             const showAdmin = isAdmin() && userId;
             const imgHtml = images.length ? `<div class="comment-images-row">${images.map(img => `<div class="comment-img-sm" onclick="openImageViewer('${img}')"><img src="${img}" alt="评论图片" loading="lazy"></div>`).join('')}</div>` : '';
-            const actions = (showPm || showAdmin || canDelete) ? `
-                ${showPm ? `<button class="icon-action-btn pm-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onPmClick(this)" title="私信"><i class="fas fa-envelope"></i></button>` : ''}
-                ${showAdmin ? `<button class="icon-action-btn admin-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onAdminClick(this)" title="管理用户"><i class="fas fa-gavel"></i></button>` : ''}
-                ${canDelete ? `<button class="icon-action-btn del-btn" onclick="deleteComment('${cid}', '${pid}')" title="删除评论"><i class="fas fa-trash"></i></button>` : ''}` : '';
+            const likeCount = c.likes || 0;
+            const likedBy = c.likedBy || [];
+            const currentUser = getCurrentUser();
+            const isLiked = currentUser && likedBy.includes(currentUser.username);
+            const moreActions = (showPm || showAdmin || canDelete) ? `
+                ${showPm ? `<button class="comment-action-btn pm-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onPmClick(this)" title="私信"><i class="fas fa-envelope"></i><span>私信</span></button>` : ''}
+                ${showAdmin ? `<button class="comment-action-btn admin-trigger-btn" data-user-id="${userId}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onAdminClick(this)" title="管理"><i class="fas fa-gavel"></i><span>管理</span></button>` : ''}
+                ${canDelete ? `<button class="comment-action-btn del-btn" onclick="deleteComment('${cid}', '${pid}')" title="删除"><i class="fas fa-trash"></i><span>删除</span></button>` : ''}` : '';
             return `
                 <div class="comment-row">
                     <div class="comment-avatar-sm" data-user-id="${userId || ''}" data-username="${escapeHtml(cmtAuthor(c))}" onclick="onUserAvatarClick(this)" style="cursor:pointer;" title="点击发送私信">
@@ -915,10 +948,20 @@
                         <div class="comment-top">
                             <span class="comment-author-name">${escapeHtml(cmtAuthor(c))}</span>
                             <span class="comment-time">${formatTime(c.createdAt)}</span>
-                            ${actions}
                         </div>
                         <div class="comment-text">${escapeHtml(c.content)}</div>
                         ${imgHtml}
+                        <div class="comment-bottom">
+                            <button class="comment-action-btn like-btn ${isLiked ? 'liked' : ''}" onclick="toggleCommentLike(this, '${cid}', '${pid}')" title="点赞">
+                                <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                                <span>${likeCount}</span>
+                            </button>
+                            <button class="comment-action-btn reply-btn" onclick="focusReplyInput('${pid}', '${escapeHtml(cmtAuthor(c))}')" title="回复">
+                                <i class="far fa-comment"></i>
+                                <span>回复</span>
+                            </button>
+                            ${moreActions}
+                        </div>
                     </div>
                 </div>`;
         }
@@ -933,6 +976,52 @@
             if (idx > -1) { post.likedBy.splice(idx, 1); post.likes = (post.likes || 1) - 1; btn.classList.remove('liked'); btn.querySelector('i').className = 'far fa-heart'; }
             else { post.likedBy.push(username); post.likes = (post.likes || 0) + 1; btn.classList.add('liked'); btn.querySelector('i').className = 'fas fa-heart'; }
             btn.querySelector('span').textContent = post.likes;
+        }
+        function toggleCommentLike(btn, cid, pid) {
+            event.stopPropagation();
+            if (!requireLogin()) return;
+            const user = getCurrentUser(); const username = user.username;
+            const scrollEl = document.getElementById('comments-scroll-' + pid);
+            if (!scrollEl) return;
+            const commentRow = btn.closest('.comment-row');
+            if (!commentRow) return;
+            let comments = [];
+            try {
+                comments = JSON.parse(commentRow.dataset.comments || '[]');
+            } catch(e) {}
+            apiPost('/comments/' + encodeURIComponent(cid) + '/like', { postId: pid }).then(res => {
+                if (res && res.success) {
+                    const isLiked = btn.classList.contains('liked');
+                    const countSpan = btn.querySelector('span');
+                    let count = parseInt(countSpan.textContent) || 0;
+                    if (isLiked) {
+                        btn.classList.remove('liked');
+                        btn.querySelector('i').className = 'far fa-heart';
+                        count = Math.max(0, count - 1);
+                    } else {
+                        btn.classList.add('liked');
+                        btn.querySelector('i').className = 'fas fa-heart';
+                        count += 1;
+                    }
+                    countSpan.textContent = count;
+                } else {
+                    showFeedback((res && res.message) || '操作失败', 'error');
+                }
+            }).catch(() => {
+                showFeedback('网络错误，请稍后重试', 'error');
+            });
+        }
+        function focusReplyInput(pid, username) {
+            event.stopPropagation();
+            if (!requireLogin()) return;
+            const card = document.getElementById('post-card-' + pid);
+            if (!card) return;
+            const input = card.querySelector('.compose-input');
+            if (input) {
+                input.focus();
+                input.value = '@' + username + ' ';
+                input.setSelectionRange(input.value.length, input.value.length);
+            }
         }
         function handleCommentKeydown(event, postId, input) {
             if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); addComment(postId, input); }
@@ -1110,10 +1199,9 @@
                     <div class="profile-name">${escapeHtml(user.username)}${adminBadge}</div>
                     <div class="profile-role">${user.role === 'admin' ? '管理员账户' : '欢迎回来！'}</div>
                     <button class="profile-btn" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
-                    <div class="invite-code-box" id="inviteCodeBox"><div class="invite-row"><span class="invite-label"><i class="fas fa-ticket-alt"></i> 邀请码加载中...</span></div></div>
+                    <a class="profile-btn" href="profile.html" style="margin-top:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);"><i class="fas fa-user-circle"></i> 个人中心</a>
                     ${user.role === 'admin' ? '<a class="admin-link" href="admin.html"><i class="fas fa-shield-alt"></i> 进入管理后台</a>' : ''}
                 `;
-                loadInviteCode();
             } else {
                 container.innerHTML = `
                     <div class="profile-avatar-lg"><i class="fas fa-user" style="font-size:2rem;"></i></div>

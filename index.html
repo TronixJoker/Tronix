@@ -51,6 +51,8 @@
         body {
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             color: #fff;
             line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -236,6 +238,10 @@
             align-items: center;
             justify-content: center;
             padding: 120px 5% 60px;
+        }
+        
+        .main-content {
+            flex: 1;
         }
         
         .hero-container {
@@ -1146,6 +1152,7 @@
         </div>
     </nav>
     
+    <div class="main-content">
     <section class="hero" id="home">
         <div class="hero-container">
             <div class="hero-text">
@@ -1459,6 +1466,7 @@
                 </a>
             </div>
         </div>
+    </div>
     </div>
     
     <footer>

@@ -23,6 +23,8 @@
         body {
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             color: #fff;
             line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -175,6 +177,10 @@
         }
         
         /* 下载页面特有样式 */
+        .main-content {
+            flex: 1;
+        }
+        
         .download-section {
             padding: 3rem 5%;
             max-width: 1200px;
@@ -529,6 +535,7 @@
     </nav>
 
     <!-- 下载中心内容 -->
+    <div class="main-content">
     <section class="download-section">
         <div class="section-title">
             <h2>下载中心</h2>
@@ -580,6 +587,7 @@
             </div>
         </div>
     </section>
+    </div>
 
     <!-- 页脚 -->
     <footer id="footer">

@@ -33,6 +33,8 @@
         body {
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             color: #fff;
             line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -184,6 +186,10 @@
         }
         
         /* 主内容区 */
+        .main-content {
+            flex: 1;
+        }
+        
         .hero {
             height: 40vh;
             display: flex;
@@ -750,6 +756,7 @@
     </nav>
 
     <!-- 主内容区 -->
+    <div class="main-content">
     <section class="hero">
         <div class="hero-content">
             <h1>Tronix 在线工具集</h1>
@@ -1037,6 +1044,7 @@
             </div>
             </div>
         </div>
+    </div>
     </div>
     
     <!-- 页脚 -->
