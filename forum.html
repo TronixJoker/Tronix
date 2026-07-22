@@ -1172,6 +1172,8 @@
             margin-top: 1rem;
             display: flex;
             gap: 0.8rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .comment-input {
@@ -2140,21 +2142,21 @@
                                 <div class="comments-list">
                                     ${commentsHtml}
                                 </div>
-                                <div class="comment-input-area">
-                                    <div class="comment-avatar">
-                                        <img src="${getUserAvatar()}" alt="当前用户" loading="lazy">
-                                    </div>
-                                    <div style="flex-grow: 1;">
-                                        <input type="text" class="comment-input" placeholder="写下你的评论..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
-                                        <div class="comment-actions">
-                                            <button class="comment-image-upload-btn" onclick="document.getElementById('commentImage_${post.id}').click()" title="添加图片">
-                                                <i class="far fa-image"></i>
-                                            </button>
-                                            <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
-                                            <span id="commentImgPreview_${post.id}" style="color:#04eff7;font-size:0.8rem;"></span>
-                                            <button class="comment-submit-btn" onclick="addComment(${post.id}, this)">发送</button>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="comment-input-area">
+                            <div class="comment-avatar">
+                                <img src="${getUserAvatar()}" alt="当前用户" loading="lazy">
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <input type="text" class="comment-input" placeholder="写下你的评论..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
+                                <div class="comment-actions">
+                                    <button class="comment-image-upload-btn" onclick="document.getElementById('commentImage_${post.id}').click()" title="添加图片">
+                                        <i class="far fa-image"></i>
+                                    </button>
+                                    <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
+                                    <span id="commentImgPreview_${post.id}" style="color:#04eff7;font-size:0.8rem;"></span>
+                                    <button class="comment-submit-btn" onclick="addComment(${post.id}, this)">发送</button>
                                 </div>
                             </div>
                         </div>
