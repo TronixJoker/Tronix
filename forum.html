@@ -6,1605 +6,372 @@
     <title>Tronix | 科技论坛 · 技术交流社区</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #fc00ef, #04eff7);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #ff4df0, #3df7ff);
-        }
-        
-        /* 背景优化 - 已统一为computer-bg.png */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #fc00ef, #04eff7); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff4df0, #3df7ff); }
+
         body {
-            position: relative;
-            min-height: 100vh;
-            color: #fff;
-            line-height: 1.6;
+            position: relative; min-height: 100vh; color: #fff; line-height: 1.6;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            overflow-x: hidden; opacity: 0; transition: opacity 0.5s ease;
         }
-        
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(59, 0, 70, 0.4) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 70, 112, 0.4) 0%, transparent 40%),
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(59,0,70,0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0,70,112,0.4) 0%, transparent 40%),
                 url(computer-bg.png) center/cover no-repeat;
-            filter: brightness(0.3) contrast(1.3);
-            transition: filter 0.5s;
+            filter: brightness(0.3) contrast(1.3); transition: filter 0.5s;
         }
-        
-        /* 导航栏 - 液态玻璃风格 */
+
+        /* 导航栏 */
         nav {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 95vw;
-            max-width: 1400px;
-            background: rgba(10, 8, 25, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 0.9rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 95vw; max-width: 1400px;
+            background: rgba(10,8,25,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 0.9rem 2rem; display: flex; justify-content: space-between; align-items: center;
             z-index: 1000;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
         }
+        nav.scrolled { top: 0; width: 100%; max-width: 100%; border-radius: 0; padding: 0.7rem 5%; background: rgba(10,8,25,0.85); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+        .nav-links a { font-weight: 500; color: #d0d0ff; display: inline-block; text-decoration: none; position: relative; padding: 0.5rem 1rem; font-size: 0.95rem; transition: all 0.3s ease; border-radius: 10px; }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .nav-links a::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: linear-gradient(90deg, #fc00ef, #04eff7); transition: width 0.3s ease; border-radius: 2px; }
+        .nav-links a:hover::after { width: 30px; }
+        .nav-actions { display: flex; align-items: center; gap: 0.8rem; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 0.5rem; }
 
-        nav.scrolled {
-            top: 0;
-            width: 100%;
-            max-width: 100%;
-            border-radius: 0;
-            padding: 0.7rem 5%;
-            background: rgba(10, 8, 25, 0.85);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-            letter-spacing: 1px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            font-weight: 500;
-            color: #d0d0ff;
-            display: inline-block;
-            text-decoration: none;
-            position: relative;
-            padding: 0.5rem 1rem;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-        }
-        
-        .nav-links a:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #fc00ef, #04eff7);
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-        
-        .nav-links a:hover::after {
-            width: 30px;
-        }
+        /* 主内容 */
+        .hero { height: 32vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 5%; margin-top: 100px; }
+        .hero-content { max-width: 900px; padding: 2.5rem; border-radius: 20px; background: rgba(10,10,25,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .hero-content h1 { font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(45deg, #fff, #c0e0ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; line-height: 1.2; }
+        .hero-content p { font-size: 1.2rem; color: #e0e0ff; max-width: 700px; margin: 0 auto; }
 
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
+        .forum-container { max-width: 1300px; margin: 2rem auto; padding: 0 5%; display: grid; grid-template-columns: 1fr 320px; gap: 2rem; }
 
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .nav-btn {
-            padding: 0.5rem 1.3rem;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            border: 1px solid transparent;
-        }
-
-        .nav-btn-primary {
-            background: linear-gradient(135deg, #fc00ef, #04eff7);
-            color: white;
-            box-shadow: 0 4px 15px rgba(252, 0, 239, 0.3);
-        }
-
-        .nav-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(252, 0, 239, 0.5);
-        }
-        
-        /* 主要内容区域优化 */
-        .hero {
-            height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 5%;
-            margin-top: 100px;
-        }
-        
-        .hero-content {
-            max-width: 900px;
-            padding: 2.5rem;
-            border-radius: 20px;
-            background: rgba(10, 10, 25, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero-content h1 {
-            font-size: 3.2rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffffff, #c0e0ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
-        
-        .hero-content p {
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-            color: #e0e0ff;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .download-btn {
-            background: linear-gradient(45deg, #9b037a, #d400a8);
-            color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 30px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 1.5rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(155, 3, 122, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(155, 3, 122, 0.6);
-        }
-        
-        .download-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-        
-        .download-btn:hover::after {
-            left: 100%;
-        }
-        
-        /* 论坛内容样式 */
-        .forum-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 5%;
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 2rem;
-        }
-        
-        .forum-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .forum-title {
-            font-size: 2.2rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
+        /* 论坛头部 */
+        .forum-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .forum-title { font-size: 2rem; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .create-btn {
-            background: linear-gradient(45deg, #00b3ff, #0062ff);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            border: none;
+            background: linear-gradient(45deg, #00b3ff, #0062ff); color: white; padding: 0.8rem 1.5rem; border-radius: 30px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+            transition: all 0.3s ease; font-weight: 600; font-size: 1rem; cursor: pointer; border: none;
+            box-shadow: 0 4px 15px rgba(0,99,255,0.3);
         }
-        
-        .create-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 99, 255, 0.4);
+        .create-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,99,255,0.5); }
+
+        /* 搜索和筛选 */
+        .search-bar { position: relative; margin-bottom: 1.2rem; }
+        .search-bar input {
+            width: 100%; padding: 0.85rem 1rem 0.85rem 3rem; border-radius: 30px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.95rem; transition: all 0.3s ease;
         }
-        
-        .forum-categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        .search-bar input:focus { outline: none; border-color: #04eff7; box-shadow: 0 0 15px rgba(4,239,247,0.2); background: rgba(255,255,255,0.12); }
+        .search-bar i { position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%); color: #a0a0d0; font-size: 1rem; }
+
+        .filter-tabs { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-tab {
+            padding: 0.5rem 1.1rem; border-radius: 20px; background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12); color: #d0d0ff; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.3s ease;
         }
-        
+        .filter-tab:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .filter-tab.active { background: linear-gradient(45deg, #fc00ef, #04eff7); border-color: transparent; color: #fff; box-shadow: 0 4px 15px rgba(252,0,239,0.3); }
+
+        /* 分类卡片 */
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
         .category-card {
-            background: rgba(20, 15, 45, 0.6);
-            padding: 1.5rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
+            background: rgba(20,15,45,0.6); padding: 1.5rem; border-radius: 16px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+            cursor: pointer; transition: all 0.35s ease;
         }
-        
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-        }
-        
-        .category-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .category-icon {
-            font-size: 2rem;
-            margin-right: 1rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .category-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        
-        .category-description {
-            color: #d0d0ff;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .category-stats {
-            display: flex;
-            justify-content: space-between;
-            color: #a0a0d0;
-            font-size: 0.85rem;
-            margin-top: auto;
-        }
-        
-        /* 帖子列表样式 */
-        .posts-container {
-            background: rgba(20, 15, 45, 0.6);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .posts-header {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        /* 帖子卡片 - 更明显的边框和阴影 */
-        .post-item {
-            display: flex;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            background: rgba(20, 15, 45, 0.7);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .post-item:hover {
-            background: rgba(25, 20, 55, 0.8);
-            border-color: rgba(252, 0, 239, 0.25);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(252, 0, 239, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .post-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .post-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        
-        .post-content {
-            flex-grow: 1;
-            min-width: 0;
-        }
-        
-        .post-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .post-title:hover {
-            color: #04eff7;
-        }
-        
-        .post-meta {
-            display: flex;
-            color: #a0a0d0;
-            font-size: 0.85rem;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .post-author {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .post-stats {
-            display: flex;
-            gap: 1.5rem;
-            margin-left: auto;
-        }
-        
-        .post-stat {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .post-body {
-            margin-top: 1rem;
-            color: #d0d0ff;
-            line-height: 1.7;
-        }
-        
-        .post-tags {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .post-tag {
-            background: rgba(99, 102, 241, 0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            color: #c0c0ff;
-        }
-        
-        /* 帖子图片 */
-        .post-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
+        .category-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-color: rgba(124,58,237,0.3); }
+        .category-card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+        .category-icon { font-size: 1.8rem; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .category-card h3 { font-size: 1.2rem; font-weight: 600; }
+        .category-card p { color: #b0b0e0; font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.5; }
+        .category-stats { display: flex; justify-content: space-between; color: #9090c0; font-size: 0.82rem; margin-top: auto; }
 
-        .post-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        /* 帖子容器 */
+        .posts-wrapper { background: rgba(15,12,35,0.5); border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.25); padding: 1.5rem; }
+        .posts-wrapper-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .posts-wrapper-header h3 { font-size: 1.3rem; color: #e0e0ff; }
+        .sort-select {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; cursor: pointer;
         }
+        .sort-select option { background: #1a1535; color: #fff; }
 
-        .post-image:hover {
-            transform: scale(1.05);
+        /* 帖子卡片 - 核心样式 */
+        .post-card {
+            background: rgba(25,20,55,0.7); border-radius: 18px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+            margin-bottom: 1.5rem; transition: all 0.3s ease; overflow: hidden;
         }
+        .post-card:hover { border-color: rgba(252,0,239,0.2); box-shadow: 0 10px 35px rgba(0,0,0,0.4), 0 0 20px rgba(252,0,239,0.08); transform: translateY(-2px); }
+        .post-card:last-child { margin-bottom: 0; }
 
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* 评论区 - 背景稍暗 */
-        .comments-section {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
+        .post-header { display: flex; align-items: center; padding: 1.2rem 1.5rem; gap: 0.8rem; }
+        .post-author-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; overflow: hidden; }
+        .post-author-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .post-meta-info { flex-grow: 1; min-width: 0; }
+        .post-meta-info h4 { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 0.2rem; line-height: 1.3; }
+        .post-meta-row { display: flex; align-items: center; gap: 1rem; color: #a0a0d0; font-size: 0.85rem; flex-wrap: wrap; }
+        .post-meta-row span { display: inline-flex; align-items: center; gap: 0.3rem; }
 
-        .comments-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: #e0e0ff;
-            font-size: 0.95rem;
-        }
-        
-        /* 评论列表可滚动 */
-        .comments-list {
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
+        .post-body-content { padding: 0 1.5rem 1rem; color: #d0d0ff; font-size: 0.97rem; line-height: 1.7; }
 
-        .comment-item {
-            display: flex;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .comment-item:last-child {
-            border-bottom: none;
-        }
+        .post-images-row { display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0 1.5rem 1rem; }
+        .post-img { width: 140px; height: 140px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.3s ease; }
+        .post-img:hover { transform: scale(1.04); }
+        .post-img img { width: 100%; height: 100%; object-fit: cover; }
 
-        .comment-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            margin-right: 0.8rem;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
+        .post-tags-row { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0 1.5rem 1rem; }
+        .post-tag-pill { background: rgba(99,102,241,0.18); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; color: #c0c0ff; }
 
-        .comment-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .post-actions-bar { display: flex; align-items: center; padding: 0.8rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.06); gap: 1.5rem; }
+        .post-action { display: inline-flex; align-items: center; gap: 0.4rem; color: #a0a0d0; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; user-select: none; }
+        .post-action:hover { color: #fff; }
+        .post-action.like-btn:hover { color: #ff4da6; }
+        .post-action.like-btn.liked { color: #ff4da6; }
+        .post-action.like-btn.liked i { animation: likePop 0.3s ease; }
+        @keyframes likePop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
-        .comment-body {
-            flex-grow: 1;
+        /* 评论区 - 重新设计 */
+        .comments-area {
+            margin: 0 1.2rem 1.2rem; background: rgba(0,0,0,0.35); border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06); overflow: hidden;
         }
+        .comments-area-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.8rem 1rem; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .comments-area-header span { font-weight: 600; color: #c0c0ff; font-size: 0.92rem; }
 
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.3rem;
+        /* 评论列表 - 可滚动 */
+        .comments-scroll {
+            max-height: 380px; overflow-y: auto; padding: 0.6rem 0.8rem;
         }
+        .comments-scroll::-webkit-scrollbar { width: 5px; }
+        .comments-scroll::-webkit-scrollbar-track { background: transparent; }
+        .comments-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
 
-        .comment-author {
-            font-weight: 600;
-            color: #04eff7;
-            font-size: 0.9rem;
-        }
+        .comment-row { display: flex; gap: 0.7rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); animation: fadeIn 0.3s ease; }
+        .comment-row:last-child { border-bottom: none; }
+        .comment-avatar-sm { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; overflow: hidden; }
+        .comment-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+        .comment-main { flex-grow: 1; min-width: 0; }
+        .comment-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
+        .comment-author-name { font-weight: 600; color: #04eff7; font-size: 0.88rem; }
+        .comment-time { color: #8080b0; font-size: 0.78rem; }
+        .comment-text { color: #d8d8f0; font-size: 0.92rem; line-height: 1.55; word-break: break-word; }
+        .comment-images-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+        .comment-img-sm { width: 100px; height: 100px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.3s ease; }
+        .comment-img-sm:hover { transform: scale(1.05); }
+        .comment-img-sm img { width: 100%; height: 100%; object-fit: cover; }
+        .no-comments { color: #8080b0; font-size: 0.9rem; padding: 1rem 0; text-align: center; }
 
-        .comment-time {
-            color: #a0a0d0;
-            font-size: 0.8rem;
+        /* 评论输入区 - 固定在评论区底部 */
+        .comment-compose {
+            display: flex; gap: 0.7rem; padding: 0.8rem; background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.06); align-items: flex-end;
         }
+        .compose-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
+        .compose-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .compose-fields { flex-grow: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+        .compose-input {
+            width: 100%; padding: 0.6rem 1rem; border-radius: 20px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            color: #fff; font-size: 0.92rem; transition: all 0.3s ease;
+        }
+        .compose-input:focus { outline: none; border-color: #04eff7; background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(4,239,247,0.15); }
+        .compose-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .compose-img-btn {
+            background: none; border: none; color: #a0a0d0; cursor: pointer; font-size: 1rem;
+            padding: 0.3rem; transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem;
+        }
+        .compose-img-btn:hover { color: #04eff7; }
+        .compose-img-preview { color: #04eff7; font-size: 0.8rem; }
+        .compose-send-btn {
+            margin-left: auto; padding: 0.45rem 1.2rem; border-radius: 20px;
+            background: linear-gradient(45deg, #fc00ef, #04eff7); border: none; color: white;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .compose-send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(252,0,239,0.3); }
 
-        .comment-text {
-            color: #d0d0ff;
-            font-size: 0.95rem;
-            line-height: 1.5;
+        /* 侧边栏 */
+        .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+        .sidebar-box {
+            background: rgba(20,15,45,0.6); border-radius: 18px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;
         }
+        .sidebar-box-header {
+            padding: 1.1rem 1.3rem; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: background 0.3s ease;
+        }
+        .sidebar-box-header:hover { background: rgba(255,255,255,0.03); }
+        .sidebar-box-title { font-size: 1.05rem; font-weight: 600; color: #e0e0ff; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .sidebar-box-title i { background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-toggle-icon { color: #a0a0d0; font-size: 0.85rem; transition: transform 0.3s ease; }
+        .sidebar-toggle-icon.rotated { transform: rotate(180deg); }
+        .sidebar-box-body { transition: height 0.35s ease, opacity 0.3s ease; overflow: hidden; }
+        .sidebar-box-body.collapsed { height: 0; opacity: 0; }
 
-        .comment-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+        /* 用户资料 */
+        .profile-box { padding: 1.5rem; text-align: center; }
+        .profile-avatar-lg { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 0.8rem; overflow: hidden; }
+        .profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.2rem; }
+        .profile-role { color: #a0a0d0; font-size: 0.88rem; margin-bottom: 1rem; }
+        .profile-btn {
+            width: 100%; padding: 0.7rem; border-radius: 14px; background: linear-gradient(45deg, #fc00ef, #04eff7);
+            border: none; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;
         }
+        .profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(252,0,239,0.35); }
 
-        .comment-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+        /* 聊天室 */
+        .chat-body { display: flex; flex-direction: column; height: 360px; }
+        .chat-online-bar { display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.06); max-height: 55px; overflow-y: auto; }
+        .chat-online-user { display: flex; align-items: center; gap: 0.3rem; background: rgba(255,255,255,0.08); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; }
+        .chat-online-dot { width: 6px; height: 6px; border-radius: 50%; background: #00f535; }
+        .chat-online-count { font-size: 0.75rem; color: #00f535; margin-left: 0.4rem; font-weight: 500; }
 
-        .comment-image:hover {
-            transform: scale(1.05);
-        }
+        .chat-message-list { flex-grow: 1; padding: 0.7rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.7rem; }
+        .chat-message-list::-webkit-scrollbar { width: 5px; }
+        .chat-message-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .chat-msg { display: flex; gap: 0.5rem; animation: fadeIn 0.3s ease; }
+        .chat-msg.own { flex-direction: row-reverse; }
+        .chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; overflow: hidden; }
+        .chat-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .chat-msg-content { max-width: 78%; }
+        .chat-msg-user { font-size: 0.72rem; color: #a0a0d0; margin-bottom: 0.15rem; }
+        .chat-msg.own .chat-msg-user { text-align: right; }
+        .chat-msg-bubble { background: rgba(255,255,255,0.1); padding: 0.5rem 0.8rem; border-radius: 14px; font-size: 0.88rem; color: #e0e0ff; line-height: 1.4; word-break: break-word; }
+        .chat-msg.own .chat-msg-bubble { background: linear-gradient(45deg, #fc00ef, #04eff7); color: white; }
+        .chat-msg-img { max-width: 150px; max-height: 150px; border-radius: 10px; margin-top: 0.3rem; cursor: pointer; transition: transform 0.3s ease; display: block; }
+        .chat-msg-img:hover { transform: scale(1.05); }
+        .chat-msg-time { font-size: 0.68rem; color: #9090b0; margin-top: 0.15rem; }
+        .chat-msg.own .chat-msg-time { text-align: right; }
 
-        .comment-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .chat-compose { padding: 0.7rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 0.4rem; align-items: flex-end; }
+        .chat-compose-btn { background: none; border: none; color: #a0a0d0; cursor: pointer; font-size: 1rem; padding: 0.4rem; transition: color 0.3s ease; }
+        .chat-compose-btn:hover { color: #04eff7; }
+        .chat-compose-input {
+            flex-grow: 1; padding: 0.5rem 0.9rem; border-radius: 18px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.88rem; resize: none; max-height: 70px; transition: all 0.3s ease;
         }
-        
-        /* 评论输入框始终在底部 */
-        .comment-input-area {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.8rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        .chat-compose-input:focus { outline: none; border-color: #04eff7; }
+        .chat-send-round { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #fc00ef, #04eff7); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; flex-shrink: 0; }
+        .chat-send-round:hover { transform: scale(1.1); }
 
-        .comment-input {
-            flex-grow: 1;
-            padding: 0.6rem 1rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
+        /* 热门标签 */
+        .tags-box-body { padding: 1rem; }
+        .tags-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .tag-pill { background: rgba(255,255,255,0.08); padding: 0.45rem 0.9rem; border-radius: 20px; font-size: 0.88rem; transition: all 0.3s ease; cursor: pointer; color: #d0d0ff; }
+        .tag-pill:hover { background: linear-gradient(45deg, #fc00ef, #04eff7); color: #fff; transform: translateY(-2px); }
 
-        .comment-input:focus {
-            outline: none;
-            border-color: #04eff7;
-        }
+        /* 公告 */
+        .announce-body { padding: 1rem; }
+        .announce-body p { color: #d0d0ff; font-size: 0.92rem; line-height: 1.6; }
+        .announce-body .announce-date { color: #8080b0; font-size: 0.82rem; margin-top: 0.5rem; }
 
-        .comment-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
+        /* 页脚 */
+        footer { padding: 2.5rem 5% 2rem; text-align: center; background: rgba(10,8,25,0.6); backdrop-filter: blur(10px); border-top: 1px solid rgba(252,0,239,0.15); margin-top: 3rem; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .footer-inner div { color: #a0a0d0; font-size: 0.9rem; }
 
-        .comment-image-upload-btn {
-            background: none;
-            border: none;
-            color: #a0a0d0;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: color 0.3s ease;
+        /* 模态框 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-box { background: rgba(20,15,45,0.95); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.5); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; transform: scale(0.9); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 1.3rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-head h3 { font-size: 1.4rem; background: linear-gradient(45deg, #fc00ef, #04eff7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .modal-close { background: none; border: none; color: #a0a0d0; font-size: 1.4rem; cursor: pointer; transition: color 0.3s ease; }
+        .modal-close:hover { color: #ff4d4d; }
+        .modal-body { padding: 1.5rem; }
+        .form-row { margin-bottom: 1.1rem; }
+        .form-row label { display: block; margin-bottom: 0.4rem; color: #e0e0ff; font-weight: 500; font-size: 0.95rem; }
+        .form-row input, .form-row textarea, .form-row select {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 12px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; font-size: 0.95rem; transition: all 0.3s ease;
         }
+        .form-row input:focus, .form-row textarea:focus, .form-row select:focus { outline: none; border-color: #04eff7; box-shadow: 0 0 10px rgba(4,239,247,0.2); }
+        .form-row textarea { min-height: 110px; resize: vertical; }
+        .form-row select option { background: #1a1535; color: #fff; }
+        .img-upload-zone {
+            border: 2px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 1.8rem; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; margin-bottom: 0.8rem;
+        }
+        .img-upload-zone:hover { border-color: #04eff7; background: rgba(4,239,247,0.04); }
+        .img-upload-zone i { font-size: 2.2rem; color: #a0a0d0; margin-bottom: 0.4rem; }
+        .img-upload-zone p { color: #a0a0d0; font-size: 0.9rem; }
+        .img-preview-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
+        .img-preview-item { position: relative; width: 75px; height: 75px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
+        .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .img-preview-remove { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; background: rgba(255,77,77,0.9); border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+        .modal-foot { display: flex; gap: 0.8rem; justify-content: flex-end; padding: 1rem 1.5rem 1.5rem; }
+        .btn-secondary { padding: 0.65rem 1.4rem; border-radius: 22px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e0e0ff; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.18); }
+        .btn-primary { padding: 0.65rem 1.4rem; border-radius: 22px; background: linear-gradient(45deg, #fc00ef, #04eff7); border: none; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(252,0,239,0.35); }
 
-        .comment-image-upload-btn:hover {
-            color: #04eff7;
-        }
+        /* 图片查看器 */
+        .image-viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        .image-viewer-overlay.active { display: flex; }
+        .image-viewer-box { max-width: 90%; max-height: 90%; position: relative; }
+        .image-viewer-box img { max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .image-viewer-close { position: absolute; top: -44px; right: 0; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; }
 
-        .comment-submit-btn {
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            border: none;
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .comment-submit-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        /* 侧边栏样式 */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        .sidebar-widget {
-            background: rgba(20, 15, 45, 0.6);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-        }
-        
-        .widget-title {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .widget-title i {
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .user-profile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1rem 0;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
-        
-        .profile-name {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .profile-role {
-            color: #a0a0d0;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .profile-stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: #a0a0d0;
-        }
-        
-        .trending-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-        
-        .tag {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .tag:hover {
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            transform: translateY(-2px);
-        }
-        
-        .tag i {
-            font-size: 0.7rem;
-        }
-        
-        footer {
-            position: relative;
-            padding: 3rem 5% 2rem;
-            text-align: center;
-            background: rgba(10, 8, 25, 0.6);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(252, 0, 239, 0.15);
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .footer-content div {
-            margin: 0.5rem 0;
-        }
-        
-        .copyright {
-            font-size: 0.95rem;
-            color: #a0a0d0;
-            font-weight: 500;
-        }
-        
-        .rights {
-            font-size: 0.9rem;
-            color: #8080b0;
-        }
-        
-        /* 响应式设计优化 */
-        @media (max-width: 1024px) {
-            .forum-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-content h1 {
-                font-size: 2.8rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: rgba(10, 8, 25, 0.95);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                padding: 1rem;
-                border-radius: 0 0 16px 16px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-top: none;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            
-            .hero-content h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero-content p {
-                font-size: 1.2rem;
-            }
-            
-            .forum-title {
-                font-size: 1.8rem;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .footer-content div {
-                margin: 0.8rem 0;
-            }
-            
-            .post-stats {
-                margin-left: 0;
-                width: 100%;
-                margin-top: 0.5rem;
-            }
-            
-            .post-meta {
-                gap: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero {
-                height: 30vh;
-            }
-            
-            .hero-content {
-                padding: 1.5rem;
-            }
-            
-            .hero-content h1 {
-                font-size: 1.8rem;
-            }
-            
-            .hero-content p {
-                font-size: 1rem;
-            }
-            
-            .download-btn {
-                padding: 0.8rem 1.8rem;
-                font-size: 1rem;
-            }
-            
-            .forum-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .create-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .post-item {
-                padding: 1rem;
-            }
-            
-            .post-image {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 1;
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-        
+        /* 动画 */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
 
-        /* 点赞动画 */
-        .like-btn {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .like-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .like-btn.liked {
-            color: #ff4da6;
-        }
-
-        .like-btn.liked i {
-            animation: like-pop 0.3s ease;
-        }
-
-        @keyframes like-pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.5); }
-            100% { transform: scale(1); }
-        }
-
-        /* 搜索框样式 */
-        .search-container {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.8rem 1rem 0.8rem 3rem;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #04eff7;
-            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0a0d0;
-            font-size: 1rem;
-        }
-
-        /* 分类筛选 */
-        .category-filter {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e0e0ff;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            border-color: transparent;
-        }
-
-        .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* 帖子隐藏动画 */
-        .post-item.hidden {
-            opacity: 0;
-            max-height: 0;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        /* 模态框 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal {
-            background: rgba(20, 15, 45, 0.95);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: #a0a0d0;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: #ff4d4d;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #e0e0ff;
-            font-weight: 500;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: #04eff7;
-            box-shadow: 0 0 10px rgba(4, 239, 247, 0.3);
-        }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-select option {
-            background: #1a1535;
-            color: #fff;
-        }
-
-        /* 图片上传 */
-        .image-upload-area {
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .image-upload-area:hover {
-            border-color: #04eff7;
-            background: rgba(4, 239, 247, 0.05);
-        }
-
-        .image-upload-area i {
-            font-size: 2.5rem;
-            color: #a0a0d0;
-            margin-bottom: 0.5rem;
-        }
-
-        .image-upload-area p {
-            color: #a0a0d0;
-            font-size: 0.9rem;
-        }
-
-        .image-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .image-preview-item {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-preview-remove {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 77, 77, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-cancel {
-            padding: 0.7rem 1.5rem;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e0e0ff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-submit {
-            padding: 0.7rem 1.5rem;
-            border-radius: 25px;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(252, 0, 239, 0.4);
-        }
-
-        /* 侧边栏聊天室 */
-        .chat-sidebar-widget {
-            padding: 0;
-            overflow: hidden;
-        }
-        
-        .chat-sidebar-header {
-            padding: 1.2rem 1.5rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .chat-sidebar-header:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-        
-        .chat-sidebar-header .widget-title {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-            flex-grow: 1;
-            font-size: 1.1rem;
-        }
-        
-        .chat-sidebar-toggle-icon {
-            color: #a0a0d0;
-            transition: transform 0.3s ease;
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-        }
-        
-        .chat-sidebar-toggle-icon.rotated {
-            transform: rotate(180deg);
-        }
-        
-        .chat-sidebar-body {
-            display: flex;
-            flex-direction: column;
-            height: 350px;
-            transition: height 0.35s ease, opacity 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .chat-sidebar-body.collapsed {
-            height: 0;
-            opacity: 0;
-        }
-        
-        .chat-online-count {
-            font-size: 0.75rem;
-            color: #00f535;
-            margin-left: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .chat-unread-badge {
-            background: #ff4d4d;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 18px;
-            text-align: center;
-            margin-left: 0.5rem;
-        }
-        
-        .chat-messages {
-            flex-grow: 1;
-            padding: 0.8rem 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        
-        .chat-message {
-            display: flex;
-            gap: 0.5rem;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .chat-message.own {
-            flex-direction: row-reverse;
-        }
-        
-        .chat-message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        
-        .chat-message-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .chat-message-content {
-            max-width: 75%;
-        }
-        
-        .chat-message-username {
-            font-size: 0.75rem;
-            color: #a0a0d0;
-            margin-bottom: 0.2rem;
-        }
-        
-        .chat-message.own .chat-message-username {
-            text-align: right;
-        }
-        
-        .chat-message-bubble {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.6rem 0.9rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            color: #e0e0ff;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-        
-        .chat-message.own .chat-message-bubble {
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            color: white;
-        }
-        
-        .chat-message-image {
-            max-width: 160px;
-            max-height: 160px;
-            border-radius: 10px;
-            margin-top: 0.3rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            display: block;
-        }
-        
-        .chat-message-image:hover {
-            transform: scale(1.05);
-        }
-        
-        .chat-message-time {
-            font-size: 0.7rem;
-            color: #a0a0d0;
-            margin-top: 0.2rem;
-        }
-        
-        .chat-message.own .chat-message-time {
-            text-align: right;
-        }
-        
-        .chat-input-area {
-            padding: 0.8rem 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 0.5rem;
-            align-items: flex-end;
-        }
-        
-        .chat-image-upload-btn {
-            background: none;
-            border: none;
-            color: #a0a0d0;
-            cursor: pointer;
-            font-size: 1.1rem;
-            padding: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .chat-image-upload-btn:hover {
-            color: #04eff7;
-        }
-        
-        .chat-input {
-            flex-grow: 1;
-            padding: 0.6rem 1rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 0.9rem;
-            resize: none;
-            max-height: 80px;
-            transition: all 0.3s ease;
-        }
-        
-        .chat-input:focus {
-            outline: none;
-            border-color: #04eff7;
-        }
-        
-        .chat-send-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #fc00ef, #04eff7);
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-        
-        .chat-send-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .chat-typing {
-            font-size: 0.8rem;
-            color: #a0a0d0;
-            padding: 0.3rem 1rem;
-            font-style: italic;
-        }
-        
-        /* 在线用户列表 */
-        .online-users {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            max-height: 60px;
-            overflow-y: auto;
-        }
-        
-        .online-user {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-        }
-        
-        .online-user-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #00f535;
-        }
-
-        /* 图片查看器 */
-        .image-viewer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-viewer-overlay.active {
-            display: flex;
-        }
-
-        .image-viewer {
-            max-width: 90%;
-            max-height: 90%;
-            position: relative;
-        }
-
-        .image-viewer img {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 10px;
-        }
-
-        .image-viewer-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* 滚动条样式 */
-        .chat-messages::-webkit-scrollbar,
-        .comments-list::-webkit-scrollbar,
-        .modal::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track,
-        .comments-list::-webkit-scrollbar-track,
-        .modal::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb,
-        .comments-list::-webkit-scrollbar-thumb,
-        .modal::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover,
-        .comments-list::-webkit-scrollbar-thumb:hover,
-        .modal::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .forum-container { grid-template-columns: 1fr; }
+            .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+            .hero-content h1 { font-size: 2.4rem; }
+        }
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,8,25,0.95); backdrop-filter: blur(20px); flex-direction: column; padding: 1rem; border-radius: 0 0 16px 16px; border: 1px solid rgba(255,255,255,0.1); border-top: none; }
+            .nav-links.active { display: flex; }
+            .hero-content h1 { font-size: 1.9rem; }
+            .hero { height: 28vh; }
+            .sidebar { grid-template-columns: 1fr; }
+            .forum-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+            .create-btn { width: 100%; justify-content: center; }
+            .footer-inner { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            .hero-content { padding: 1.5rem; }
+            .hero-content h1 { font-size: 1.6rem; }
+            .hero-content p { font-size: 1rem; }
+            .post-img { width: 100%; height: auto; aspect-ratio: 1; }
+            .post-header { padding: 1rem; }
+            .post-body-content, .post-images-row, .post-tags-row { padding-left: 1rem; padding-right: 1rem; }
+            .comments-area { margin: 0 0.8rem 1rem; }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 - 液态玻璃风格 -->
     <nav id="navbar">
         <div class="logo">Tronix</div>
         <div class="nav-links" id="navLinks">
@@ -1620,212 +387,191 @@
             </button>
         </div>
     </nav>
-    
-    <!-- 主要内容区域 -->
+
     <div class="hero">
         <div class="hero-content fade-in">
             <h1>Tronix 科技论坛</h1>
             <p>加入我们的技术社区，分享经验、解决问题、探索前沿科技</p>
         </div>
     </div>
-    
+
     <div class="forum-container">
         <main>
             <div class="forum-header fade-in delay-1">
                 <h2 class="forum-title">技术讨论区</h2>
-                <button class="create-btn"><i class="fas fa-plus"></i> 发布新帖</button>
+                <button class="create-btn" id="openCreateBtn"><i class="fas fa-plus"></i> 发布新帖</button>
             </div>
-            
-            <!-- 搜索和筛选 -->
-            <div class="search-container fade-in delay-1">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="搜索帖子标题、作者...">
+
+            <div class="search-bar fade-in delay-1">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索帖子标题、作者或内容...">
             </div>
-            
-            <div class="category-filter fade-in delay-1">
-                <button class="filter-btn active" data-category="all">全部</button>
-                <button class="filter-btn" data-category="开发">开发技术</button>
-                <button class="filter-btn" data-category="反馈">问题反馈</button>
-                <button class="filter-btn" data-category="创意">创意分享</button>
+
+            <div class="filter-tabs fade-in delay-1">
+                <button class="filter-tab active" data-category="all">全部</button>
+                <button class="filter-tab" data-category="开发">开发技术</button>
+                <button class="filter-tab" data-category="反馈">问题反馈</button>
+                <button class="filter-tab" data-category="创意">创意分享</button>
             </div>
-            
-            <div class="forum-categories fade-in delay-2">
-                <div class="category-card">
-                    <div class="category-header">
+
+            <div class="categories-grid fade-in delay-2">
+                <div class="category-card" data-cat="开发">
+                    <div class="category-card-header">
                         <i class="fas fa-code category-icon"></i>
-                        <div>
-                            <h3 class="category-title">开发技术</h3>
-                            <p class="category-description">讨论编程、框架、算法等开发相关话题</p>
-                        </div>
+                        <h3>开发技术</h3>
                     </div>
-                    <div class="category-stats">
-                        <span>主题: 1,284</span>
-                        <span>今日新帖: 24</span>
-                    </div>
+                    <p>讨论编程、框架、算法等开发相关话题</p>
+                    <div class="category-stats"><span>主题: 1,284</span><span>今日: 24</span></div>
                 </div>
-                
-                <div class="category-card">
-                    <div class="category-header">
+                <div class="category-card" data-cat="反馈">
+                    <div class="category-card-header">
                         <i class="fas fa-bug category-icon"></i>
-                        <div>
-                            <h3 class="category-title">问题反馈</h3>
-                            <p class="category-description">报告软件问题、提出改进建议</p>
-                        </div>
+                        <h3>问题反馈</h3>
                     </div>
-                    <div class="category-stats">
-                        <span>主题: 532</span>
-                        <span>已解决: 487</span>
-                    </div>
+                    <p>报告软件问题、提出改进建议</p>
+                    <div class="category-stats"><span>主题: 532</span><span>已解决: 487</span></div>
                 </div>
-                
-                <div class="category-card">
-                    <div class="category-header">
+                <div class="category-card" data-cat="创意">
+                    <div class="category-card-header">
                         <i class="fas fa-lightbulb category-icon"></i>
-                        <div>
-                            <h3 class="category-title">创意分享</h3>
-                            <p class="category-description">分享你的创意想法和使用技巧</p>
-                        </div>
+                        <h3>创意分享</h3>
                     </div>
-                    <div class="category-stats">
-                        <span>主题: 876</span>
-                        <span>今日新帖: 15</span>
-                    </div>
+                    <p>分享你的创意想法和使用技巧</p>
+                    <div class="category-stats"><span>主题: 876</span><span>今日: 15</span></div>
                 </div>
             </div>
-            
-            <div class="posts-container fade-in delay-3">
-                <div class="posts-header">
+
+            <div class="posts-wrapper fade-in delay-3">
+                <div class="posts-wrapper-header">
                     <h3>最新讨论</h3>
-                    <select class="forum-select" id="sortSelect">
+                    <select class="sort-select" id="sortSelect">
                         <option value="newest">最新发布</option>
                         <option value="comments">最多回复</option>
                         <option value="likes">热门讨论</option>
                     </select>
                 </div>
-                <div id="postsList">
-                </div>
+                <div id="postsList"></div>
             </div>
         </main>
-        
+
         <aside class="sidebar">
-            <div class="sidebar-widget fade-in delay-2">
-                <h3 class="widget-title"><i class="fas fa-user-circle"></i> 我的账户</h3>
-                <div class="user-profile" id="sidebarProfile">
-                </div>
+            <div class="sidebar-box fade-in delay-2">
+                <div class="profile-box" id="sidebarProfile"></div>
             </div>
-            
-            <!-- 侧边栏聊天室 -->
-            <div class="sidebar-widget chat-sidebar-widget fade-in delay-2">
-                <div class="chat-sidebar-header" onclick="toggleChatSidebar()">
-                    <h3 class="widget-title">
+
+            <div class="sidebar-box chat-sidebar fade-in delay-2">
+                <div class="sidebar-box-header" onclick="toggleChatSidebar()">
+                    <div class="sidebar-box-title">
                         <i class="fas fa-comments"></i>
                         <span>公共聊天室</span>
                         <span class="chat-online-count" id="chatOnlineCount">3人在线</span>
-                        <span class="chat-unread-badge" id="chatUnreadBadge" style="display: none;">0</span>
-                    </h3>
-                    <i class="fas fa-chevron-down chat-sidebar-toggle-icon" id="chatToggleIcon"></i>
+                    </div>
+                    <i class="fas fa-chevron-down sidebar-toggle-icon" id="chatToggleIcon"></i>
                 </div>
-                <div class="chat-sidebar-body" id="chatSidebarBody">
-                    <div class="online-users" id="onlineUsersList">
-                    </div>
-                    <div class="chat-messages" id="chatMessages">
-                    </div>
-                    <div class="chat-input-area">
-                        <button class="chat-image-upload-btn" onclick="document.getElementById('chatImageInput').click()" title="发送图片">
+                <div class="sidebar-box-body chat-body" id="chatSidebarBody">
+                    <div class="chat-online-bar" id="onlineUsersList"></div>
+                    <div class="chat-message-list" id="chatMessages"></div>
+                    <div class="chat-compose">
+                        <button class="chat-compose-btn" onclick="document.getElementById('chatImageInput').click()" title="发送图片">
                             <i class="far fa-image"></i>
                         </button>
-                        <input type="file" id="chatImageInput" accept="image/*" style="display: none;" onchange="handleChatImageUpload(event)">
-                        <textarea class="chat-input" id="chatInput" placeholder="输入消息..." onkeydown="handleChatKeydown(event)"></textarea>
-                        <button class="chat-send-btn" onclick="sendChatMessage()">
+                        <input type="file" id="chatImageInput" accept="image/*" style="display:none;" onchange="handleChatImageUpload(event)">
+                        <textarea class="chat-compose-input" id="chatInput" placeholder="输入消息..." rows="1" onkeydown="handleChatKeydown(event)"></textarea>
+                        <button class="chat-send-round" onclick="sendChatMessage()">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <div class="sidebar-widget fade-in delay-3">
-                <h3 class="widget-title"><i class="fas fa-hashtag"></i> 热门标签</h3>
-                <div class="trending-tags">
-                    <div class="tag"><i class="fas fa-fire"></i> Tronix</div>
-                    <div class="tag">开发技巧</div>
-                    <div class="tag">插件开发</div>
-                    <div class="tag">API</div>
-                    <div class="tag">Windows</div>
-                    <div class="tag">MacOS</div>
-                    <div class="tag">Linux</div>
-                    <div class="tag">更新日志</div>
-                    <div class="tag">功能建议</div>
-                    <div class="tag">界面设计</div>
+
+            <div class="sidebar-box fade-in delay-3">
+                <div class="sidebar-box-header" style="cursor:default;">
+                    <div class="sidebar-box-title"><i class="fas fa-hashtag"></i> 热门标签</div>
+                </div>
+                <div class="tags-box-body">
+                    <div class="tags-list">
+                        <span class="tag-pill"><i class="fas fa-fire" style="font-size:0.7rem;"></i> Tronix</span>
+                        <span class="tag-pill">开发技巧</span>
+                        <span class="tag-pill">插件开发</span>
+                        <span class="tag-pill">API</span>
+                        <span class="tag-pill">Windows</span>
+                        <span class="tag-pill">MacOS</span>
+                        <span class="tag-pill">Linux</span>
+                        <span class="tag-pill">更新日志</span>
+                        <span class="tag-pill">功能建议</span>
+                        <span class="tag-pill">界面设计</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="sidebar-widget fade-in delay-3">
-                <h3 class="widget-title"><i class="fas fa-info-circle"></i> 论坛公告</h3>
-                <div class="announcement-content">
-                    <p style="margin-bottom: 1rem; color: #04eff7;">Tronix v3.3.0测试版现已发布，欢迎下载体验并反馈问题！</p>
-                    <p style="font-size: 0.9rem; color: #d0d0ff;">发布日期: 2025-06-15</p>
+
+            <div class="sidebar-box fade-in delay-3">
+                <div class="sidebar-box-header" style="cursor:default;">
+                    <div class="sidebar-box-title"><i class="fas fa-info-circle"></i> 论坛公告</div>
+                </div>
+                <div class="announce-body">
+                    <p style="color:#04eff7; margin-bottom:0.5rem;">Tronix v3.3.0测试版现已发布，欢迎下载体验并反馈问题！</p>
+                    <p class="announce-date">发布日期: 2025-06-15</p>
                 </div>
             </div>
         </aside>
     </div>
-    
+
     <!-- 发布帖子模态框 -->
     <div class="modal-overlay" id="createPostModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">发布新帖</h3>
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>发布新帖</h3>
                 <button class="modal-close" onclick="closeModal('createPostModal')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">标题</label>
-                    <input type="text" class="form-input" id="postTitle" placeholder="请输入帖子标题">
+                <div class="form-row">
+                    <label>标题</label>
+                    <input type="text" id="postTitle" placeholder="请输入帖子标题">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">分类</label>
-                    <select class="form-select" id="postCategory">
+                <div class="form-row">
+                    <label>分类</label>
+                    <select id="postCategory">
                         <option value="开发">开发技术</option>
                         <option value="反馈">问题反馈</option>
                         <option value="创意">创意分享</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">内容</label>
-                    <textarea class="form-textarea" id="postContent" placeholder="请输入帖子内容..."></textarea>
+                <div class="form-row">
+                    <label>内容</label>
+                    <textarea id="postContent" placeholder="请输入帖子内容..."></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">添加图片（可选）</label>
-                    <div class="image-upload-area" onclick="document.getElementById('postImageInput').click()">
+                <div class="form-row">
+                    <label>添加图片（可选，最多4张）</label>
+                    <div class="img-upload-zone" onclick="document.getElementById('postImageInput').click()">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <p>点击上传图片，最多4张</p>
+                        <p>点击上传图片</p>
                     </div>
-                    <input type="file" id="postImageInput" accept="image/*" multiple style="display: none;" onchange="handlePostImageUpload(event)">
-                    <div class="image-preview" id="postImagePreview"></div>
+                    <input type="file" id="postImageInput" accept="image/*" multiple style="display:none;" onchange="handlePostImageUpload(event)">
+                    <div class="img-preview-grid" id="postImagePreview"></div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('createPostModal')">取消</button>
-                <button class="btn-submit" onclick="createPost()">发布</button>
+            <div class="modal-foot">
+                <button class="btn-secondary" onclick="closeModal('createPostModal')">取消</button>
+                <button class="btn-primary" onclick="createPost()">发布</button>
             </div>
         </div>
     </div>
 
     <!-- 图片查看器 -->
     <div class="image-viewer-overlay" id="imageViewer" onclick="closeImageViewer()">
-        <div class="image-viewer" onclick="event.stopPropagation()">
+        <div class="image-viewer-box" onclick="event.stopPropagation()">
             <button class="image-viewer-close" onclick="closeImageViewer()"><i class="fas fa-times"></i></button>
             <img id="viewerImage" src="" alt="预览图片">
         </div>
     </div>
-    
-    <!-- 页脚 -->
-    <footer id="footer">
-        <div class="footer-content">
-            <div class="copyright">版权所有 &copy; Tronix</div>
-            <div class="rights">最终解释权归：Tronix</div>
+
+    <footer>
+        <div class="footer-inner">
+            <div>版权所有 &copy; Tronix</div>
+            <div>最终解释权归：Tronix</div>
         </div>
     </footer>
-    
+
     <script>
         const FORUM_STORAGE_KEY = 'tronix_forum_posts';
         const CHAT_STORAGE_KEY = 'tronix_chat_messages';
@@ -1833,7 +579,7 @@
         let postImages = [];
         let chatImageToSend = null;
 
-        function initForumData() {
+        function initData() {
             if (!localStorage.getItem(FORUM_STORAGE_KEY)) {
                 const defaultPosts = [
                     {
@@ -1842,22 +588,14 @@
                         author: '技术探索者',
                         authorAvatar: 'https://ui-avatars.com/api/?name=技术探索者&background=6366f1&color=fff',
                         category: '开发',
-                        content: '最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。',
+                        content: '最近体验了Tronix v3.3.0测试版，发现了很多令人惊喜的新功能！尤其是AI辅助分析功能，大大提升了我的工作效率。界面也做了不少优化，整体体验更加流畅了。强烈推荐大家试试！',
                         images: [],
-                        likes: 48,
-                        likedBy: [],
-                        views: 245,
+                        likes: 48, likedBy: [], views: 245,
                         createdAt: Date.now() - 7200000,
                         tags: ['Tronix', '新版本', '体验分享'],
                         comments: [
-                            {
-                                id: 1,
-                                author: '小白用户',
-                                authorAvatar: 'https://ui-avatars.com/api/?name=小白用户&background=10b981&color=fff',
-                                content: '请问测试版在哪里下载？我也想试试！',
-                                images: [],
-                                createdAt: Date.now() - 3600000
-                            }
+                            { id: 1, author: '小白用户', authorAvatar: 'https://ui-avatars.com/api/?name=小白用户&background=10b981&color=fff', content: '请问测试版在哪里下载？我也想试试！', images: [], createdAt: Date.now() - 3600000 },
+                            { id: 2, author: '老司机', authorAvatar: 'https://ui-avatars.com/api/?name=老司机&background=f59e0b&color=fff', content: '已经用了一周了，确实很稳定，比上一版强多了。', images: [], createdAt: Date.now() - 1800000 }
                         ]
                     },
                     {
@@ -1868,9 +606,7 @@
                         category: '反馈',
                         content: '最近升级到Windows 11后，发现Tronix在某些场景下会出现卡顿现象。特别是在打开大型文档时，响应速度明显变慢。有没有其他用户遇到类似问题？求解决方案！',
                         images: [],
-                        likes: 23,
-                        likedBy: [],
-                        views: 187,
+                        likes: 23, likedBy: [], views: 187,
                         createdAt: Date.now() - 18000000,
                         tags: ['Windows11', '兼容性'],
                         comments: []
@@ -1883,43 +619,21 @@
                         category: '创意',
                         content: '花了两周时间开发了一个Tronix插件，可以实现自动化报表生成功能。支持多种数据源接入，自动生成可视化图表。已经在GitHub上开源，欢迎大家试用和反馈！',
                         images: [],
-                        likes: 124,
-                        likedBy: [],
-                        views: 562,
+                        likes: 124, likedBy: [], views: 562,
                         createdAt: Date.now() - 86400000,
                         tags: ['插件开发', '开源', '自动化'],
-                        comments: []
+                        comments: [
+                            { id: 3, author: '技术探索者', authorAvatar: 'https://ui-avatars.com/api/?name=技术探索者&background=6366f1&color=fff', content: '太棒了！正好需要这个功能，马上去试试。', images: [], createdAt: Date.now() - 7200000 }
+                        ]
                     }
                 ];
                 localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(defaultPosts));
             }
             if (!localStorage.getItem(CHAT_STORAGE_KEY)) {
                 const defaultMessages = [
-                    {
-                        id: 1,
-                        author: '系统公告',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=系统&background=ef4444&color=fff',
-                        content: '欢迎来到Tronix公共聊天室！请文明交流。',
-                        images: [],
-                        createdAt: Date.now() - 600000,
-                        isSystem: true
-                    },
-                    {
-                        id: 2,
-                        author: '技术达人',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff',
-                        content: '大家好，有人用过Tronix的API吗？',
-                        images: [],
-                        createdAt: Date.now() - 300000
-                    },
-                    {
-                        id: 3,
-                        author: '新手上路',
-                        authorAvatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff',
-                        content: '刚下载Tronix，正在学习中~',
-                        images: [],
-                        createdAt: Date.now() - 120000
-                    }
+                    { id: 1, author: '系统公告', authorAvatar: 'https://ui-avatars.com/api/?name=系统&background=ef4444&color=fff', content: '欢迎来到Tronix公共聊天室！请文明交流。', images: [], createdAt: Date.now() - 600000, isSystem: true },
+                    { id: 2, author: '技术达人', authorAvatar: 'https://ui-avatars.com/api/?name=技术达人&background=6366f1&color=fff', content: '大家好，有人用过Tronix的API吗？', images: [], createdAt: Date.now() - 300000 },
+                    { id: 3, author: '新手上路', authorAvatar: 'https://ui-avatars.com/api/?name=新手上路&background=10b981&color=fff', content: '刚下载Tronix，正在学习中~', images: [], createdAt: Date.now() - 120000 }
                 ];
                 localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(defaultMessages));
             }
@@ -1933,200 +647,129 @@
             }
         }
 
-        function getPosts() {
-            try {
-                return JSON.parse(localStorage.getItem(FORUM_STORAGE_KEY)) || [];
-            } catch {
-                return [];
-            }
-        }
+        function getPosts() { try { return JSON.parse(localStorage.getItem(FORUM_STORAGE_KEY)) || []; } catch { return []; } }
+        function savePosts(posts) { localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(posts)); }
+        function getChatMessages() { try { return JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || []; } catch { return []; } }
+        function saveChatMessages(messages) { localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages)); }
+        function getOnlineUsers() { try { return JSON.parse(localStorage.getItem(ONLINE_USERS_KEY)) || []; } catch { return []; } }
+        function saveOnlineUsers(users) { localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(users)); }
 
-        function savePosts(posts) {
-            localStorage.setItem(FORUM_STORAGE_KEY, JSON.stringify(posts));
-        }
-
-        function formatTime(timestamp) {
-            const now = Date.now();
-            const diff = now - timestamp;
+        function formatTime(ts) {
+            const diff = Date.now() - ts;
             if (diff < 60000) return '刚刚';
             if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
             if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
             if (diff < 2592000000) return Math.floor(diff / 86400000) + '天前';
-            return new Date(timestamp).toLocaleDateString('zh-CN');
+            return new Date(ts).toLocaleDateString('zh-CN');
         }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function getCurrentUser() {
-            return TronixAuth ? TronixAuth.getCurrentUser() : null;
-        }
-
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function getCurrentUser() { return typeof TronixAuth !== 'undefined' ? TronixAuth.getCurrentUser() : null; }
+        function getUsername() { const u = getCurrentUser(); return u ? u.username : '游客' + Math.floor(Math.random() * 1000); }
         function getUserAvatar() {
-            const user = getCurrentUser();
-            if (user && user.avatar) return user.avatar;
-            if (user) return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff';
+            const u = getCurrentUser();
+            if (u && u.avatar) return u.avatar;
+            if (u) return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.username) + '&background=6366f1&color=fff';
             return 'https://ui-avatars.com/api/?name=游客&background=6b7280&color=fff';
         }
-
-        function getUsername() {
-            const user = getCurrentUser();
-            return user ? user.username : '游客' + Math.floor(Math.random() * 1000);
-        }
-
-        function requireLogin(callback) {
-            const user = getCurrentUser();
-            if (!user) {
-                if (TronixAuth) {
-                    TronixAuth.showFeedback('请先登录后再操作', 'error');
-                }
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1000);
+        function requireLogin() {
+            const u = getCurrentUser();
+            if (!u) {
+                if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请先登录后再操作', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
                 return false;
             }
             return true;
         }
 
         function renderPosts() {
-            const postsList = document.getElementById('postsList');
+            const container = document.getElementById('postsList');
             const sortValue = document.getElementById('sortSelect').value;
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            const activeCategory = document.querySelector('.filter-btn.active').dataset.category;
+            const activeCategory = document.querySelector('.filter-tab.active').dataset.category;
 
             let posts = getPosts();
+            if (activeCategory !== 'all') posts = posts.filter(p => p.category === activeCategory);
+            if (searchQuery) posts = posts.filter(p => p.title.toLowerCase().includes(searchQuery) || p.author.toLowerCase().includes(searchQuery) || p.content.toLowerCase().includes(searchQuery));
+            if (sortValue === 'newest') posts.sort((a, b) => b.createdAt - a.createdAt);
+            else if (sortValue === 'comments') posts.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
+            else if (sortValue === 'likes') posts.sort((a, b) => b.likes - a.likes);
 
-            if (activeCategory !== 'all') {
-                posts = posts.filter(p => p.category === activeCategory);
-            }
-            if (searchQuery) {
-                posts = posts.filter(p =>
-                    p.title.toLowerCase().includes(searchQuery) ||
-                    p.author.toLowerCase().includes(searchQuery)
-                );
-            }
-
-            if (sortValue === 'newest') {
-                posts.sort((a, b) => b.createdAt - a.createdAt);
-            } else if (sortValue === 'comments') {
-                posts.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
-            } else if (sortValue === 'likes') {
-                posts.sort((a, b) => b.likes - a.likes);
-            }
-
-            postsList.innerHTML = posts.map(post => renderPostItem(post)).join('');
+            container.innerHTML = posts.map(post => renderPostCard(post)).join('');
         }
 
-        function renderPostItem(post) {
+        function renderPostCard(post) {
             const user = getCurrentUser();
             const username = user ? user.username : '';
             const isLiked = post.likedBy && post.likedBy.includes(username);
             const commentCount = post.comments ? post.comments.length : 0;
 
             const imagesHtml = post.images && post.images.length > 0
-                ? `<div class="post-images">
-                    ${post.images.slice(0, 3).map(img => `
-                        <div class="post-image" onclick="openImageViewer('${img}')">
-                            <img src="${img}" alt="帖子图片" loading="lazy">
-                        </div>
-                    `).join('')}
-                  </div>`
-                : '';
+                ? `<div class="post-images-row">${post.images.slice(0, 3).map(img => `<div class="post-img" onclick="openImageViewer('${img}')"><img src="${img}" alt="帖子图片" loading="lazy"></div>`).join('')}</div>` : '';
 
             const tagsHtml = post.tags && post.tags.length > 0
-                ? `<div class="post-tags">
-                    ${post.tags.map(tag => `
-                        <span class="post-tag">#${escapeHtml(tag)}</span>
-                    `).join('')}
-                  </div>`
-                : '';
+                ? `<div class="post-tags-row">${post.tags.map(tag => `<span class="post-tag-pill">#${escapeHtml(tag)}</span>`).join('')}</div>` : '';
 
             const commentsHtml = post.comments && post.comments.length > 0
-                ? post.comments.map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-avatar">
-                            <img src="${comment.authorAvatar}" alt="${escapeHtml(comment.author)}" loading="lazy">
-                        </div>
-                        <div class="comment-body">
-                            <div class="comment-header">
-                                <span class="comment-author">${escapeHtml(comment.author)}</span>
-                                <span class="comment-time">${formatTime(comment.createdAt)}</span>
+                ? post.comments.map(c => `
+                    <div class="comment-row">
+                        <div class="comment-avatar-sm"><img src="${c.authorAvatar}" alt="${escapeHtml(c.author)}" loading="lazy"></div>
+                        <div class="comment-main">
+                            <div class="comment-top">
+                                <span class="comment-author-name">${escapeHtml(c.author)}</span>
+                                <span class="comment-time">${formatTime(c.createdAt)}</span>
                             </div>
-                            <div class="comment-text">${escapeHtml(comment.content)}</div>
-                            ${comment.images && comment.images.length > 0 ? `
-                                <div class="comment-images">
-                                    ${comment.images.map(img => `
-                                        <div class="comment-image" onclick="openImageViewer('${img}')">
-                                            <img src="${img}" alt="评论图片" loading="lazy">
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
+                            <div class="comment-text">${escapeHtml(c.content)}</div>
+                            ${c.images && c.images.length > 0 ? `<div class="comment-images-row">${c.images.map(img => `<div class="comment-img-sm" onclick="openImageViewer('${img}')"><img src="${img}" alt="评论图片" loading="lazy"></div>`).join('')}</div>` : ''}
                         </div>
                     </div>
                 `).join('')
-                : '<p style="color: #a0a0d0; font-size: 0.9rem; padding: 0.5rem 0;">暂无评论，来抢沙发吧~</p>';
+                : '<p class="no-comments">暂无评论，来抢沙发吧~</p>';
 
             return `
-                <div class="post-item" data-category="${post.category}" data-id="${post.id}">
-                    <div class="post-avatar">
-                        <img src="${post.authorAvatar}" alt="${escapeHtml(post.author)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+                <div class="post-card" data-category="${post.category}" data-id="${post.id}">
+                    <div class="post-header">
+                        <div class="post-author-avatar"><img src="${post.authorAvatar}" alt="${escapeHtml(post.author)}" loading="lazy"></div>
+                        <div class="post-meta-info">
+                            <h4>${escapeHtml(post.title)}</h4>
+                            <div class="post-meta-row">
+                                <span><i class="fas fa-user-circle"></i> ${escapeHtml(post.author)}</span>
+                                <span><i class="far fa-clock"></i> ${formatTime(post.createdAt)}</span>
+                                <span><i class="far fa-eye"></i> ${post.views}</span>
+                                <span><i class="far fa-comment"></i> ${commentCount}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="post-content">
-                        <h4 class="post-title">${escapeHtml(post.title)}</h4>
-                        <div class="post-meta">
-                            <div class="post-author">
-                                <i class="fas fa-user-circle"></i>
-                                <span>${escapeHtml(post.author)}</span>
-                            </div>
-                            <div class="post-date">
-                                <i class="far fa-clock"></i>
-                                <span>${formatTime(post.createdAt)}</span>
-                            </div>
-                            <div class="post-stats">
-                                <div class="post-stat">
-                                    <i class="far fa-eye"></i>
-                                    <span class="post-views-count">${post.views}</span>
-                                </div>
-                                <div class="post-stat">
-                                    <i class="far fa-comment"></i>
-                                    <span>${commentCount}</span>
-                                </div>
-                                <div class="post-stat like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(this, ${post.id})">
-                                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-                                    <span>${post.likes}</span>
-                                </div>
-                            </div>
+                    <div class="post-body-content">
+                        <p>${escapeHtml(post.content)}</p>
+                    </div>
+                    ${imagesHtml}
+                    ${tagsHtml}
+                    <div class="post-actions-bar">
+                        <div class="post-action like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(this, ${post.id})">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                            <span>${post.likes}</span>
                         </div>
-                        <div class="post-body">
-                            <p>${escapeHtml(post.content)}</p>
-                            ${imagesHtml}
-                            ${tagsHtml}
+                        <div class="post-action"><i class="far fa-comment"></i> <span>${commentCount}</span></div>
+                        <div class="post-action"><i class="far fa-share-square"></i> <span>分享</span></div>
+                    </div>
+                    <div class="comments-area">
+                        <div class="comments-area-header">
+                            <span>评论 (${commentCount})</span>
                         </div>
-                        <div class="comments-section">
-                            <div class="comments-header">
-                                <span>评论 (${commentCount})</span>
-                            </div>
-                            <div class="comments-list">
-                                ${commentsHtml}
-                            </div>
-                            <div class="comment-input-area">
-                                <div class="comment-avatar">
-                                    <img src="${getUserAvatar()}" alt="当前用户" loading="lazy">
-                                </div>
-                                <div style="flex-grow: 1;">
-                                    <input type="text" class="comment-input" placeholder="写下你的评论..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
-                                    <div class="comment-actions">
-                                        <button class="comment-image-upload-btn" onclick="document.getElementById('commentImage_${post.id}').click()" title="添加图片">
-                                            <i class="far fa-image"></i>
-                                        </button>
-                                        <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
-                                        <span id="commentImgPreview_${post.id}" style="color:#04eff7;font-size:0.8rem;"></span>
-                                        <button class="comment-submit-btn" onclick="addComment(${post.id}, this)">发送</button>
-                                    </div>
+                        <div class="comments-scroll">
+                            ${commentsHtml}
+                        </div>
+                        <div class="comment-compose">
+                            <div class="compose-avatar"><img src="${getUserAvatar()}" alt="当前用户" loading="lazy"></div>
+                            <div class="compose-fields">
+                                <input type="text" class="compose-input" placeholder="写下你的评论，按Enter快速发送..." onkeydown="handleCommentKeydown(event, ${post.id}, this)">
+                                <div class="compose-actions">
+                                    <button class="compose-img-btn" onclick="document.getElementById('commentImage_${post.id}').click()">
+                                        <i class="far fa-image"></i> 图片
+                                    </button>
+                                    <input type="file" id="commentImage_${post.id}" accept="image/*" style="display:none;" onchange="handleCommentImageUpload(event, ${post.id})">
+                                    <span class="compose-img-preview" id="commentImgPreview_${post.id}"></span>
+                                    <button class="compose-send-btn" onclick="addComment(${post.id}, this)">发送</button>
                                 </div>
                             </div>
                         </div>
@@ -2135,81 +778,47 @@
             `;
         }
 
-        function togglePost(btn) {
-            // 帖子折叠已移除，此函数保留兼容
-        }
-
         function toggleLike(btn, postId) {
             event.stopPropagation();
             const user = getCurrentUser();
-            if (!user) {
-                requireLogin();
-                return;
-            }
+            if (!user) { requireLogin(); return; }
             const username = user.username;
             let posts = getPosts();
             const post = posts.find(p => p.id === postId);
             if (!post) return;
             if (!post.likedBy) post.likedBy = [];
-
             const index = post.likedBy.indexOf(username);
-            if (index > -1) {
-                post.likedBy.splice(index, 1);
-                post.likes--;
-                btn.classList.remove('liked');
-                btn.querySelector('i').className = 'far fa-heart';
-            } else {
-                post.likedBy.push(username);
-                post.likes++;
-                btn.classList.add('liked');
-                btn.querySelector('i').className = 'fas fa-heart';
-            }
+            if (index > -1) { post.likedBy.splice(index, 1); post.likes--; btn.classList.remove('liked'); btn.querySelector('i').className = 'far fa-heart'; }
+            else { post.likedBy.push(username); post.likes++; btn.classList.add('liked'); btn.querySelector('i').className = 'fas fa-heart'; }
             btn.querySelector('span').textContent = post.likes;
             savePosts(posts);
         }
 
         function handleCommentKeydown(event, postId, input) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                addComment(postId, input);
-            }
+            if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); addComment(postId, input); }
         }
 
         function addComment(postId, el) {
             if (!requireLogin()) return;
-            const postItem = el.closest('.post-item');
-            const input = postItem.querySelector('.comment-input');
+            const card = el.closest('.post-card');
+            const input = card.querySelector('.compose-input');
             const content = input.value.trim();
-            const imgPreviewSpan = document.getElementById('commentImgPreview_' + postId);
-            const imageData = imgPreviewSpan ? imgPreviewSpan.dataset.image : null;
-
+            const previewSpan = document.getElementById('commentImgPreview_' + postId);
+            const imageData = previewSpan ? previewSpan.dataset.image : null;
             if (!content && !imageData) return;
 
             let posts = getPosts();
             const post = posts.find(p => p.id === postId);
             if (!post) return;
-
-            const comment = {
-                id: Date.now(),
-                author: getUsername(),
-                authorAvatar: getUserAvatar(),
-                content: content,
-                images: imageData ? [imageData] : [],
-                createdAt: Date.now()
-            };
-
+            const comment = { id: Date.now(), author: getUsername(), authorAvatar: getUserAvatar(), content: content, images: imageData ? [imageData] : [], createdAt: Date.now() };
             if (!post.comments) post.comments = [];
             post.comments.push(comment);
             savePosts(posts);
 
             input.value = '';
-            if (imgPreviewSpan) {
-                imgPreviewSpan.textContent = '';
-                imgPreviewSpan.removeAttribute('data-image');
-            }
-
+            if (previewSpan) { previewSpan.textContent = ''; previewSpan.removeAttribute('data-image'); }
             renderPosts();
-            if (TronixAuth) TronixAuth.showFeedback('评论发布成功！', 'success');
+            if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('评论发布成功！', 'success');
         }
 
         function handleCommentImageUpload(event, postId) {
@@ -2217,90 +826,44 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const imgData = e.target.result;
                 const previewSpan = document.getElementById('commentImgPreview_' + postId);
-                if (previewSpan) {
-                    previewSpan.textContent = '已选择1张图片';
-                    previewSpan.dataset.image = imgData;
-                }
+                if (previewSpan) { previewSpan.textContent = '已选择1张图片'; previewSpan.dataset.image = e.target.result; }
             };
             reader.readAsDataURL(file);
         }
 
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.add('active');
-        }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.remove('active');
-        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function handlePostImageUpload(event) {
             const files = Array.from(event.target.files);
             const remaining = 4 - postImages.length;
-            const toAdd = files.slice(0, remaining);
-
-            toAdd.forEach(file => {
+            files.slice(0, remaining).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    postImages.push(e.target.result);
-                    renderPostImagePreview();
-                };
+                reader.onload = function(e) { postImages.push(e.target.result); renderPostImagePreview(); };
                 reader.readAsDataURL(file);
             });
         }
-
         function renderPostImagePreview() {
             const preview = document.getElementById('postImagePreview');
-            preview.innerHTML = postImages.map((img, index) => `
-                <div class="image-preview-item">
+            preview.innerHTML = postImages.map((img, i) => `
+                <div class="img-preview-item">
                     <img src="${img}" alt="预览">
-                    <button class="image-preview-remove" onclick="removePostImage(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <button class="img-preview-remove" onclick="removePostImage(${i})"><i class="fas fa-times"></i></button>
                 </div>
             `).join('');
         }
-
-        function removePostImage(index) {
-            postImages.splice(index, 1);
-            renderPostImagePreview();
-        }
+        function removePostImage(index) { postImages.splice(index, 1); renderPostImagePreview(); }
 
         function createPost() {
             if (!requireLogin()) return;
-
             const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
             const content = document.getElementById('postContent').value.trim();
+            if (!title) { if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请输入标题', 'error'); return; }
+            if (!content) { if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('请输入内容', 'error'); return; }
 
-            if (!title) {
-                if (TronixAuth) TronixAuth.showFeedback('请输入标题', 'error');
-                return;
-            }
-            if (!content) {
-                if (TronixAuth) TronixAuth.showFeedback('请输入内容', 'error');
-                return;
-            }
-
-            const newPost = {
-                id: Date.now(),
-                title: title,
-                author: getUsername(),
-                authorAvatar: getUserAvatar(),
-                category: category,
-                content: content,
-                images: [...postImages],
-                likes: 0,
-                likedBy: [],
-                views: 0,
-                createdAt: Date.now(),
-                tags: [],
-                comments: []
-            };
-
+            const newPost = { id: Date.now(), title, author: getUsername(), authorAvatar: getUserAvatar(), category, content, images: [...postImages], likes: 0, likedBy: [], views: 0, createdAt: Date.now(), tags: [], comments: [] };
             let posts = getPosts();
             posts.unshift(newPost);
             savePosts(posts);
@@ -2311,312 +874,159 @@
             renderPostImagePreview();
             closeModal('createPostModal');
             renderPosts();
-
-            if (TronixAuth) TronixAuth.showFeedback('帖子发布成功！', 'success');
+            if (typeof TronixAuth !== 'undefined') TronixAuth.showFeedback('帖子发布成功！', 'success');
         }
 
+        /* 聊天室 */
         function toggleChatSidebar() {
             const body = document.getElementById('chatSidebarBody');
             const icon = document.getElementById('chatToggleIcon');
             body.classList.toggle('collapsed');
             icon.classList.toggle('rotated');
-            if (!body.classList.contains('collapsed')) {
-                scrollChatToBottom();
-                clearUnreadBadge();
-                updateOnlineUsers();
-            }
+            if (!body.classList.contains('collapsed')) { scrollChatToBottom(); clearUnreadBadge(); updateOnlineUsers(); }
         }
-
-        function getChatMessages() {
-            try {
-                return JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
-            } catch {
-                return [];
-            }
-        }
-
-        function saveChatMessages(messages) {
-            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-        }
-
         function renderChatMessages() {
             const container = document.getElementById('chatMessages');
             const messages = getChatMessages();
             const currentUser = getUsername();
-
             container.innerHTML = messages.map(msg => {
                 const isOwn = msg.author === currentUser && !msg.isSystem;
-                const imagesHtml = msg.images && msg.images.length > 0
-                    ? msg.images.map(img => `<img src="${img}" class="chat-message-image" onclick="openImageViewer('${img}')" loading="lazy">`).join('')
-                    : '';
+                const imagesHtml = msg.images && msg.images.length > 0 ? msg.images.map(img => `<img src="${img}" class="chat-msg-img" onclick="openImageViewer('${img}')" loading="lazy">`).join('') : '';
                 return `
-                    <div class="chat-message ${isOwn ? 'own' : ''}">
-                        <div class="chat-message-avatar">
-                            <img src="${msg.authorAvatar}" alt="${escapeHtml(msg.author)}" loading="lazy">
-                        </div>
-                        <div class="chat-message-content">
-                            ${!isOwn ? `<div class="chat-message-username">${escapeHtml(msg.author)}</div>` : ''}
-                            <div class="chat-message-bubble">
-                                ${escapeHtml(msg.content)}
-                                ${imagesHtml}
-                            </div>
-                            <div class="chat-message-time">${formatTime(msg.createdAt)}</div>
+                    <div class="chat-msg ${isOwn ? 'own' : ''}">
+                        <div class="chat-msg-avatar"><img src="${msg.authorAvatar}" alt="${escapeHtml(msg.author)}" loading="lazy"></div>
+                        <div class="chat-msg-content">
+                            ${!isOwn ? `<div class="chat-msg-user">${escapeHtml(msg.author)}</div>` : ''}
+                            <div class="chat-msg-bubble">${escapeHtml(msg.content)}${imagesHtml}</div>
+                            <div class="chat-msg-time">${formatTime(msg.createdAt)}</div>
                         </div>
                     </div>
                 `;
             }).join('');
-
             scrollChatToBottom();
         }
-
-        function scrollChatToBottom() {
-            const container = document.getElementById('chatMessages');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function clearUnreadBadge() {
-            const badge = document.getElementById('chatUnreadBadge');
-            badge.style.display = 'none';
-            badge.textContent = '0';
-            localStorage.setItem('tronix_chat_last_read', Date.now().toString());
-        }
-
-        function handleChatKeydown(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendChatMessage();
-            }
-        }
-
+        function scrollChatToBottom() { const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
+        function clearUnreadBadge() { const badge = document.getElementById('chatUnreadBadge'); if (badge) { badge.style.display = 'none'; badge.textContent = '0'; } localStorage.setItem('tronix_chat_last_read', Date.now().toString()); }
+        function handleChatKeydown(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); } }
         function handleChatImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                chatImageToSend = e.target.result;
-                const input = document.getElementById('chatInput');
-                input.placeholder = '已选择图片，输入文字（可选）后发送...';
-                input.focus();
-            };
+            reader.onload = function(e) { chatImageToSend = e.target.result; const input = document.getElementById('chatInput'); input.placeholder = '已选择图片，输入文字（可选）后发送...'; input.focus(); };
             reader.readAsDataURL(file);
         }
-
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const content = input.value.trim();
-
             if (!content && !chatImageToSend) return;
-
-            const user = getCurrentUser();
-            if (!user) {
-                requireLogin();
-                return;
-            }
-
-            const message = {
-                id: Date.now(),
-                author: getUsername(),
-                authorAvatar: getUserAvatar(),
-                content: content,
-                images: chatImageToSend ? [chatImageToSend] : [],
-                createdAt: Date.now(),
-                isSystem: false
-            };
-
+            if (!getCurrentUser()) { requireLogin(); return; }
+            const message = { id: Date.now(), author: getUsername(), authorAvatar: getUserAvatar(), content, images: chatImageToSend ? [chatImageToSend] : [], createdAt: Date.now(), isSystem: false };
             let messages = getChatMessages();
             messages.push(message);
             if (messages.length > 100) messages = messages.slice(-100);
             saveChatMessages(messages);
-
-            input.value = '';
-            chatImageToSend = null;
-            input.placeholder = '输入消息...';
-
+            input.value = ''; chatImageToSend = null; input.placeholder = '输入消息...';
             renderChatMessages();
             updateUserOnline();
         }
-
-        function getOnlineUsers() {
-            try {
-                return JSON.parse(localStorage.getItem(ONLINE_USERS_KEY)) || [];
-            } catch {
-                return [];
-            }
-        }
-
-        function saveOnlineUsers(users) {
-            localStorage.setItem(ONLINE_USERS_KEY, JSON.stringify(users));
-        }
-
         function updateUserOnline() {
             const username = getUsername();
             const avatar = getUserAvatar();
             let users = getOnlineUsers();
-            const existingIndex = users.findIndex(u => u.name === username);
-            if (existingIndex > -1) {
-                users[existingIndex].lastSeen = Date.now();
-                users[existingIndex].avatar = avatar;
-            } else {
-                users.push({ name: username, avatar: avatar, lastSeen: Date.now() });
-            }
+            const idx = users.findIndex(u => u.name === username);
+            if (idx > -1) { users[idx].lastSeen = Date.now(); users[idx].avatar = avatar; }
+            else { users.push({ name: username, avatar, lastSeen: Date.now() }); }
             users = users.filter(u => Date.now() - u.lastSeen < 300000);
             saveOnlineUsers(users);
             renderOnlineUsers();
         }
-
         function renderOnlineUsers() {
             const container = document.getElementById('onlineUsersList');
             const countEl = document.getElementById('chatOnlineCount');
-            let users = getOnlineUsers();
-            users = users.filter(u => Date.now() - u.lastSeen < 300000);
-            countEl.textContent = users.length + '人在线';
-            container.innerHTML = users.map(u => `
-                <div class="online-user">
-                    <span class="online-user-dot"></span>
-                    <span>${escapeHtml(u.name)}</span>
-                </div>
-            `).join('');
+            let users = getOnlineUsers().filter(u => Date.now() - u.lastSeen < 300000);
+            if (countEl) countEl.textContent = users.length + '人在线';
+            if (container) container.innerHTML = users.map(u => `<div class="chat-online-user"><span class="chat-online-dot"></span><span>${escapeHtml(u.name)}</span></div>`).join('');
         }
+        function updateOnlineUsers() { updateUserOnline(); }
 
-        function updateOnlineUsers() {
-            updateUserOnline();
-        }
-
-        function openImageViewer(src) {
-            const viewer = document.getElementById('imageViewer');
-            const img = document.getElementById('viewerImage');
-            img.src = src;
-            viewer.classList.add('active');
-        }
-
-        function closeImageViewer() {
-            const viewer = document.getElementById('imageViewer');
-            viewer.classList.remove('active');
-        }
+        function openImageViewer(src) { document.getElementById('viewerImage').src = src; document.getElementById('imageViewer').classList.add('active'); }
+        function closeImageViewer() { document.getElementById('imageViewer').classList.remove('active'); }
 
         function updateSidebarProfile() {
             const container = document.getElementById('sidebarProfile');
             const user = getCurrentUser();
-
             if (user) {
                 container.innerHTML = `
-                    <div class="profile-avatar">
-                        <img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff'}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                    </div>
-                    <h4 class="profile-name">${escapeHtml(user.username)}</h4>
-                    <p class="profile-role">欢迎回来！</p>
-                    <button class="download-btn" style="width: 100%;" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
+                    <div class="profile-avatar-lg"><img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=6366f1&color=fff'}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+                    <div class="profile-name">${escapeHtml(user.username)}</div>
+                    <div class="profile-role">欢迎回来！</div>
+                    <button class="profile-btn" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> 发布新帖</button>
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="profile-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h4 class="profile-name">游客</h4>
-                    <p class="profile-role">请登录以参与讨论</p>
-                    <button class="download-btn" style="width: 100%;" onclick="window.location.href='login.html'">登录 / 注册</button>
+                    <div class="profile-avatar-lg"><i class="fas fa-user" style="font-size:2rem;"></i></div>
+                    <div class="profile-name">游客</div>
+                    <div class="profile-role">请登录以参与讨论</div>
+                    <button class="profile-btn" onclick="window.location.href='login.html'">登录 / 注册</button>
                 `;
             }
         }
 
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
+        function toggleMobileMenu() { const navLinks = document.getElementById('navLinks'); navLinks.classList.toggle('active'); }
         document.addEventListener('click', function(e) {
             const navLinks = document.getElementById('navLinks');
             const menuBtn = document.querySelector('.mobile-menu-btn');
-            if (navLinks && menuBtn && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
-                navLinks.classList.remove('active');
-            }
+            if (navLinks && menuBtn && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) navLinks.classList.remove('active');
         });
 
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.opacity = '1';
-            initForumData();
+            initData();
             renderPosts();
             updateSidebarProfile();
             renderChatMessages();
             renderOnlineUsers();
             updateUserOnline();
 
-            document.querySelector('.create-btn').addEventListener('click', function() {
-                if (!requireLogin()) return;
-                openModal('createPostModal');
-            });
-
+            document.getElementById('openCreateBtn').addEventListener('click', function() { if (!requireLogin()) return; openModal('createPostModal'); });
             document.getElementById('sortSelect').addEventListener('change', renderPosts);
-
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', renderPosts);
-
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
+            document.getElementById('searchInput').addEventListener('input', renderPosts);
+            document.querySelectorAll('.filter-tab').forEach(btn => {
+                btn.addEventListener('click', function() { document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active')); this.classList.add('active'); renderPosts(); });
+            });
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const cat = this.dataset.cat;
+                    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                    const tab = document.querySelector('.filter-tab[data-category="' + cat + '"]');
+                    if (tab) tab.classList.add('active');
                     renderPosts();
                 });
             });
 
             const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', function() {
-                if (window.pageYOffset > 100) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
+            window.addEventListener('scroll', function() { if (window.pageYOffset > 100) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); });
 
-            const fadeElements = document.querySelectorAll('.category-card, .sidebar-widget');
-            fadeElements.forEach((el, index) => {
-                el.classList.add('fade-in');
-                el.style.animationDelay = `${0.1 + (index % 5) * 0.1}s`;
-            });
+            document.getElementById('createPostModal').addEventListener('click', function(e) { if (e.target === this) closeModal('createPostModal'); });
 
-            document.getElementById('createPostModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal('createPostModal');
-            });
-
-            setInterval(() => {
-                const wasExpanded = !document.getElementById('chatSidebarBody').classList.contains('collapsed');
-                renderChatMessages();
-                renderOnlineUsers();
-                if (wasExpanded) scrollChatToBottom();
-            }, 3000);
-
+            setInterval(() => { const expanded = !document.getElementById('chatSidebarBody').classList.contains('collapsed'); renderChatMessages(); renderOnlineUsers(); if (expanded) scrollChatToBottom(); }, 3000);
             setInterval(updateUserOnline, 30000);
 
             window.addEventListener('storage', function(e) {
                 if (e.key === CHAT_STORAGE_KEY) {
                     renderChatMessages();
                     const chatExpanded = !document.getElementById('chatSidebarBody').classList.contains('collapsed');
-                    if (!chatExpanded) {
-                        const badge = document.getElementById('chatUnreadBadge');
-                        let count = parseInt(badge.textContent) || 0;
-                        count++;
-                        badge.textContent = count;
-                        badge.style.display = 'block';
-                    }
+                    if (!chatExpanded) { const badge = document.getElementById('chatUnreadBadge'); if (badge) { let count = parseInt(badge.textContent) || 0; count++; badge.textContent = count; badge.style.display = 'block'; } }
                 }
-                if (e.key === FORUM_STORAGE_KEY) {
-                    renderPosts();
-                }
-                if (e.key === ONLINE_USERS_KEY) {
-                    renderOnlineUsers();
-                }
+                if (e.key === FORUM_STORAGE_KEY) renderPosts();
+                if (e.key === ONLINE_USERS_KEY) renderOnlineUsers();
             });
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal('createPostModal');
-                closeImageViewer();
-            }
+            if (e.key === 'Escape') { closeModal('createPostModal'); closeImageViewer(); }
         });
     </script>
-    
-    <!-- 引入Quill编辑器 -->
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="auth.js"></script>
 </body>
 </html>
