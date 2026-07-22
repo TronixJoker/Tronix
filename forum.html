@@ -653,7 +653,7 @@
             <div class="sidebar-box fade-in delay-3">
                 <div class="sidebar-box-header" style="cursor:default;">
                     <div class="sidebar-box-title"><i class="fas fa-info-circle"></i> 论坛公告</div>
-                    ${isAdmin() ? '<button class="icon-action-btn pin-btn" id="editAnnounceBtn" onclick="openAnnouncementModal()" title="编辑公告" style="width:28px;height:28px;font-size:0.75rem;"><i class="fas fa-edit"></i></button>' : ''}
+                    <div id="announceEditBtnContainer"></div>
                 </div>
                 <div class="announce-body" id="announceBody">
                     <p class="no-comments">加载中...</p>
@@ -1479,7 +1479,11 @@
         async function loadAnnouncement() {
             const res = await apiGet('/announcement');
             const box = document.getElementById('announceBody');
+            const btnContainer = document.getElementById('announceEditBtnContainer');
             if (!box) return;
+            if (btnContainer && isAdmin()) {
+                btnContainer.innerHTML = `<button class="icon-action-btn pin-btn" onclick="openAnnouncementModal()" title="编辑公告" style="width:28px;height:28px;font-size:0.75rem;"><i class="fas fa-edit"></i></button>`;
+            }
             if (res && res.success && res.announcement) {
                 const a = res.announcement;
                 box.innerHTML = `
